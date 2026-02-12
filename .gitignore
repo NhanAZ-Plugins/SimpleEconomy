@@ -1,0 +1,15 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Poggit
+/vendor/
+*.phar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PR repositories (local development only)
+PR/

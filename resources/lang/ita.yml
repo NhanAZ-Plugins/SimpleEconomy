@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - File di lingua Italiano
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§eI dati di '{player}' sono in caricamento. Attendere prego..."
+  data-access-error: "§cImpossibile accedere ai dati di '{player}'."
+  save-failed: "§cSalvataggio dei dati di '{player}' fallito."
+  no-economy-data: "§cIl giocatore '{player}' non ha dati economici."
+  player-not-online: "§cIl giocatore '{player}' non è online."
+  only-ingame: "§cQuesto comando può essere usato solo in gioco."
+  amount-not-number: "§cL'importo deve essere un numero."
+  amount-positive: "§cL'importo deve essere maggiore di zero."
+  amount-not-negative: "§cL'importo non può essere negativo."
+  transaction-cancelled: "§cTransazione annullata."
+
+money:
+  usage: "§cUso: /money <giocatore>"
+  self: "§aIl tuo saldo: §e{balance} §7(#{rank})"
+  self-unranked: "§aIl tuo saldo: §e{balance}"
+  other: "§aSaldo di {player}: §e{balance} §7(#{rank})"
+  other-unranked: "§aSaldo di {player}: §e{balance}"
+  error: "§cImpossibile recuperare i dati di '{player}'."
+
+pay:
+  usage: "§cUso: /pay <giocatore> <importo>"
+  no-self: "§cNon puoi pagare te stesso."
+  loading-self: "§eI tuoi dati sono in caricamento. Attendere prego."
+  loading-target: "§eI dati di {player} sono in caricamento. Attendere prego..."
+  insufficient: "§cFondi insufficienti. Il tuo saldo: §e{balance}"
+  cancelled: "§cPagamento annullato."
+  sent: "§aHai inviato §e{amount}§a a §b{player}§a."
+  received: "§aHai ricevuto §e{amount}§a da §b{player}§a."
+
+setmoney:
+  usage: "§cUso: /setmoney <giocatore> <importo>"
+  success: "§aSaldo di §b{player}§a impostato: §e{old} §a→ §e{new}"
+  notify: "§aIl tuo saldo è stato impostato a §e{amount}§a da un amministratore."
+
+addmoney:
+  usage: "§cUso: /addmoney <giocatore> <importo>"
+  success: "§aAggiunto §e{amount}§a a §b{player}§a. Nuovo saldo: §e{balance}"
+  notify: "§aHai ricevuto §e{amount}§a da un amministratore. Nuovo saldo: §e{balance}"
+
+reducemoney:
+  usage: "§cUso: /reducemoney <giocatore> <importo>"
+  insufficient: "§c{player} ha solo §e{balance}§c. Impossibile ridurre di §e{amount}§c."
+  success: "§aRimosso §e{amount}§a da §b{player}§a. Nuovo saldo: §e{balance}"
+  notify: "§cUn amministratore ha rimosso §e{amount}§c dal tuo saldo. Nuovo saldo: §e{balance}"
+
+topmoney:
+  empty: "§eNessun dato economico disponibile."
+  header: "§6══ Top Soldi §7(Pagina {page}/{max}) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"

@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - 简体中文语言文件
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§e'{player}' 的数据正在加载中，请稍候..."
+  data-access-error: "§c无法访问 '{player}' 的数据。"
+  save-failed: "§c保存 '{player}' 的数据失败。"
+  no-economy-data: "§c玩家 '{player}' 没有经济数据。"
+  player-not-online: "§c玩家 '{player}' 不在线。"
+  only-ingame: "§c此命令只能在游戏中使用。"
+  amount-not-number: "§c金额必须是数字。"
+  amount-positive: "§c金额必须大于零。"
+  amount-not-negative: "§c金额不能为负数。"
+  transaction-cancelled: "§c交易已取消。"
+
+money:
+  usage: "§c用法: /money <玩家>"
+  self: "§a你的余额: §e{balance} §7(#{rank})"
+  self-unranked: "§a你的余额: §e{balance}"
+  other: "§a{player} 的余额: §e{balance} §7(#{rank})"
+  other-unranked: "§a{player} 的余额: §e{balance}"
+  error: "§c无法获取 '{player}' 的数据。"
+
+pay:
+  usage: "§c用法: /pay <玩家> <金额>"
+  no-self: "§c你不能给自己转账。"
+  loading-self: "§e你的数据正在加载中，请稍候。"
+  loading-target: "§e{player} 的数据正在加载中，请稍候..."
+  insufficient: "§c余额不足。你的余额: §e{balance}"
+  cancelled: "§c付款已取消。"
+  sent: "§a你向 §b{player}§a 发送了 §e{amount}§a。"
+  received: "§a你收到了来自 §b{player}§a 的 §e{amount}§a。"
+
+setmoney:
+  usage: "§c用法: /setmoney <玩家> <金额>"
+  success: "§a已设置 §b{player}§a 的余额: §e{old} §a→ §e{new}"
+  notify: "§a管理员已将你的余额设置为 §e{amount}§a。"
+
+addmoney:
+  usage: "§c用法: /addmoney <玩家> <金额>"
+  success: "§a已向 §b{player}§a 添加 §e{amount}§a。新余额: §e{balance}"
+  notify: "§a你收到了管理员发送的 §e{amount}§a。新余额: §e{balance}"
+
+reducemoney:
+  usage: "§c用法: /reducemoney <玩家> <金额>"
+  insufficient: "§c{player} 只有 §e{balance}§c，无法扣除 §e{amount}§c。"
+  success: "§a已从 §b{player}§a 扣除 §e{amount}§a。新余额: §e{balance}"
+  notify: "§c管理员从你的余额中扣除了 §e{amount}§c。新余额: §e{balance}"
+
+topmoney:
+  empty: "§e暂无经济数据。"
+  header: "§6══ 财富排行榜 §7(第 {page}/{max} 页) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"

@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - Berkas Bahasa Indonesia
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§eData '{player}' sedang dimuat. Mohon tunggu..."
+  data-access-error: "§cTidak dapat mengakses data '{player}'."
+  save-failed: "§cGagal menyimpan data '{player}'."
+  no-economy-data: "§cPemain '{player}' tidak memiliki data ekonomi."
+  player-not-online: "§cPemain '{player}' tidak online."
+  only-ingame: "§cPerintah ini hanya bisa digunakan di dalam game."
+  amount-not-number: "§cJumlah harus berupa angka."
+  amount-positive: "§cJumlah harus lebih dari nol."
+  amount-not-negative: "§cJumlah tidak boleh negatif."
+  transaction-cancelled: "§cTransaksi dibatalkan."
+
+money:
+  usage: "§cPenggunaan: /money <pemain>"
+  self: "§aSaldo kamu: §e{balance} §7(#{rank})"
+  self-unranked: "§aSaldo kamu: §e{balance}"
+  other: "§aSaldo {player}: §e{balance} §7(#{rank})"
+  other-unranked: "§aSaldo {player}: §e{balance}"
+  error: "§cTidak dapat mengambil data '{player}'."
+
+pay:
+  usage: "§cPenggunaan: /pay <pemain> <jumlah>"
+  no-self: "§cKamu tidak bisa membayar dirimu sendiri."
+  loading-self: "§eData kamu sedang dimuat. Mohon tunggu."
+  loading-target: "§eData {player} sedang dimuat. Mohon tunggu..."
+  insufficient: "§cSaldo tidak cukup. Saldo kamu: §e{balance}"
+  cancelled: "§cPembayaran dibatalkan."
+  sent: "§aKamu mengirim §e{amount}§a ke §b{player}§a."
+  received: "§aKamu menerima §e{amount}§a dari §b{player}§a."
+
+setmoney:
+  usage: "§cPenggunaan: /setmoney <pemain> <jumlah>"
+  success: "§aSaldo §b{player}§a diatur: §e{old} §a→ §e{new}"
+  notify: "§aSaldo kamu telah diatur menjadi §e{amount}§a oleh administrator."
+
+addmoney:
+  usage: "§cPenggunaan: /addmoney <pemain> <jumlah>"
+  success: "§aDitambahkan §e{amount}§a ke §b{player}§a. Saldo baru: §e{balance}"
+  notify: "§aKamu menerima §e{amount}§a dari administrator. Saldo baru: §e{balance}"
+
+reducemoney:
+  usage: "§cPenggunaan: /reducemoney <pemain> <jumlah>"
+  insufficient: "§c{player} hanya punya §e{balance}§c. Tidak bisa mengurangi §e{amount}§c."
+  success: "§aDikurangi §e{amount}§a dari §b{player}§a. Saldo baru: §e{balance}"
+  notify: "§c§e{amount}§c telah dikurangi dari saldo kamu oleh administrator. Saldo baru: §e{balance}"
+
+topmoney:
+  empty: "§eBelum ada data ekonomi."
+  header: "§6══ Top Uang §7(Halaman {page}/{max}) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"

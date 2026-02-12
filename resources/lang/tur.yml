@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - Türkçe Dil Dosyası
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§e'{player}' verisi yükleniyor. Lütfen bekleyin..."
+  data-access-error: "§c'{player}' verisine erişilemedi."
+  save-failed: "§c'{player}' verisi kaydedilemedi."
+  no-economy-data: "§c'{player}' oyuncusunun ekonomi verisi yok."
+  player-not-online: "§c'{player}' oyuncusu çevrimiçi değil."
+  only-ingame: "§cBu komut yalnızca oyun içinde kullanılabilir."
+  amount-not-number: "§cMiktar bir sayı olmalıdır."
+  amount-positive: "§cMiktar sıfırdan büyük olmalıdır."
+  amount-not-negative: "§cMiktar negatif olamaz."
+  transaction-cancelled: "§cİşlem iptal edildi."
+
+money:
+  usage: "§cKullanım: /money <oyuncu>"
+  self: "§aBakiyeniz: §e{balance} §7(#{rank})"
+  self-unranked: "§aBakiyeniz: §e{balance}"
+  other: "§a{player} bakiyesi: §e{balance} §7(#{rank})"
+  other-unranked: "§a{player} bakiyesi: §e{balance}"
+  error: "§c'{player}' verisi alınamadı."
+
+pay:
+  usage: "§cKullanım: /pay <oyuncu> <miktar>"
+  no-self: "§cKendinize ödeme yapamazsınız."
+  loading-self: "§eVeriniz yükleniyor. Lütfen bekleyin."
+  loading-target: "§e{player} verisi yükleniyor. Lütfen bekleyin..."
+  insufficient: "§cYetersiz bakiye. Bakiyeniz: §e{balance}"
+  cancelled: "§cÖdeme iptal edildi."
+  sent: "§a§b{player}§a oyuncusuna §e{amount}§a gönderdiniz."
+  received: "§a§b{player}§a oyuncusundan §e{amount}§a aldınız."
+
+setmoney:
+  usage: "§cKullanım: /setmoney <oyuncu> <miktar>"
+  success: "§a§b{player}§a bakiyesi ayarlandı: §e{old} §a→ §e{new}"
+  notify: "§aBakiyeniz yönetici tarafından §e{amount}§a olarak ayarlandı."
+
+addmoney:
+  usage: "§cKullanım: /addmoney <oyuncu> <miktar>"
+  success: "§a§b{player}§a oyuncusuna §e{amount}§a eklendi. Yeni bakiye: §e{balance}"
+  notify: "§aYöneticiden §e{amount}§a aldınız. Yeni bakiye: §e{balance}"
+
+reducemoney:
+  usage: "§cKullanım: /reducemoney <oyuncu> <miktar>"
+  insufficient: "§c{player} sadece §e{balance}§c sahip. §e{amount}§c düşülemez."
+  success: "§a§b{player}§a oyuncusundan §e{amount}§a düşüldü. Yeni bakiye: §e{balance}"
+  notify: "§cYönetici bakiyenizden §e{amount}§c düştü. Yeni bakiye: §e{balance}"
+
+topmoney:
+  empty: "§eHenüz ekonomi verisi yok."
+  header: "§6══ Para Sıralaması §7(Sayfa {page}/{max}) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"

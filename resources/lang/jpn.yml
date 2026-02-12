@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - 日本語言語ファイル
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§e'{player}' のデータを読み込み中です。しばらくお待ちください..."
+  data-access-error: "§c'{player}' のデータにアクセスできませんでした。"
+  save-failed: "§c'{player}' のデータの保存に失敗しました。"
+  no-economy-data: "§cプレイヤー '{player}' の経済データがありません。"
+  player-not-online: "§cプレイヤー '{player}' はオンラインではありません。"
+  only-ingame: "§cこのコマンドはゲーム内でのみ使用できます。"
+  amount-not-number: "§c金額は数字でなければなりません。"
+  amount-positive: "§c金額は0より大きくなければなりません。"
+  amount-not-negative: "§c金額はマイナスにできません。"
+  transaction-cancelled: "§c取引がキャンセルされました。"
+
+money:
+  usage: "§c使い方: /money <プレイヤー>"
+  self: "§aあなたの残高: §e{balance} §7(#{rank})"
+  self-unranked: "§aあなたの残高: §e{balance}"
+  other: "§a{player} の残高: §e{balance} §7(#{rank})"
+  other-unranked: "§a{player} の残高: §e{balance}"
+  error: "§c'{player}' のデータを取得できませんでした。"
+
+pay:
+  usage: "§c使い方: /pay <プレイヤー> <金額>"
+  no-self: "§c自分自身に送金することはできません。"
+  loading-self: "§eあなたのデータを読み込み中です。しばらくお待ちください。"
+  loading-target: "§e{player} のデータを読み込み中です。しばらくお待ちください..."
+  insufficient: "§c残高が不足しています。あなたの残高: §e{balance}"
+  cancelled: "§c支払いがキャンセルされました。"
+  sent: "§a§b{player}§a に §e{amount}§a を送金しました。"
+  received: "§a§b{player}§a から §e{amount}§a を受け取りました。"
+
+setmoney:
+  usage: "§c使い方: /setmoney <プレイヤー> <金額>"
+  success: "§a§b{player}§a の残高を設定: §e{old} §a→ §e{new}"
+  notify: "§a管理者によってあなたの残高が §e{amount}§a に設定されました。"
+
+addmoney:
+  usage: "§c使い方: /addmoney <プレイヤー> <金額>"
+  success: "§a§b{player}§a に §e{amount}§a を追加しました。新しい残高: §e{balance}"
+  notify: "§a管理者から §e{amount}§a を受け取りました。新しい残高: §e{balance}"
+
+reducemoney:
+  usage: "§c使い方: /reducemoney <プレイヤー> <金額>"
+  insufficient: "§c{player} の残高は §e{balance}§c しかありません。§e{amount}§c を引くことはできません。"
+  success: "§a§b{player}§a から §e{amount}§a を差し引きました。新しい残高: §e{balance}"
+  notify: "§c管理者によってあなたの残高から §e{amount}§c が差し引かれました。新しい残高: §e{balance}"
+
+topmoney:
+  empty: "§e経済データはまだありません。"
+  header: "§6══ 所持金ランキング §7({page}/{max}ページ) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"

@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - 한국어 언어 파일
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§e'{player}'의 데이터를 불러오는 중입니다. 잠시 기다려주세요..."
+  data-access-error: "§c'{player}'의 데이터에 접근할 수 없습니다."
+  save-failed: "§c'{player}'의 데이터 저장에 실패했습니다."
+  no-economy-data: "§c'{player}' 플레이어의 경제 데이터가 없습니다."
+  player-not-online: "§c'{player}' 플레이어가 온라인이 아닙니다."
+  only-ingame: "§c이 명령어는 게임 내에서만 사용할 수 있습니다."
+  amount-not-number: "§c금액은 숫자여야 합니다."
+  amount-positive: "§c금액은 0보다 커야 합니다."
+  amount-not-negative: "§c금액은 음수가 될 수 없습니다."
+  transaction-cancelled: "§c거래가 취소되었습니다."
+
+money:
+  usage: "§c사용법: /money <플레이어>"
+  self: "§a내 잔액: §e{balance} §7(#{rank})"
+  self-unranked: "§a내 잔액: §e{balance}"
+  other: "§a{player}의 잔액: §e{balance} §7(#{rank})"
+  other-unranked: "§a{player}의 잔액: §e{balance}"
+  error: "§c'{player}'의 데이터를 가져올 수 없습니다."
+
+pay:
+  usage: "§c사용법: /pay <플레이어> <금액>"
+  no-self: "§c자신에게 송금할 수 없습니다."
+  loading-self: "§e내 데이터를 불러오는 중입니다. 잠시 기다려주세요."
+  loading-target: "§e{player}의 데이터를 불러오는 중입니다. 잠시 기다려주세요..."
+  insufficient: "§c잔액이 부족합니다. 현재 잔액: §e{balance}"
+  cancelled: "§c송금이 취소되었습니다."
+  sent: "§a§b{player}§a에게 §e{amount}§a을(를) 보냈습니다."
+  received: "§a§b{player}§a로부터 §e{amount}§a을(를) 받았습니다."
+
+setmoney:
+  usage: "§c사용법: /setmoney <플레이어> <금액>"
+  success: "§a§b{player}§a의 잔액 설정: §e{old} §a→ §e{new}"
+  notify: "§a관리자에 의해 잔액이 §e{amount}§a(으)로 설정되었습니다."
+
+addmoney:
+  usage: "§c사용법: /addmoney <플레이어> <금액>"
+  success: "§a§b{player}§a에게 §e{amount}§a 추가. 새 잔액: §e{balance}"
+  notify: "§a관리자로부터 §e{amount}§a을(를) 받았습니다. 새 잔액: §e{balance}"
+
+reducemoney:
+  usage: "§c사용법: /reducemoney <플레이어> <금액>"
+  insufficient: "§c{player}의 잔액은 §e{balance}§c뿐입니다. §e{amount}§c을(를) 차감할 수 없습니다."
+  success: "§a§b{player}§a에서 §e{amount}§a 차감. 새 잔액: §e{balance}"
+  notify: "§c관리자에 의해 §e{amount}§c이(가) 차감되었습니다. 새 잔액: §e{balance}"
+
+topmoney:
+  empty: "§e경제 데이터가 아직 없습니다."
+  header: "§6══ 부자 순위 §7({page}/{max}페이지) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"

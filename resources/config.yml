@@ -1,0 +1,42 @@
+# ──────────────────────────────────────────────────────────
+#  SimpleEconomy - Configuration
+# ──────────────────────────────────────────────────────────
+
+# Do not change this value. Used for automatic config migration detection.
+config-version: 1
+
+# Language: "eng" (English), "vie" (Tiếng Việt), "kor" (한국어), "rus" (Русский),
+#           "spa" (Español), "ukr" (Українська), "zho" (简体中文), "ind" (Bahasa Indonesia),
+#           "tur" (Türkçe), "fra" (Français), "por" (Português), "deu" (Deutsch),
+#           "jpn" (日本語), "ita" (Italiano)
+language: "eng"
+
+# Starting balance for new players.
+default-balance: 1000
+
+# Currency settings.
+currency:
+  # Symbol displayed before amounts.
+  symbol: "$"
+  # Formatter mode: "default" ($1,000,000) or "compact" ($1.5K, $2.3M, $1B)
+  formatter: "default"
+
+# Number of entries per page in /topmoney.
+topmoney-per-page: 10
+
+# Maximum number of entries in the leaderboard cache.
+# Higher = more complete leaderboard, but uses more memory.
+leaderboard-size: 100
+
+# Database configuration (passed directly to SimpleSQL / libasynql).
+database:
+  # Database type: "sqlite" or "mysql"
+  type: sqlite
+  sqlite:
+    file: economy.sqlite
+  mysql:
+    host: 127.0.0.1
+    username: root
+    password: ""
+    schema: simple_economy
+  worker-limit: 1

@@ -1,0 +1,27 @@
+name: SimpleEconomy
+main: NhanAZ\SimpleEconomy\Main
+version: 1.0.0
+api: 5.0.0
+author: NhanAZ
+description: "A production-ready economy plugin powered by SimpleSQL - Hybrid SQL-YAML storage."
+softdepend: ScoreHud
+
+permissions:
+  simpleeconomy.command.money:
+    description: "View balances."
+    default: true
+  simpleeconomy.command.pay:
+    description: "Transfer money to another player."
+    default: true
+  simpleeconomy.command.topmoney:
+    description: "View the richest players leaderboard."
+    default: true
+  simpleeconomy.command.setmoney:
+    description: "Set a player's balance."
+    default: op
+  simpleeconomy.command.addmoney:
+    description: "Add money to a player's balance."
+    default: op
+  simpleeconomy.command.reducemoney:
+    description: "Reduce money from a player's balance."
+    default: op

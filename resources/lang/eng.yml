@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - English Language File
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§eData for '{player}' is still loading. Please wait..."
+  data-access-error: "§cCould not access data for '{player}'."
+  save-failed: "§cFailed to save data for '{player}'."
+  no-economy-data: "§cPlayer '{player}' has no economy data."
+  player-not-online: "§cPlayer '{player}' is not online."
+  only-ingame: "§cThis command can only be used in-game."
+  amount-not-number: "§cAmount must be a number."
+  amount-positive: "§cAmount must be greater than zero."
+  amount-not-negative: "§cAmount cannot be negative."
+  transaction-cancelled: "§cTransaction was cancelled."
+
+money:
+  usage: "§cUsage: /money <player>"
+  self: "§aYour balance: §e{balance} §7(#{rank})"
+  self-unranked: "§aYour balance: §e{balance}"
+  other: "§a{player}'s balance: §e{balance} §7(#{rank})"
+  other-unranked: "§a{player}'s balance: §e{balance}"
+  error: "§cCould not retrieve data for '{player}'."
+
+pay:
+  usage: "§cUsage: /pay <player> <amount>"
+  no-self: "§cYou cannot pay yourself."
+  loading-self: "§eYour data is still loading. Please wait a moment."
+  loading-target: "§e{player}'s data is still loading. Please wait..."
+  insufficient: "§cInsufficient funds. Your balance: §e{balance}"
+  cancelled: "§cPayment was cancelled."
+  sent: "§aYou sent §e{amount}§a to §b{player}§a."
+  received: "§aYou received §e{amount}§a from §b{player}§a."
+
+setmoney:
+  usage: "§cUsage: /setmoney <player> <amount>"
+  success: "§aSet §b{player}§a's balance: §e{old} §a→ §e{new}"
+  notify: "§aYour balance has been set to §e{amount}§a by an administrator."
+
+addmoney:
+  usage: "§cUsage: /addmoney <player> <amount>"
+  success: "§aAdded §e{amount}§a to §b{player}§a. New balance: §e{balance}"
+  notify: "§aYou received §e{amount}§a from an administrator. New balance: §e{balance}"
+
+reducemoney:
+  usage: "§cUsage: /reducemoney <player> <amount>"
+  insufficient: "§c{player} only has §e{balance}§c. Cannot reduce §e{amount}§c."
+  success: "§aRemoved §e{amount}§a from §b{player}§a. New balance: §e{balance}"
+  notify: "§c§e{amount}§c was removed from your balance by an administrator. New balance: §e{balance}"
+
+topmoney:
+  empty: "§eNo economy data available yet."
+  header: "§6══ Top Money §7(Page {page}/{max}) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"

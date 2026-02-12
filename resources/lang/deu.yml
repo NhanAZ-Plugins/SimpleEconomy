@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - Deutsche Sprachdatei
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§eDaten von '{player}' werden geladen. Bitte warten..."
+  data-access-error: "§cZugriff auf die Daten von '{player}' nicht möglich."
+  save-failed: "§cSpeichern der Daten von '{player}' fehlgeschlagen."
+  no-economy-data: "§cSpieler '{player}' hat keine Wirtschaftsdaten."
+  player-not-online: "§cSpieler '{player}' ist nicht online."
+  only-ingame: "§cDieser Befehl kann nur im Spiel verwendet werden."
+  amount-not-number: "§cDer Betrag muss eine Zahl sein."
+  amount-positive: "§cDer Betrag muss größer als Null sein."
+  amount-not-negative: "§cDer Betrag darf nicht negativ sein."
+  transaction-cancelled: "§cTransaktion abgebrochen."
+
+money:
+  usage: "§cVerwendung: /money <Spieler>"
+  self: "§aDein Kontostand: §e{balance} §7(#{rank})"
+  self-unranked: "§aDein Kontostand: §e{balance}"
+  other: "§aKontostand von {player}: §e{balance} §7(#{rank})"
+  other-unranked: "§aKontostand von {player}: §e{balance}"
+  error: "§cDaten von '{player}' konnten nicht abgerufen werden."
+
+pay:
+  usage: "§cVerwendung: /pay <Spieler> <Betrag>"
+  no-self: "§cDu kannst dir nicht selbst Geld senden."
+  loading-self: "§eDeine Daten werden noch geladen. Bitte warte einen Moment."
+  loading-target: "§eDaten von {player} werden geladen. Bitte warten..."
+  insufficient: "§cNicht genug Geld. Dein Kontostand: §e{balance}"
+  cancelled: "§cZahlung abgebrochen."
+  sent: "§aDu hast §e{amount}§a an §b{player}§a gesendet."
+  received: "§aDu hast §e{amount}§a von §b{player}§a erhalten."
+
+setmoney:
+  usage: "§cVerwendung: /setmoney <Spieler> <Betrag>"
+  success: "§aKontostand von §b{player}§a gesetzt: §e{old} §a→ §e{new}"
+  notify: "§aDein Kontostand wurde von einem Administrator auf §e{amount}§a gesetzt."
+
+addmoney:
+  usage: "§cVerwendung: /addmoney <Spieler> <Betrag>"
+  success: "§a§e{amount}§a zu §b{player}§a hinzugefügt. Neuer Kontostand: §e{balance}"
+  notify: "§aDu hast §e{amount}§a von einem Administrator erhalten. Neuer Kontostand: §e{balance}"
+
+reducemoney:
+  usage: "§cVerwendung: /reducemoney <Spieler> <Betrag>"
+  insufficient: "§c{player} hat nur §e{balance}§c. Kann §e{amount}§c nicht abziehen."
+  success: "§a§e{amount}§a von §b{player}§a abgezogen. Neuer Kontostand: §e{balance}"
+  notify: "§cEin Administrator hat §e{amount}§c von deinem Kontostand abgezogen. Neuer Kontostand: §e{balance}"
+
+topmoney:
+  empty: "§eNoch keine Wirtschaftsdaten vorhanden."
+  header: "§6══ Top Geld §7(Seite {page}/{max}) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"

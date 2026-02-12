@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - Fichier de langue Français
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§eLes données de '{player}' sont en cours de chargement. Veuillez patienter..."
+  data-access-error: "§cImpossible d'accéder aux données de '{player}'."
+  save-failed: "§cÉchec de la sauvegarde des données de '{player}'."
+  no-economy-data: "§cLe joueur '{player}' n'a pas de données économiques."
+  player-not-online: "§cLe joueur '{player}' n'est pas en ligne."
+  only-ingame: "§cCette commande ne peut être utilisée qu'en jeu."
+  amount-not-number: "§cLe montant doit être un nombre."
+  amount-positive: "§cLe montant doit être supérieur à zéro."
+  amount-not-negative: "§cLe montant ne peut pas être négatif."
+  transaction-cancelled: "§cTransaction annulée."
+
+money:
+  usage: "§cUtilisation : /money <joueur>"
+  self: "§aVotre solde : §e{balance} §7(#{rank})"
+  self-unranked: "§aVotre solde : §e{balance}"
+  other: "§aSolde de {player} : §e{balance} §7(#{rank})"
+  other-unranked: "§aSolde de {player} : §e{balance}"
+  error: "§cImpossible de récupérer les données de '{player}'."
+
+pay:
+  usage: "§cUtilisation : /pay <joueur> <montant>"
+  no-self: "§cVous ne pouvez pas vous payer vous-même."
+  loading-self: "§eVos données sont en cours de chargement. Veuillez patienter."
+  loading-target: "§eLes données de {player} sont en cours de chargement. Veuillez patienter..."
+  insufficient: "§cFonds insuffisants. Votre solde : §e{balance}"
+  cancelled: "§cPaiement annulé."
+  sent: "§aVous avez envoyé §e{amount}§a à §b{player}§a."
+  received: "§aVous avez reçu §e{amount}§a de §b{player}§a."
+
+setmoney:
+  usage: "§cUtilisation : /setmoney <joueur> <montant>"
+  success: "§aSolde de §b{player}§a défini : §e{old} §a→ §e{new}"
+  notify: "§aVotre solde a été défini à §e{amount}§a par un administrateur."
+
+addmoney:
+  usage: "§cUtilisation : /addmoney <joueur> <montant>"
+  success: "§aAjouté §e{amount}§a à §b{player}§a. Nouveau solde : §e{balance}"
+  notify: "§aVous avez reçu §e{amount}§a d'un administrateur. Nouveau solde : §e{balance}"
+
+reducemoney:
+  usage: "§cUtilisation : /reducemoney <joueur> <montant>"
+  insufficient: "§c{player} n'a que §e{balance}§c. Impossible de retirer §e{amount}§c."
+  success: "§aRetiré §e{amount}§a de §b{player}§a. Nouveau solde : §e{balance}"
+  notify: "§cUn administrateur a retiré §e{amount}§c de votre solde. Nouveau solde : §e{balance}"
+
+topmoney:
+  empty: "§eAucune donnée économique disponible."
+  header: "§6══ Top Argent §7(Page {page}/{max}) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"

@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - Tệp ngôn ngữ Tiếng Việt
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§eDữ liệu của '{player}' đang tải. Vui lòng chờ..."
+  data-access-error: "§cKhông thể truy cập dữ liệu của '{player}'."
+  save-failed: "§cLưu dữ liệu thất bại cho '{player}'."
+  no-economy-data: "§cNgười chơi '{player}' không có dữ liệu kinh tế."
+  player-not-online: "§cNgười chơi '{player}' không trực tuyến."
+  only-ingame: "§cLệnh này chỉ dùng được trong game."
+  amount-not-number: "§cSố tiền phải là một con số."
+  amount-positive: "§cSố tiền phải lớn hơn 0."
+  amount-not-negative: "§cSố tiền không được âm."
+  transaction-cancelled: "§cGiao dịch đã bị hủy."
+
+money:
+  usage: "§cCách dùng: /money <tên người chơi>"
+  self: "§aSố dư của bạn: §e{balance} §7(#{rank})"
+  self-unranked: "§aSố dư của bạn: §e{balance}"
+  other: "§aSố dư của {player}: §e{balance} §7(#{rank})"
+  other-unranked: "§aSố dư của {player}: §e{balance}"
+  error: "§cKhông thể lấy dữ liệu của '{player}'."
+
+pay:
+  usage: "§cCách dùng: /pay <tên người chơi> <số tiền>"
+  no-self: "§cBạn không thể chuyển tiền cho chính mình."
+  loading-self: "§eDữ liệu của bạn đang tải. Vui lòng chờ..."
+  loading-target: "§eDữ liệu của {player} đang tải. Vui lòng chờ..."
+  insufficient: "§cKhông đủ tiền. Số dư: §e{balance}"
+  cancelled: "§cGiao dịch đã bị hủy."
+  sent: "§aBạn đã gửi §e{amount}§a cho §b{player}§a."
+  received: "§aBạn nhận được §e{amount}§a từ §b{player}§a."
+
+setmoney:
+  usage: "§cCách dùng: /setmoney <tên người chơi> <số tiền>"
+  success: "§aĐặt số dư §b{player}§a: §e{old} §a→ §e{new}"
+  notify: "§aSố dư của bạn đã được đặt thành §e{amount}§a bởi quản trị viên."
+
+addmoney:
+  usage: "§cCách dùng: /addmoney <tên người chơi> <số tiền>"
+  success: "§aĐã cộng §e{amount}§a cho §b{player}§a. Số dư mới: §e{balance}"
+  notify: "§aBạn nhận được §e{amount}§a từ quản trị viên. Số dư mới: §e{balance}"
+
+reducemoney:
+  usage: "§cCách dùng: /reducemoney <tên người chơi> <số tiền>"
+  insufficient: "§c{player} chỉ có §e{balance}§c. Không thể trừ §e{amount}§c."
+  success: "§aĐã trừ §e{amount}§a từ §b{player}§a. Số dư mới: §e{balance}"
+  notify: "§c§e{amount}§c đã bị trừ khỏi số dư bởi quản trị viên. Số dư mới: §e{balance}"
+
+topmoney:
+  empty: "§eChưa có dữ liệu kinh tế nào."
+  header: "§6══ BXH Tiền §7(Trang {page}/{max}) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"

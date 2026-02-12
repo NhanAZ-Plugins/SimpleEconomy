@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────
+#  SimpleEconomy - Файл української мови
+# ──────────────────────────────────────────────
+
+general:
+  data-loading: "§eДані '{player}' завантажуються. Будь ласка, зачекайте..."
+  data-access-error: "§cНе вдалося отримати доступ до даних '{player}'."
+  save-failed: "§cНе вдалося зберегти дані '{player}'."
+  no-economy-data: "§cГравець '{player}' не має економічних даних."
+  player-not-online: "§cГравець '{player}' не в мережі."
+  only-ingame: "§cЦя команда доступна лише у грі."
+  amount-not-number: "§cСума повинна бути числом."
+  amount-positive: "§cСума повинна бути більше нуля."
+  amount-not-negative: "§cСума не може бути від'ємною."
+  transaction-cancelled: "§cТранзакцію скасовано."
+
+money:
+  usage: "§cВикористання: /money <гравець>"
+  self: "§aВаш баланс: §e{balance} §7(#{rank})"
+  self-unranked: "§aВаш баланс: §e{balance}"
+  other: "§aБаланс {player}: §e{balance} §7(#{rank})"
+  other-unranked: "§aБаланс {player}: §e{balance}"
+  error: "§cНе вдалося отримати дані '{player}'."
+
+pay:
+  usage: "§cВикористання: /pay <гравець> <сума>"
+  no-self: "§cВи не можете переказати гроші собі."
+  loading-self: "§eВаші дані завантажуються. Будь ласка, зачекайте."
+  loading-target: "§eДані {player} завантажуються. Будь ласка, зачекайте..."
+  insufficient: "§cНедостатньо коштів. Ваш баланс: §e{balance}"
+  cancelled: "§cПлатіж скасовано."
+  sent: "§aВи відправили §e{amount}§a гравцю §b{player}§a."
+  received: "§aВи отримали §e{amount}§a від §b{player}§a."
+
+setmoney:
+  usage: "§cВикористання: /setmoney <гравець> <сума>"
+  success: "§aБаланс §b{player}§a встановлено: §e{old} §a→ §e{new}"
+  notify: "§aВаш баланс встановлено на §e{amount}§a адміністратором."
+
+addmoney:
+  usage: "§cВикористання: /addmoney <гравець> <сума>"
+  success: "§aДодано §e{amount}§a гравцю §b{player}§a. Новий баланс: §e{balance}"
+  notify: "§aВи отримали §e{amount}§a від адміністратора. Новий баланс: §e{balance}"
+
+reducemoney:
+  usage: "§cВикористання: /reducemoney <гравець> <сума>"
+  insufficient: "§cУ {player} лише §e{balance}§c. Неможливо зняти §e{amount}§c."
+  success: "§aЗнято §e{amount}§a у §b{player}§a. Новий баланс: §e{balance}"
+  notify: "§cАдміністратор зняв §e{amount}§c з вашого балансу. Новий баланс: §e{balance}"
+
+topmoney:
+  empty: "§eЕкономічних даних поки немає."
+  header: "§6══ Топ балансу §7(Стор. {page}/{max}) §6══"
+  entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
+  footer: "§6══════════════════════"
