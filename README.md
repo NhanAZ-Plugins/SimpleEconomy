@@ -249,17 +249,20 @@ $count = $eco->getBalanceCacheCount();
 
 ### Multi-Economy Provider Compatibility
 
-I plan to submit PRs to major multi-economy libraries once SimpleEconomy is approved on Poggit:
+SimpleEconomy is supported by multiple multi-economy libraries. We recommend using **EcoAPI** for the best experience.
 
 | Library | Type | Config value | PR Status |
 |---|---|---|---|
-| [libPiggyEconomy](https://github.com/DaPigGuy/libPiggyEconomy) | Provider | `"simpleeconomy"` | Planned |
+| [**EcoAPI**](https://github.com/NhanAZ-Libraries/EcoAPI) | Provider | `"simpleeconomy"` | ✅ Supported |
+| [libPiggyEconomy](https://github.com/DaPigGuy/libPiggyEconomy) | Provider | `"simpleeconomy"` | ✅ Supported |
 | [MoneyConnector](https://github.com/PJZ9n/MoneyConnector) | Connector | `"simpleeconomy"` | Planned |
 | [Economizer](https://github.com/SpaceGameDev568/Economizer) | Transistor | `"SimpleEconomy"` | Planned |
 | [libEco](https://github.com/David-pm-pl/libEco) | Auto-detect | - | Planned |
 | [Capital](https://github.com/SOF3/Capital) | Migration source | `"simpleeconomy"` | Planned |
 
-Once these PRs are merged, plugins using these libraries (shop plugins, auction plugins, etc.) will automatically work with SimpleEconomy without any code changes on their end.
+> **Recommended:** [EcoAPI](https://github.com/NhanAZ-Libraries/EcoAPI) is a simple, lightweight, and unified economy API library that supports auto-detection, async operations, custom providers, and multiple economy plugins with a single clean interface. It is the recommended choice for plugin developers who want broad economy plugin compatibility.
+
+Once these libraries support SimpleEconomy, plugins using them (shop plugins, auction plugins, etc.) will automatically work with SimpleEconomy without any code changes on their end.
 
 ---
 
