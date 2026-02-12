@@ -139,6 +139,8 @@ No extra plugins or configuration needed. Just add the tags to your ScoreHud con
 
 ## For Developers
 
+> **Want a full working example?** Check out [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) - a complete plugin demonstrating how to use the SimpleEconomy API with real commands and event listeners.
+
 ### Quick Start - Using the API
 
 ```php
