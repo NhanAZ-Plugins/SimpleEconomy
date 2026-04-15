@@ -1,0 +1,12 @@
+libs:
+  - id: simplesql
+    repo: NhanAZ-Libraries/SimpleSQL
+    version: ^1.0.0
+    target: src/NhanAZ/SimpleSQL
+    src_path: src/NhanAZ/SimpleSQL
+
+  - id: libasynql
+    repo: poggit/libasynql
+    version: ^4.0.0
+    target: src/poggit/libasynql
+    src_path: libasynql/src/poggit/libasynql
