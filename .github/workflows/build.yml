@@ -47,16 +47,20 @@ jobs:
           cp -R .devtools-dependencies/libasynql/libasynql/. virions/libasynql/
           cp .devtools-dependencies/libasynql/LICENSE virions/libasynql/LICENSE
 
-      - name: Set up PocketMine PHP
-        uses: pmmp/setup-php-action@3.2.0
+      - name: Set up build PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: "8.1"
-          pm-version-major: 5
-          install-path: ./.php-bin
+          extensions: yaml
+          ini-values: phar.readonly=0
+          coverage: none
+          tools: composer:v2
 
       - name: Build standalone PHAR with DevTools
         id: build
         uses: NhanAZ/DevTools@v0.1.0
+        env:
+          COMPOSER_NO_DEV: "1"
         with:
           project: .
           virions: virions
