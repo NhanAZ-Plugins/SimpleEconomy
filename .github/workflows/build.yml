@@ -37,6 +37,14 @@ jobs:
           path: .devtools-dependencies/libasynql
           persist-credentials: false
 
+      - name: Check out PocketMine PHP setup helper
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: pmmp/setup-php-action
+          ref: 3c38c259834f945351a662392836d90eb08abff0
+          path: .devtools-dependencies/setup-php-action
+          persist-credentials: false
+
       - name: Prepare libasynql virion
         shell: bash
         run: |
@@ -47,20 +55,17 @@ jobs:
           cp -R .devtools-dependencies/libasynql/libasynql/. virions/libasynql/
           cp .devtools-dependencies/libasynql/LICENSE virions/libasynql/LICENSE
 
-      - name: Set up build PHP
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
-        with:
-          php-version: "8.1"
-          extensions: yaml
-          ini-values: phar.readonly=0
-          coverage: none
-          tools: composer:v2
+      - name: Set up PocketMine PHP with Node 24
+        shell: bash
+        env:
+          INPUT_PHP-VERSION: "8.1"
+          INPUT_PM-VERSION-MAJOR: "5"
+          INPUT_INSTALL-PATH: ./.php-bin
+        run: node .devtools-dependencies/setup-php-action/dist/index.js
 
       - name: Build standalone PHAR with DevTools
         id: build
         uses: NhanAZ/DevTools@v0.1.0
-        env:
-          COMPOSER_NO_DEV: "1"
         with:
           project: .
           virions: virions
