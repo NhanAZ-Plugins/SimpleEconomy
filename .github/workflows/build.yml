@@ -1,129 +1,77 @@
-name: Pockgin Build & Release
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+name: DevTools Build
 
 on:
   push:
-    branches: [main, master]
   pull_request:
-    branches: [main, master]
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: devtools-build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build downloadable PHAR
+    runs-on: ubuntu-24.04
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: Check out SimpleEconomy
+        uses: actions/checkout@v7.0.1
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: Check out SimpleSQL virion
+        uses: actions/checkout@v7.0.1
         with:
-          php-version: "8.2"
-          ini-values: phar.readonly=0
+          repository: NhanAZ-Libraries/SimpleSQL
+          ref: 8586047e349039e017cdc5efce7e6714a903daad
+          path: virions/SimpleSQL
+          persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      - name: Check out libasynql source
+        uses: actions/checkout@v7.0.1
         with:
-          node-version: "22"
+          repository: poggit/libasynql
+          ref: 270f8ae93e3271206eadd42ca81862ab9a54f322
+          path: .devtools-dependencies/libasynql
+          persist-credentials: false
 
-      - name: Install Pockgin CLI
+      - name: Prepare libasynql virion
+        shell: bash
         run: |
-          git clone https://github.com/pockgin/cli.git /tmp/pockgin-cli
-          cd /tmp/pockgin-cli && npm install
+          set -euo pipefail
+          git -C .devtools-dependencies/libasynql apply --check "$GITHUB_WORKSPACE/.github/patches/libasynql-devtools-compat.patch"
+          git -C .devtools-dependencies/libasynql apply "$GITHUB_WORKSPACE/.github/patches/libasynql-devtools-compat.patch"
+          mkdir -p virions/libasynql
+          cp -R .devtools-dependencies/libasynql/libasynql/. virions/libasynql/
+          cp .devtools-dependencies/libasynql/LICENSE virions/libasynql/LICENSE
 
-      - name: Validate plugin
-        run: node /tmp/pockgin-cli/bin/pockgin.js validate .
-
-      - name: Build plugin
-        run: node /tmp/pockgin-cli/bin/pockgin.js build .
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+      - name: Set up PocketMine PHP
+        uses: pmmp/setup-php-action@3.2.0
         with:
-          name: plugin-build
-          path: dist/
+          php-version: "8.1"
+          pm-version-major: 5
+          install-path: ./.php-bin
 
-  release:
-    needs: build
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: Build standalone PHAR with DevTools
+        id: build
+        uses: NhanAZ/DevTools@v0.1.0
         with:
-          fetch-depth: 0
+          project: .
+          virions: virions
+          output: build
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: "22"
-
-      - name: Install dependencies
-        run: npm install js-yaml
-
-      - name: Read version from plugin.yml
-        id: version
-        run: |
-          VERSION=$(node -e "
-            const yaml = require('js-yaml');
-            const fs = require('fs');
-            const data = yaml.load(fs.readFileSync('plugin.yml', 'utf-8'));
-            console.log(data.version);
-          ")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Check if tag already exists
-        id: check_tag
-        run: |
-          TAG="v${{ steps.version.outputs.version }}"
-          if git show-ref --tags --verify --quiet "refs/tags/$TAG" || git ls-remote --tags origin "refs/tags/$TAG" | grep -q "$TAG"; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Download build artifact
-        if: steps.check_tag.outputs.exists == 'false'
-        uses: actions/download-artifact@v4
-        with:
-          name: plugin-build
-          path: dist/
-
-      - name: Create tag and release
-        if: steps.check_tag.outputs.exists == 'false'
+      - name: Verify build output
+        shell: bash
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
+          PHAR_PATH: ${{ steps.build.outputs.phar }}
+        run: test -s "$PHAR_PATH"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          if git show-ref --tags --verify --quiet "refs/tags/$TAG" || git ls-remote --tags origin "refs/tags/$TAG" | grep -q "$TAG"; then
-            echo "Tag $TAG already exists, skipping release creation."
-            exit 0
-          fi
-
-          git tag -a "$TAG" -m "Release $TAG"
-          git push origin "$TAG"
-
-          PHAR_FILE=$(ls dist/*.phar 2>/dev/null | head -1)
-          META_FILE="dist/build-meta.json"
-
-          UPLOAD_ARGS=""
-          if [ -n "$PHAR_FILE" ]; then
-            UPLOAD_ARGS="$UPLOAD_ARGS $PHAR_FILE"
-          fi
-          if [ -f "$META_FILE" ]; then
-            UPLOAD_ARGS="$UPLOAD_ARGS $META_FILE"
-          fi
-
-          gh release create "$TAG" \
-            --title "Release $TAG" \
-            --generate-notes \
-            $UPLOAD_ARGS
+      - name: Upload PHAR from this commit
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: ${{ steps.build.outputs.plugin-name }}-${{ github.sha }}
+          path: ${{ steps.build.outputs.phar }}
+          if-no-files-found: error
+          retention-days: 14

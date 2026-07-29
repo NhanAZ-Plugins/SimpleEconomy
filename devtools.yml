@@ -1,0 +1,5 @@
+virions:
+  - name: SimpleSQL
+    version: ^1.0.0
+  - name: libasynql
+    version: ^4.0.0

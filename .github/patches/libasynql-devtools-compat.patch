@@ -1,0 +1,34 @@
+diff --git a/libasynql/src/poggit/libasynql/libasynql.php b/libasynql/src/poggit/libasynql/libasynql.php
+--- a/libasynql/src/poggit/libasynql/libasynql.php
++++ b/libasynql/src/poggit/libasynql/libasynql.php
+@@ -52,7 +52,7 @@ final class libasynql{
+ 	}
+ 
+ 	public static function detectPackaged() : void{
+-		self::$packaged = __CLASS__ !== 'poggit\libasynql\libasynql';
++		self::$packaged = true;
+ 
+ 		if(!self::$packaged && defined("pocketmine\\VERSION")){
+ 			echo Terminal::$COLOR_YELLOW . "Warning: Use of unshaded libasynql detected. Debug mode is enabled. This may lead to major performance drop. Please use a shaded package in production. See https://poggit.pmmp.io/virion for more information.\n";
+diff --git a/libasynql/src/poggit/libasynql/generic/GenericStatementImpl.php b/libasynql/src/poggit/libasynql/generic/GenericStatementImpl.php
+index eebc64d..9511e25 100644
+--- a/libasynql/src/poggit/libasynql/generic/GenericStatementImpl.php
++++ b/libasynql/src/poggit/libasynql/generic/GenericStatementImpl.php
+@@ -96,12 +96,11 @@ abstract class GenericStatementImpl implements GenericStatement{
+ 	 * @return GenericStatementImpl
+ 	 */
+ 	public static function forDialect(string $dialect, string $name, array $query, string $doc, array $variables, ?string $file, int $lineNo) : GenericStatementImpl{
+-		static $classMap = [
+-			SqlDialect::MYSQL => MysqlStatementImpl::class,
+-			SqlDialect::SQLITE => SqliteStatementImpl::class,
+-		];
+-		$className = $classMap[$dialect];
+-		return new $className($name, $query, $doc, $variables, $file, $lineNo);
++		return match($dialect){
++			SqlDialect::MYSQL => new MysqlStatementImpl($name, $query, $doc, $variables, $file, $lineNo),
++			SqlDialect::SQLITE => new SqliteStatementImpl($name, $query, $doc, $variables, $file, $lineNo),
++			default => throw new \InvalidArgumentException("Unknown SQL dialect: " . $dialect),
++		};
+ 	}
+ 
+ 	public function __construct(string $name, array $query, string $doc, array $variables, ?string $file, int $lineNo){

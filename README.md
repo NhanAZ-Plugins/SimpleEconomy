@@ -45,16 +45,27 @@ I know [BedrockEconomy](https://github.com/cooldogepm/BedrockEconomy) exists, an
 
 ## Installation
 
-### From Poggit (recommended)
+### From GitHub Actions (recommended)
 
-Download the latest `.phar` from [Poggit CI](https://poggit.pmmp.io/ci/NhanAZ-Plugins/SimpleEconomy/SimpleEconomy).
+Every commit is built as a standalone `.phar` by [DevTools](https://github.com/NhanAZ/DevTools). Open the repository's [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml), choose a successful `DevTools Build` run, then download the `SimpleEconomy-<commit SHA>` artifact.
 
-Drop it in your server's `plugins/` folder. Done.
+Extract `SimpleEconomy.phar` from the artifact and place it in your server's `plugins/` folder. The PHAR already contains the required virions.
+
+The workflow uploads an artifact for 14 days. It does not create a tag or GitHub Release for every commit.
+
+### From Poggit
+
+Poggit builds remain available from [Poggit CI](https://poggit.pmmp.io/ci/NhanAZ-Plugins/SimpleEconomy/SimpleEconomy) as an alternative.
 
 ### From source
 
 1. Clone this repository
-2. The plugin requires the **SimpleSQL** and **libasynql** virions to be injected (handled automatically by Poggit CI)
+2. Put the **SimpleSQL** and **libasynql** source packages directly inside `virions/`
+3. Run the [DevTools GitHub Action](https://github.com/NhanAZ/DevTools/blob/v0.1.0/docs/github-actions.md), or use DevTools locally to build the project root
+
+The exact CI dependency revisions are pinned in `.github/workflows/build.yml`, while `devtools.yml` declares the compatible virion versions.
+
+The pinned libasynql source needs the narrow compatibility patch in `.github/patches/` before DevTools can safely shade it. The workflow checks that the patch still matches the pinned revision and fails instead of applying it ambiguously.
 
 ---
 
@@ -270,6 +281,8 @@ Once these libraries support SimpleEconomy, plugins using them (shop plugins, au
 
 ```
 SimpleEconomy/
+├── .github/workflows/build.yml # Per-commit DevTools build
+├── devtools.yml                # Required release virions
 ├── plugin.yml
 ├── LICENSE
 ├── resources/
@@ -311,6 +324,7 @@ SimpleEconomy/
 
 ## Credits
 
+- **[DevTools](https://github.com/NhanAZ/DevTools)** - standalone PHAR builder and virion shader used by this repository's workflow
 - **[SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL)** - the hybrid SQL-YAML engine that powers this plugin
 - **[libasynql](https://github.com/poggit/libasynql)** - async SQL library for PocketMine-MP
 - **[ScoreHud](https://github.com/Flavionsky/ScoreHud)** - scoreboard addon (optional integration)

@@ -3,9 +3,13 @@
 .vscode/
 *.iml
 
-# Poggit
+# Builds and checked-out virions
 /vendor/
 *.phar
+/build/
+/virions/
+/.devtools-dependencies/
+/dist/
 
 # OS
 .DS_Store
