@@ -13,21 +13,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  phpstan:
-    name: PHPStan 4 - ${{ matrix.name }}
+  build:
+    name: Analyze and build downloadable PHAR
     runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: Altay
-            id: altay
-            repository: altayofficial/Altay
-            ref: 136148ab4a1b4dbf08a6957304032ff167b6eb7b
-          - name: Axolotl
-            id: axolotl
-            repository: axolotl-pm/PocketMine-MP
-            ref: 4ba623060d18e894b6d7e6734ed1e45eaa35566b
 
     steps:
       - name: Check out SimpleEconomy
@@ -57,12 +45,20 @@ jobs:
           path: .devtools-dependencies/ScoreHud
           persist-credentials: false
 
-      - name: Check out ${{ matrix.name }} server source
+      - name: Check out Altay server source
         uses: actions/checkout@v7.0.1
         with:
-          repository: ${{ matrix.repository }}
-          ref: ${{ matrix.ref }}
-          path: .devtools-server
+          repository: altayofficial/Altay
+          ref: 136148ab4a1b4dbf08a6957304032ff167b6eb7b
+          path: .devtools-servers/altay
+          persist-credentials: false
+
+      - name: Check out Axolotl server source
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: axolotl-pm/PocketMine-MP
+          ref: 4ba623060d18e894b6d7e6734ed1e45eaa35566b
+          path: .devtools-servers/axolotl
           persist-credentials: false
 
       - name: Check out PocketMine PHP setup helper
@@ -91,81 +87,18 @@ jobs:
           INPUT_INSTALL-PATH: ./.php-bin
         run: node .devtools-dependencies/setup-php-action/dist/index.js
 
-      - name: Analyze against ${{ matrix.name }} and verify PHAR build
-        id: phpstan-build
-        uses: NhanAZ/DevTools@v0.1.0
-        with:
-          project: .
-          virions: virions
-          output: build/phpstan-${{ matrix.id }}
-          phpstan: "4"
-          phpstan-server: .devtools-server
-          phpstan-paths: .devtools-dependencies/ScoreHud/src
-
-      - name: Verify matrix build output
-        shell: bash
-        env:
-          PHAR_PATH: ${{ steps.phpstan-build.outputs.phar }}
-        run: test -s "$PHAR_PATH"
-
-  build:
-    name: Build downloadable PHAR
-    needs: phpstan
-    runs-on: ubuntu-24.04
-
-    steps:
-      - name: Check out SimpleEconomy
-        uses: actions/checkout@v7.0.1
-
-      - name: Check out SimpleSQL virion
-        uses: actions/checkout@v7.0.1
-        with:
-          repository: NhanAZ-Libraries/SimpleSQL
-          ref: 8586047e349039e017cdc5efce7e6714a903daad
-          path: virions/SimpleSQL
-          persist-credentials: false
-
-      - name: Check out libasynql source
-        uses: actions/checkout@v7.0.1
-        with:
-          repository: poggit/libasynql
-          ref: 270f8ae93e3271206eadd42ca81862ab9a54f322
-          path: .devtools-dependencies/libasynql
-          persist-credentials: false
-
-      - name: Check out PocketMine PHP setup helper
-        uses: actions/checkout@v7.0.1
-        with:
-          repository: pmmp/setup-php-action
-          ref: 3c38c259834f945351a662392836d90eb08abff0
-          path: .devtools-dependencies/setup-php-action
-          persist-credentials: false
-
-      - name: Prepare libasynql virion
-        shell: bash
-        run: |
-          set -euo pipefail
-          git -C .devtools-dependencies/libasynql apply --check "$GITHUB_WORKSPACE/.github/patches/libasynql-devtools-compat.patch"
-          git -C .devtools-dependencies/libasynql apply "$GITHUB_WORKSPACE/.github/patches/libasynql-devtools-compat.patch"
-          mkdir -p virions/libasynql
-          cp -R .devtools-dependencies/libasynql/libasynql/. virions/libasynql/
-          cp .devtools-dependencies/libasynql/LICENSE virions/libasynql/LICENSE
-
-      - name: Set up PocketMine PHP with Node 24
-        shell: bash
-        env:
-          INPUT_PHP-VERSION: "8.1"
-          INPUT_PM-VERSION-MAJOR: "5"
-          INPUT_INSTALL-PATH: ./.php-bin
-        run: node .devtools-dependencies/setup-php-action/dist/index.js
-
-      - name: Build standalone PHAR with DevTools
+      - name: Analyze supported servers and build PHAR
         id: build
         uses: NhanAZ/DevTools@v0.1.0
         with:
           project: .
           virions: virions
           output: build
+          phpstan: "4"
+          phpstan-server: |
+            .devtools-servers/altay
+            .devtools-servers/axolotl
+          phpstan-paths: .devtools-dependencies/ScoreHud/src
 
       - name: Verify build output
         shell: bash

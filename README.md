@@ -49,7 +49,7 @@ I know [BedrockEconomy](https://github.com/cooldogepm/BedrockEconomy) exists, an
 
 Every commit is built as a standalone `.phar` by [DevTools](https://github.com/NhanAZ/DevTools). Open the repository's [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml), choose a successful `DevTools Build` run, then download the `SimpleEconomy-<commit SHA>` artifact.
 
-Before the downloadable PHAR is built, PHPStan level `4` runs independently against pinned Altay and Axolotl server sources. ScoreHud, SimpleSQL, and libasynql source are included for symbol discovery. The final build job starts only after the complete server matrix passes, so the workflow still uploads exactly one plugin artifact.
+The same job runs PHPStan level `4` independently against pinned Altay and Axolotl server sources. ScoreHud, SimpleSQL, and libasynql source are included for symbol discovery. DevTools builds and uploads exactly one plugin artifact only after both analyses pass.
 
 Extract `SimpleEconomy.phar` from the artifact and place it in your server's `plugins/` folder. The PHAR already contains the required virions.
 

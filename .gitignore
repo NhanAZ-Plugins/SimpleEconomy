@@ -9,7 +9,7 @@
 /build/
 /virions/
 /.devtools-dependencies/
-/.devtools-server/
+/.devtools-servers/
 /dist/
 
 # OS
