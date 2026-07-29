@@ -53,10 +53,6 @@ Extract `SimpleEconomy.phar` from the artifact and place it in your server's `pl
 
 The workflow uploads an artifact for 14 days. It does not create a tag or GitHub Release for every commit.
 
-### From Poggit
-
-Poggit builds remain available from [Poggit CI](https://poggit.pmmp.io/ci/NhanAZ-Plugins/SimpleEconomy/SimpleEconomy) as an alternative.
-
 ### From source
 
 1. Clone this repository

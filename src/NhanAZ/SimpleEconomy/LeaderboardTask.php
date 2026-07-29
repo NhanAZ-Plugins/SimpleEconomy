@@ -9,7 +9,7 @@ use pocketmine\scheduler\AsyncTask;
 /**
  * Asynchronous task that scans YAML mirror files to rebuild the leaderboard cache.
  *
- * Runs on an async worker thread to avoid blocking the main thread (Poggit Rule S3).
+ * Runs on an async worker thread to avoid blocking the main thread.
  * Only the top N entries (by balance) are kept to bound memory usage.
  */
 class LeaderboardTask extends AsyncTask {
