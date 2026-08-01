@@ -47,7 +47,7 @@ I know [BedrockEconomy](https://github.com/cooldogepm/BedrockEconomy) exists, an
 
 ### From GitHub Actions (recommended)
 
-Every commit is built as a standalone `.phar` by [DevTools](https://github.com/NhanAZ/DevTools). Open the repository's [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml), choose a successful `DevTools Build` run, then download the `SimpleEconomy-<commit SHA>` artifact.
+Every commit is built as a standalone `.phar` by [DevTools](https://github.com/NhanAZ-Plugins/DevTools). Open the repository's [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml), choose a successful `DevTools Build` run, then download the `SimpleEconomy-<commit SHA>` artifact.
 
 The same job runs PHPStan level `4` independently against pinned Altay and Axolotl server sources. ScoreHud, SimpleSQL, and libasynql source are included for symbol discovery. DevTools builds and uploads exactly one plugin artifact only after both analyses pass.
 
@@ -59,7 +59,7 @@ The workflow uploads an artifact for 14 days. It does not create a tag or GitHub
 
 1. Clone this repository
 2. Put the **SimpleSQL** and **libasynql** source packages directly inside `virions/`
-3. Run the [DevTools GitHub Action](https://github.com/NhanAZ/DevTools/blob/v0.1.0/docs/github-actions.md), or use DevTools locally to build the project root
+3. Run the [DevTools GitHub Action](https://github.com/NhanAZ-Plugins/DevTools/blob/v0.1.0/docs/github-actions.md), or use DevTools locally to build the project root
 
 The exact CI dependency revisions are pinned in `.github/workflows/build.yml`, while `devtools.yml` declares the compatible virion versions.
 
@@ -322,7 +322,7 @@ SimpleEconomy/
 
 ## Credits
 
-- **[DevTools](https://github.com/NhanAZ/DevTools)** - standalone PHAR builder and virion shader used by this repository's workflow
+- **[DevTools](https://github.com/NhanAZ-Plugins/DevTools)** - standalone PHAR builder and virion shader used by this repository's workflow
 - **[SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL)** - the hybrid SQL-YAML engine that powers this plugin
 - **[libasynql](https://github.com/poggit/libasynql)** - async SQL library for PocketMine-MP
 - **[ScoreHud](https://github.com/Flavionsky/ScoreHud)** - scoreboard addon (optional integration)
