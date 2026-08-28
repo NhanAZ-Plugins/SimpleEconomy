@@ -89,7 +89,7 @@ jobs:
 
       - name: Analyze supported servers and build PHAR
         id: build
-        uses: NhanAZ-Plugins/DevTools@v0.1.0
+        uses: NhanAZ/DevTools@v0.1.0
         with:
           project: .
           virions: virions
