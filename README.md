@@ -59,7 +59,7 @@ The workflow uploads an artifact for 14 days. It does not create a tag or GitHub
 
 1. Clone this repository
 2. Put the **SimpleSQL** and **libasynql** source packages directly inside `virions/`
-3. Run the [DevTools GitHub Action](https://github.com/NhanAZ/DevTools/blob/v0.1.0/docs/github-actions.md), or use DevTools locally to build the project root
+3. Run the [DevTools GitHub Action](https://github.com/NhanAZ/DevTools/blob/v1.0.0/docs/github-actions.md), or use DevTools locally to build the project root
 
 The exact CI dependency revisions are pinned in `.github/workflows/build.yml`, while `devtools.yml` declares the compatible virion versions.
 
