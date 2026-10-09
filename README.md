@@ -59,13 +59,13 @@ The workflow uploads an artifact for 14 days. It does not create a tag or GitHub
 
 1. Clone this repository
 2. Put the **SimpleSQL** and **libasynql** source packages directly inside `virions/`
-3. Run the [DevTools v2.0.0 action](https://github.com/NhanAZ/DevTools/blob/v2.0.0/docs/github-actions.md), or use the same DevTools revision locally to build the project root
+3. Run the [DevTools v1.0.0 action](https://github.com/NhanAZ/DevTools/blob/v1.0.0/docs/github-actions.md), or use the same DevTools revision locally to build the project root
 
 The exact CI dependency revisions are pinned in `.github/workflows/build.yml`, while `devtools.yml` declares the compatible virion versions.
 
 The pinned libasynql source needs the narrow compatibility patch in `.github/patches/` before DevTools can safely shade it. The workflow checks that the patch still matches the pinned revision and fails instead of applying it ambiguously.
 
-This workflow uses official DevTools release `v2.0.0` (source `37ed21d38b06f8a5778a9d8b201b2362b6a2a5f2`). The download includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up your data before replacing it; rollback replaces only the plugin PHAR, not the database or player data. A successful build/PHPStan run is not a gameplay or live SQL test.
+This workflow uses official DevTools release `v1.0.0` (source `a74a784b257a2215007d131492319922bf71bd7b`). The download includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up your data before replacing it; rollback replaces only the plugin PHAR, not the database or player data. A successful build/PHPStan run is not a gameplay or live SQL test.
 
 ---
 
@@ -328,3 +328,5 @@ SimpleEconomy/
 - **[SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL)** - the hybrid SQL-YAML engine that powers this plugin
 - **[libasynql](https://github.com/poggit/libasynql)** - async SQL library for PocketMine-MP
 - **[ScoreHud](https://github.com/Flavionsky/ScoreHud)** - scoreboard addon (optional integration)
+
+DevTools officially launches on 2026-10-10 as a consolidated, signed `v1.0.0`. Refresh cached prelaunch tags/checkouts and old SHA pins. Earlier downloaded PHARs remain their original bytes; keep a local working copy for rollback. The launch [rollout guide](https://github.com/NhanAZ/DevTools/blob/v1.0.0/docs/org-rollout.md) explains the new source identity.

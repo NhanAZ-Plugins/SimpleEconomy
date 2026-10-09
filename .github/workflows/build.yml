@@ -81,7 +81,7 @@ jobs:
 
       - name: Analyze Axolotl server and build PHAR
         id: build
-        uses: NhanAZ/DevTools@v2.0.0
+        uses: NhanAZ/DevTools@v1.0.0
         with:
           project: .
           virions: virions
