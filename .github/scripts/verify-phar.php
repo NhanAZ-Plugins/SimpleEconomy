@@ -15,7 +15,14 @@ try {
     $phar = new Phar($path);
     $root = dirname(__DIR__, 2);
     $assertBytes = static function (string $archivePath, string $sourcePath) use ($phar): void {
-        if (!isset($phar[$archivePath]) || $phar[$archivePath]->getContent() !== file_get_contents($sourcePath)) {
+        $source = file_get_contents($sourcePath);
+        $actual = isset($phar[$archivePath]) ? $phar[$archivePath]->getContent() : null;
+        $text = basename($archivePath) === 'LICENSE' || in_array(strtolower(pathinfo($archivePath, PATHINFO_EXTENSION)), ['yml', 'yaml', 'sql'], true);
+        if ($text && $actual !== null) {
+            $source = str_replace("\r\n", "\n", $source);
+            $actual = str_replace("\r\n", "\n", $actual);
+        }
+        if ($actual !== $source) {
             throw new RuntimeException("Missing or changed artifact content: {$archivePath}");
         }
     };
