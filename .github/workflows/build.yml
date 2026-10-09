@@ -45,7 +45,7 @@ jobs:
           path: .devtools-dependencies/ScoreHud
           persist-credentials: false
 
-      - name: Check out Axolotl server source
+      - name: Check out Axolotl-PM server source
         uses: actions/checkout@v7.0.1
         with:
           repository: axolotl-pm/PocketMine-MP
@@ -53,7 +53,7 @@ jobs:
           path: .devtools-servers/axolotl
           persist-credentials: false
 
-      - name: Check out Axolotl PHP setup helper
+      - name: Check out Axolotl-PM PHP setup helper
         uses: actions/checkout@v7.0.1
         with:
           repository: axolotl-pm/setup-php-action
@@ -71,7 +71,7 @@ jobs:
           cp -R .devtools-dependencies/libasynql/libasynql/. virions/libasynql/
           cp .devtools-dependencies/libasynql/LICENSE virions/libasynql/LICENSE
 
-      - name: Set up Axolotl PHP with Node 24
+      - name: Set up Axolotl-PM PHP with Node 24
         shell: bash
         env:
           INPUT_PHP-VERSION: "8.1"
@@ -79,7 +79,7 @@ jobs:
           INPUT_INSTALL-PATH: ./.php-bin
         run: node .devtools-dependencies/setup-php-action/dist/index.js
 
-      - name: Analyze Axolotl server and build PHAR
+      - name: Analyze Axolotl-PM server and build PHAR
         id: build
         uses: NhanAZ/DevTools@v1.0.0
         with:
