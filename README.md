@@ -59,13 +59,13 @@ The workflow uploads an artifact for 14 days. It does not create a tag or GitHub
 
 1. Clone this repository
 2. Put the **SimpleSQL** and **libasynql** source packages directly inside `virions/`
-3. Run the [pinned DevTools candidate action](https://github.com/NhanAZ/DevTools/blob/b79fba11584ac0f61145b2fbac42420072c131b0/docs/github-actions.md), or use the same DevTools revision locally to build the project root
+3. Run the [DevTools v2.0.0 action](https://github.com/NhanAZ/DevTools/blob/v2.0.0/docs/github-actions.md), or use the same DevTools revision locally to build the project root
 
 The exact CI dependency revisions are pinned in `.github/workflows/build.yml`, while `devtools.yml` declares the compatible virion versions.
 
 The pinned libasynql source needs the narrow compatibility patch in `.github/patches/` before DevTools can safely shade it. The workflow checks that the patch still matches the pinned revision and fails instead of applying it ambiguously.
 
-This workflow currently tests DevTools candidate `b79fba11584ac0f61145b2fbac42420072c131b0`; it is not a new official release. The download includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up your data before replacing it; rollback replaces only the plugin PHAR, not the database or player data. A successful build/PHPStan run is not a gameplay or live SQL test.
+This workflow uses official DevTools release `v2.0.0` (source `37ed21d38b06f8a5778a9d8b201b2362b6a2a5f2`). The download includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up your data before replacing it; rollback replaces only the plugin PHAR, not the database or player data. A successful build/PHPStan run is not a gameplay or live SQL test.
 
 ---
 
