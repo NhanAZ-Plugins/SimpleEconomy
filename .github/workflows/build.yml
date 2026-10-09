@@ -81,7 +81,7 @@ jobs:
 
       - name: Analyze Axolotl server and build PHAR
         id: build
-        uses: NhanAZ/DevTools@v1.0.0
+        uses: NhanAZ/DevTools@324e08681d7503afef223e4f82cc5d5fdef65dda
         with:
           project: .
           virions: virions
@@ -94,12 +94,18 @@ jobs:
         shell: bash
         env:
           PHAR_PATH: ${{ steps.build.outputs.phar }}
-        run: test -s "$PHAR_PATH"
+          BUILD_METADATA: ${{ steps.build.outputs.metadata }}
+        run: |
+          set -euo pipefail
+          php .github/scripts/verify-phar.php "$PHAR_PATH" "$BUILD_METADATA"
+          cp "$BUILD_METADATA" build/build-metadata.json
 
       - name: Upload PHAR from this commit
         uses: actions/upload-artifact@v7.0.1
         with:
           name: ${{ steps.build.outputs.plugin-name }}-${{ github.sha }}
-          path: ${{ steps.build.outputs.phar }}
+          path: |
+            ${{ steps.build.outputs.phar }}
+            build/build-metadata.json
           if-no-files-found: error
           retention-days: 14

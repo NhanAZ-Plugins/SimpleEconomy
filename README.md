@@ -49,7 +49,7 @@ I know [BedrockEconomy](https://github.com/cooldogepm/BedrockEconomy) exists, an
 
 Every commit is built as a standalone `.phar` by [DevTools](https://github.com/NhanAZ/DevTools). Open the repository's [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml), choose a successful `DevTools Build` run, then download the `SimpleEconomy-<commit SHA>` artifact.
 
-The same job runs PHPStan level `4` independently against pinned Altay and Axolotl server sources. ScoreHud, SimpleSQL, and libasynql source are included for symbol discovery. DevTools builds and uploads exactly one plugin artifact only after both analyses pass.
+The same job runs PHPStan level `4` against the pinned Axolotl server source. ScoreHud, SimpleSQL, and libasynql source are included for symbol discovery. The existing analysis gate remains required. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes, and both dependency licenses before upload.
 
 Extract `SimpleEconomy.phar` from the artifact and place it in your server's `plugins/` folder. The PHAR already contains the required virions.
 
@@ -59,11 +59,13 @@ The workflow uploads an artifact for 14 days. It does not create a tag or GitHub
 
 1. Clone this repository
 2. Put the **SimpleSQL** and **libasynql** source packages directly inside `virions/`
-3. Run the [DevTools GitHub Action](https://github.com/NhanAZ/DevTools/blob/v1.0.0/docs/github-actions.md), or use DevTools locally to build the project root
+3. Run the [pinned DevTools candidate action](https://github.com/NhanAZ/DevTools/blob/324e08681d7503afef223e4f82cc5d5fdef65dda/docs/github-actions.md), or use the same DevTools revision locally to build the project root
 
 The exact CI dependency revisions are pinned in `.github/workflows/build.yml`, while `devtools.yml` declares the compatible virion versions.
 
 The pinned libasynql source needs the narrow compatibility patch in `.github/patches/` before DevTools can safely shade it. The workflow checks that the patch still matches the pinned revision and fails instead of applying it ambiguously.
+
+This workflow currently tests DevTools candidate `324e08681d7503afef223e4f82cc5d5fdef65dda`; it is not a new official release. The download includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up your data before replacing it; rollback replaces only the plugin PHAR, not the database or player data. A successful build/PHPStan run is not a gameplay or live SQL test.
 
 ---
 
