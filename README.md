@@ -3,7 +3,7 @@
 A hybrid SQL and YAML economy plugin for [Axolotl-PM](https://github.com/axolotl-pm/PocketMine-MP), powered by [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL).
 
 > [!WARNING]
-> SimpleEconomy is still being updated for the current SimpleSQL release. The source has unresolved PHPStan level max findings and transaction persistence checks. Do not treat a downloadable CI artifact as a verified production release.
+> SimpleEconomy passes the build workflow's PHPStan maximum-level check and isolated offline SQLite/YAML smoke test. The `/pay` path still lacks an atomic two-account transaction and failure tests. Do not treat a downloadable CI artifact as a verified production release.
 
 ---
 
@@ -35,7 +35,7 @@ The [build workflow](.github/workflows/build.yml) uses [DevTools](https://github
 
 The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revision and result of each run.
 
-After the static and runtime gates are complete, extract `SimpleEconomy.phar` from a verified artifact and place it in your server's `plugins/` folder. The PHAR contains the required virions.
+For isolated evaluation, extract `SimpleEconomy.phar` from a verified artifact and place it in your test server's `plugins/` folder. The PHAR contains the required virions.
 
 The workflow uploads an artifact for 14 days. It does not create a tag or GitHub Release for every commit.
 
