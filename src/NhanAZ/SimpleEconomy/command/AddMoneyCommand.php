@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NhanAZ\SimpleEconomy\command;
 
+use NhanAZ\SimpleEconomy\BalanceReader;
 use NhanAZ\SimpleEconomy\event\TransactionEvent;
 use NhanAZ\SimpleEconomy\event\TransactionSubmitEvent;
 use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
@@ -52,7 +53,7 @@ class AddMoneyCommand extends Command implements PluginOwned {
 		$this->plugin->withPlayerSession(
 			$targetName,
 			onSession: function (Session $session, bool $temporary) use ($sender, $targetName, $amount, $lang): void {
-				$oldBalance = (int) $session->get("balance", 0);
+				$oldBalance = BalanceReader::read($session);
 				$newBalance = $oldBalance + $amount;
 
 				// Fire pre-transaction event

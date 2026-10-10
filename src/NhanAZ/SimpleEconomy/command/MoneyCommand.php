@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NhanAZ\SimpleEconomy\command;
 
+use NhanAZ\SimpleEconomy\BalanceReader;
 use NhanAZ\SimpleEconomy\Main;
 use NhanAZ\SimpleSQL\Session;
 use pocketmine\command\Command;
@@ -43,7 +44,7 @@ class MoneyCommand extends Command implements PluginOwned {
 					if (!$session->has("balance")) {
 						$sender->sendMessage($lang->get("general.no-economy-data", ["player" => $input]));
 					} else {
-						$balance = (int) $session->get("balance", 0);
+						$balance = BalanceReader::read($session);
 						$rank = $this->plugin->getPlayerRank($input);
 						$formatted = $this->plugin->formatMoney($balance);
 

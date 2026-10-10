@@ -179,8 +179,12 @@ class Main extends PluginBase implements Listener {
 				$session->save();
 			}
 
-			$balance = (int) $session->get("balance", 0);
-			$this->updateBalanceCache($name, $balance);
+			try {
+				$this->updateBalanceCache($name, BalanceReader::read($session));
+			} catch (InvalidBalanceException $e) {
+				$this->getLogger()->error($e->getMessage());
+				$this->simpleSQL->closeSession($name);
+			}
 		});
 	}
 
@@ -202,7 +206,7 @@ class Main extends PluginBase implements Listener {
 		if ($session === null) {
 			return null;
 		}
-		return (int) $session->get("balance", 0);
+		return BalanceReader::read($session);
 	}
 
 	/**
@@ -216,7 +220,7 @@ class Main extends PluginBase implements Listener {
 			return false;
 		}
 
-		$oldBalance = (int) $session->get("balance", 0);
+		$oldBalance = BalanceReader::read($session);
 
 		// Fire pre-transaction event
 		$submitEvent = new TransactionSubmitEvent($name, $oldBalance, $amount, TransactionEvent::TYPE_SET);
@@ -246,7 +250,7 @@ class Main extends PluginBase implements Listener {
 			return false;
 		}
 
-		$oldBalance = (int) $session->get("balance", 0);
+		$oldBalance = BalanceReader::read($session);
 		$newBalance = $oldBalance + $amount;
 
 		$submitEvent = new TransactionSubmitEvent($name, $oldBalance, $newBalance, TransactionEvent::TYPE_ADD);
@@ -275,7 +279,7 @@ class Main extends PluginBase implements Listener {
 			return false;
 		}
 
-		$oldBalance = (int) $session->get("balance", 0);
+		$oldBalance = BalanceReader::read($session);
 		if ($oldBalance < $amount) {
 			return false;
 		}
@@ -312,7 +316,7 @@ class Main extends PluginBase implements Listener {
 		// Online - instant
 		if ($this->simpleSQL->hasSession($lower)) {
 			$session = $this->simpleSQL->getSession($lower);
-			$callback($session !== null ? (int) $session->get("balance", 0) : null);
+			$callback($session !== null ? BalanceReader::read($session) : null);
 			return;
 		}
 
@@ -324,9 +328,11 @@ class Main extends PluginBase implements Listener {
 
 		// Offline - open temporary session
 		$this->simpleSQL->openSession($lower, function (Session $session) use ($lower, $callback): void {
-			$balance = $session->has("balance") ? (int) $session->get("balance", 0) : null;
-			$callback($balance);
-			$this->simpleSQL->closeSession($lower);
+			try {
+				$callback($session->has("balance") ? BalanceReader::read($session) : null);
+			} finally {
+				$this->simpleSQL->closeSession($lower);
+			}
 		});
 	}
 
@@ -359,7 +365,12 @@ class Main extends PluginBase implements Listener {
 		if ($this->simpleSQL->hasSession($lower)) {
 			$session = $this->simpleSQL->getSession($lower);
 			if ($session !== null) {
-				$onSession($session, false);
+				try {
+					$onSession($session, false);
+				} catch (InvalidBalanceException $e) {
+					$this->getLogger()->error($e->getMessage());
+					$onError($this->lang->get("general.data-access-error", ["player" => $name]));
+				}
 			} else {
 				$onError($this->lang->get("general.data-access-error", ["player" => $name]));
 			}
@@ -373,8 +384,14 @@ class Main extends PluginBase implements Listener {
 		}
 
 		// Offline - open temporary session
-		$this->simpleSQL->openSession($lower, function (Session $session) use ($onSession): void {
-			$onSession($session, true);
+		$this->simpleSQL->openSession($lower, function (Session $session) use ($onSession, $onError, $lower, $name): void {
+			try {
+				$onSession($session, true);
+			} catch (InvalidBalanceException $e) {
+				$this->getLogger()->error($e->getMessage());
+				$this->simpleSQL->closeSession($lower);
+				$onError($this->lang->get("general.data-access-error", ["player" => $name]));
+			}
 		});
 	}
 

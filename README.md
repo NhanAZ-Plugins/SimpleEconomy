@@ -145,6 +145,9 @@ use NhanAZ\SimpleEconomy\Main as SimpleEconomy;
 
 // Get the plugin instance
 $eco = SimpleEconomy::getInstance();
+if ($eco === null) {
+    return;
+}
 
 // Check balance (online players)
 $balance = $eco->getMoney("Steve");  // ?int - null if offline
@@ -158,7 +161,7 @@ $eco->reduceMoney("Steve", 200);  // bool - false if insufficient funds
 $display = $eco->formatMoney(1500000);  // "$1,500,000" or "$1.5M"
 ```
 
-That's the entire sync API. **4 methods.**
+These are the core synchronous balance methods. An invalid stored balance raises `InvalidBalanceException` instead of being converted to another amount. Handle that exception before taking follow-up actions or changing player data.
 
 ### Async API - Offline Players
 
@@ -191,7 +194,7 @@ public function onTransaction(TransactionSubmitEvent $event): void {
 }
 ```
 
-**`TransactionSuccessEvent`** - fired *after* a transaction completes. Read-only.
+**`TransactionSuccessEvent`** - fired after an in-memory balance change. It does not prove that an asynchronous SQL save succeeded. Read-only.
 
 ```php
 use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
@@ -216,8 +219,11 @@ public function onSuccess(TransactionSuccessEvent $event): void {
 For commands or features that need to work on offline players:
 
 ```php
+use NhanAZ\SimpleEconomy\BalanceReader;
+use NhanAZ\SimpleSQL\Session;
+
 $eco->withPlayerSession("Steve", function(Session $session, bool $temporary) use ($eco): void {
-    $balance = (int) $session->get("balance", 0);
+    $balance = BalanceReader::read($session);
 
     // Do something with the balance...
 
@@ -226,7 +232,7 @@ $eco->withPlayerSession("Steve", function(Session $session, bool $temporary) use
         $eco->closeTempSession("Steve");
     }
 }, function(string $error): void {
-    // Handle error (e.g., data still loading)
+    // Handle a loading or invalid-data error
 });
 ```
 
