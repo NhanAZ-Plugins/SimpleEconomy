@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: NhanAZ-Libraries/SimpleSQL
-          ref: 1dba602e54ec6975da9fae1a68824ea061f2f489 # SimpleSQL v1.0.1
+          ref: 2eb6621d03f0a30a522b6706cf3f85b11c40fb85 # SimpleSQL v1.1.0 candidate
           path: virions/SimpleSQL
           persist-credentials: false
 
@@ -78,6 +78,13 @@ jobs:
           mkdir -p virions/libasynql
           cp -R .devtools-dependencies/libasynql/libasynql/. virions/libasynql/
           cp .devtools-dependencies/libasynql/LICENSE virions/libasynql/LICENSE
+
+      - name: Verify SimpleSQL SQL resources match the pinned source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmp resources/simplesql/mysql.sql virions/SimpleSQL/resources/simplesql/mysql.sql
+          cmp resources/simplesql/sqlite.sql virions/SimpleSQL/resources/simplesql/sqlite.sql
 
       - name: Set up Axolotl-PM PHP with Node 24
         shell: bash
@@ -134,6 +141,9 @@ jobs:
           set -euo pipefail
           test "$(sha256sum "$EXAMPLE_PHAR" | cut -d ' ' -f 1)" = "$EXAMPLE_SHA256"
 
+      - name: Build isolated paired-transfer test plugin
+        run: php -d phar.readonly=0 tests/build-transfer-probe.php build/TransferProbe.phar
+
       - name: Download and verify pinned Axolotl-PM runtime
         shell: bash
         run: |
@@ -150,6 +160,7 @@ jobs:
           SERVER_PHAR: ${{ runner.temp }}/PocketMine-MP.phar
           PLUGIN_PHAR: ${{ steps.build.outputs.phar }}
           EXAMPLE_PHAR: ${{ steps.example.outputs.phar }}
+          PROBE_PHAR: build/TransferProbe.phar
         run: python3 .github/scripts/runtime-smoke.py
 
       - name: Upload PHAR from this commit

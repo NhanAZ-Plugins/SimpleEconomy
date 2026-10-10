@@ -3,19 +3,19 @@
 A hybrid SQL and YAML economy plugin for [Axolotl-PM](https://github.com/axolotl-pm/PocketMine-MP), powered by [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL).
 
 > [!WARNING]
-> The build workflow checks PHPStan at maximum level, isolated offline SQLite/YAML behavior and the pinned example consumer's startup and console commands. `/pay` currently rejects transfers because two-account atomic persistence has not been implemented. Do not treat a downloadable CI artifact as a verified production release.
+> The build workflow checks PHPStan at maximum level, isolated SQLite/YAML behavior, a paired-transfer success and fault probe, and the pinned example consumer's startup and console commands. Connected-player `/pay` behavior and a live MySQL deployment remain unverified. Do not treat a downloadable CI artifact as a verified production release.
 
 ---
 
 ## Storage and API
 
-SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror. It exposes balance methods and transaction events for other plugins. The synchronous balance API can expose an in-memory change before a database save succeeds. Admin balance commands wait for SQL confirmation before reporting success or updating the leaderboard. If a save fails, they restore the previous session balance when no newer change has intervened; a persistent backend fault can still leave a recovery snapshot that needs operator attention. `/pay` is unavailable until a verified two-account transaction contract exists, so use isolated test data while evaluating the remaining features.
+SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror. It exposes balance methods and transaction events for other plugins. The synchronous balance API can expose an in-memory change before a database save succeeds. Admin balance commands wait for SQL confirmation before reporting success or updating the leaderboard. If a save fails, they restore the previous session balance when no newer change has intervened; a persistent backend fault can still leave a recovery snapshot that needs operator attention. `/pay` sends to another online player through a single two-row SQL write; both visible balances and success events change only after SQL confirms it. Use isolated test data while evaluating gameplay and storage behavior.
 
 ---
 
 ## Features
 
-- **5 active commands** - `/money`, `/setmoney`, `/addmoney`, `/reducemoney`, `/topmoney`. `/pay` returns an unavailable message.
+- **6 commands** - `/money`, `/pay`, `/setmoney`, `/addmoney`, `/reducemoney`, `/topmoney`.
 - **Name prefix matching** - type `/money nh` and it finds `NhanAZ`
 - **Offline player support** - check and modify balances of players who aren't online
 - **Leaderboard** - paginated `/topmoney` with async cache rebuild
@@ -33,7 +33,7 @@ SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror.
 
 The [build workflow](.github/workflows/build.yml) uses [DevTools](https://github.com/NhanAZ/DevTools) to generate and validate a standalone PHAR when its checks pass. The workflow pins exact tool, dependency and Axolotl-PM source revisions. Its default GitHub run title identifies the triggering commit or pull request.
 
-The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. It also analyzes and builds a pinned [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) revision, then boots both PHARs to check offline persistence and example console commands. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revisions and result of each run.
+The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. It also analyzes and builds a pinned [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) revision, then boots both PHARs with an isolated test plugin to check persistence, paired writes, injected SQL failures and example console commands. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revisions and result of each run.
 
 For isolated evaluation, extract `SimpleEconomy.phar` from a verified artifact and place it in your test server's `plugins/` folder. The PHAR contains the required virions.
 
@@ -58,13 +58,13 @@ When the workflow passes, its artifact includes `build-metadata.json` with the e
 | Command | Description | Permission | Default |
 |---|---|---|---|
 | `/money [player]` | Check your balance, or someone else's | `simpleeconomy.command.money` | Everyone |
-| `/pay <player> <amount>` | Temporarily unavailable while atomic persistence is implemented | `simpleeconomy.command.pay` | Everyone |
+| `/pay <player> <amount>` | Transfer to another online player after both balances are saved in one SQL statement | `simpleeconomy.command.pay` | Everyone |
 | `/topmoney [page]` | View the richest players | `simpleeconomy.command.topmoney` | Everyone |
 | `/setmoney <player> <amount>` | Set a player's balance | `simpleeconomy.command.setmoney` | OP |
 | `/addmoney <player> <amount>` | Add money to a player | `simpleeconomy.command.addmoney` | OP |
 | `/reducemoney <player> <amount>` | Remove money from a player | `simpleeconomy.command.reducemoney` | OP |
 
-Balances are nonnegative integers. Admin commands accept decimal amounts and round them down without converting through a floating-point number. They reject scientific notation and amounts outside PHP's integer range. `/setmoney` accepts zero, while `/addmoney` and `/reducemoney` require an amount greater than zero.
+Balances are nonnegative integers. Balance commands accept decimal amounts and round them down without converting through a floating-point number. They reject scientific notation and amounts outside PHP's integer range. `/setmoney` accepts zero; `/pay`, `/addmoney` and `/reducemoney` require an amount greater than zero. Payments also reject self-transfers, insufficient funds and recipient balance overflow.
 
 **Tip:** Player lookup commands support name prefix matching. For example, `/money st` can find online player `Steve`.
 
@@ -196,7 +196,7 @@ public function onTransaction(TransactionSubmitEvent $event): void {
 }
 ```
 
-**`TransactionSuccessEvent`** - fired after SQL confirms an admin command's balance change, or after a synchronous API method accepts an in-memory change. The latter does not prove that its asynchronous SQL save succeeded. Read-only.
+**`TransactionSuccessEvent`** - fired after SQL confirms an admin balance command or both sides of `/pay`, or after a synchronous API method accepts an in-memory change. The latter does not prove that its asynchronous SQL save succeeded. Read-only.
 
 ```php
 use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;

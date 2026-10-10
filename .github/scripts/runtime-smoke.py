@@ -14,11 +14,12 @@ from pathlib import Path
 server = Path(os.environ["SERVER_PHAR"])
 plugin = Path(os.environ["PLUGIN_PHAR"])
 example = Path(os.environ["EXAMPLE_PHAR"])
-if not server.is_file() or not plugin.is_file() or not example.is_file():
-    raise RuntimeError("Pinned server and verified producer and example PHARs are required")
+probe = Path(os.environ["PROBE_PHAR"])
+if not server.is_file() or not plugin.is_file() or not example.is_file() or not probe.is_file():
+    raise RuntimeError("Pinned server and verified producer, example and probe PHARs are required")
 
 
-def run_server(root: Path, data: Path, plugins: Path, log: Path, commands: list[tuple[str, float]]) -> tuple[bool, int, str]:
+def run_server(root: Path, data: Path, plugins: Path, log: Path, commands: list[tuple[str, float]], probe_mode: str) -> tuple[bool, int, str]:
     with log.open("w", encoding="utf-8") as output:
         process = subprocess.Popen(
             ["php", str(server), "--no-wizard", "--disable-ansi", f"--data={data}", f"--plugins={plugins}"],
@@ -27,6 +28,7 @@ def run_server(root: Path, data: Path, plugins: Path, log: Path, commands: list[
             stdout=output,
             stderr=subprocess.STDOUT,
             text=True,
+            env={**os.environ, "SIMPLEECONOMY_TRANSFER_PROBE_MODE": probe_mode},
         )
         try:
             deadline = time.monotonic() + 90
@@ -62,6 +64,7 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
     plugins.mkdir()
     shutil.copy2(plugin, plugins / "SimpleEconomy.phar")
     shutil.copy2(example, plugins / "SimpleEconomyExample.phar")
+    shutil.copy2(probe, plugins / "SimpleEconomyTransferProbe.phar")
     (data / "server.properties").write_text(
         "language=eng\nserver-ip=127.0.0.1\nserver-port=0\nenable-ipv6=off\n"
         "enable-query=off\nxbox-auth=off\nlevel-type=FLAT\nview-distance=2\nmax-players=1\n",
@@ -87,7 +90,7 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
         ("richest", 0),
         ("reward OfflineTester 1", 0),
         ("fine OfflineTester 1", 2),
-    ])
+    ], "success")
     errors = [line for line in content.splitlines() if "/ERROR]:" in line or "/CRITICAL]:" in line]
     databases = list(root.rglob("economy.sqlite"))
     rows: list[tuple[str, str, int]] = []
@@ -110,6 +113,7 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
         "plugin_enabled": "Enabling SimpleEconomy v" in content,
         "example_enabled": "Enabling SimpleEconomyExample v" in content,
         "example_disabled": "Disabling SimpleEconomyExample v" in content,
+        "transfer_success": "TRANSFER_PROBE_SUCCESS" in content,
         "example_commands": {
             "wallet": "This command can only be used in-game." in content,
             "richest": "No players found on the leaderboard." in content or "=== Top 5 Richest Players ===" in content,
@@ -127,10 +131,13 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
         or not evidence["plugin_enabled"]
         or not evidence["example_enabled"]
         or not evidence["example_disabled"]
+        or not evidence["transfer_success"]
         or not all(evidence["example_commands"].values())
         or exit_code != 0
         or errors
         or not any(name == "offlinetester" and json.loads(value).get("balance") == 42 for name, value, _ in rows)
+        or not any(name == "probesender" and json.loads(value).get("balance") == 37 for name, value, _ in rows)
+        or not any(name == "proberecipient" and json.loads(value).get("balance") == 13 for name, value, _ in rows)
         or 42 not in mirror_balances
         or "OfflineTester" not in content
     ):
@@ -140,12 +147,17 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
     if len(databases) != 1:
         raise RuntimeError("Expected one isolated SQLite database")
     baseline_row = next((row for row in rows if row[0] == "offlinetester"), None)
+    baseline_probe_rows = sorted(row for row in rows if row[0] in {"probesender", "proberecipient"})
     if baseline_row is None:
         raise RuntimeError("Expected the offline test account in SQLite")
     with closing(sqlite3.connect(databases[0])) as connection:
         connection.execute(
             "CREATE TRIGGER smoke_reject_balance BEFORE UPDATE ON simplesql_data "
             "WHEN NEW.id = 'offlinetester' BEGIN SELECT RAISE(ABORT, 'intentional fault probe'); END"
+        )
+        connection.execute(
+            "CREATE TRIGGER smoke_reject_transfer BEFORE INSERT ON simplesql_data "
+            "WHEN NEW.id = 'proberecipient' BEGIN SELECT RAISE(ABORT, 'intentional transfer fault probe'); END"
         )
         connection.commit()
 
@@ -156,13 +168,14 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
         ("reducemoney OfflineTester 5", 5),
         ("topmoney", 1),
         ("money OfflineTester", 1),
-    ])
+    ], "failure")
     command_output = [line for line in failure_content.splitlines() if line.startswith("Command output |")]
     unexpected_errors = [
         line for line in failure_content.splitlines()
         if "/CRITICAL]:" in line or "/EMERGENCY]:" in line or (
             "/ERROR]:" in line
             and "intentional fault probe" not in line
+            and "intentional transfer fault probe" not in line
             and "unsaved data was written" not in line
         )
     ]
@@ -170,23 +183,30 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
         failure_rows = connection.execute(
             "SELECT id, data, revision FROM simplesql_data WHERE id = 'offlinetester'"
         ).fetchall()
+        failure_probe_rows = connection.execute(
+            "SELECT id, data, revision FROM simplesql_data WHERE id IN ('probesender', 'proberecipient') ORDER BY id"
+        ).fetchall()
     failure_evidence = {
         "ready": failure_ready,
         "exit_code": failure_exit,
         "command_output": command_output,
         "database_rows": failure_rows,
+        "transfer_rollback": "TRANSFER_PROBE_ROLLBACK" in failure_content,
+        "probe_rows": failure_probe_rows,
         "unexpected_errors": unexpected_errors,
     }
     print(json.dumps({"failure_probe": failure_evidence}, indent=2))
     if (
         not failure_ready
         or failure_exit != 0
+        or not failure_evidence["transfer_rollback"]
         or unexpected_errors
         or sum("Failed to save data for 'OfflineTester'." in line for line in command_output) != 3
         or not any("#1 offlinetester - $42" in line for line in command_output)
         or not any("OfflineTester's balance: $42" in line for line in command_output)
         or any("$999" in line for line in command_output)
         or failure_rows != [baseline_row]
+        or failure_probe_rows != baseline_probe_rows
     ):
         print(failure_content[-12000:])
         raise RuntimeError("A failed SQL save appeared as a committed balance")

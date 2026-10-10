@@ -1,0 +1,7 @@
+name: SimpleEconomyTransferProbe
+main: NhanAZ\TransferProbe\Main
+version: 0.0.1
+api: 5.0.0
+depend:
+  - SimpleEconomy
+description: Isolated paired-transfer persistence probe

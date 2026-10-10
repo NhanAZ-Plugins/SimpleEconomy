@@ -454,6 +454,57 @@ class Main extends PluginBase implements Listener {
 	}
 
 	/**
+	 * Persist both sides of a payment before changing either visible balance.
+	 * @param Closure(bool): void $onComplete
+	 */
+	public function saveTransfer(
+		Session $senderSession,
+		string $senderName,
+		int $senderBalance,
+		Session $targetSession,
+		string $targetName,
+		int $targetBalance,
+		int $amount,
+		Closure $onComplete,
+	): void {
+		$senderId = strtolower($senderName);
+		$targetId = strtolower($targetName);
+		if ($senderId === $targetId || $amount <= 0 ||
+			isset($this->pendingCommandSaves[$senderId]) || isset($this->pendingCommandSaves[$targetId]) ||
+			$senderSession->getId() !== $senderId || $targetSession->getId() !== $targetId ||
+			BalanceReader::read($senderSession) !== $senderBalance || BalanceReader::read($targetSession) !== $targetBalance) {
+			$onComplete(false);
+			return;
+		}
+		$newSenderBalance = BalanceAmount::reduce($senderBalance, $amount);
+		$newTargetBalance = BalanceAmount::add($targetBalance, $amount);
+		if ($newSenderBalance === null || $newTargetBalance === null) {
+			$onComplete(false);
+			return;
+		}
+		$senderData = $senderSession->getAll();
+		$targetData = $targetSession->getAll();
+		$senderData["balance"] = $newSenderBalance;
+		$targetData["balance"] = $newTargetBalance;
+		$this->pendingCommandSaves[$senderId] = true;
+		$this->pendingCommandSaves[$targetId] = true;
+		try {
+			$this->simpleSQL->saveSessionPair($senderSession, $senderData, $targetSession, $targetData,
+				function (bool $success) use ($senderId, $targetId, $newSenderBalance, $newTargetBalance, $onComplete): void {
+					unset($this->pendingCommandSaves[$senderId], $this->pendingCommandSaves[$targetId]);
+					if ($success) {
+						$this->updateBalanceCache($senderId, $newSenderBalance);
+						$this->updateBalanceCache($targetId, $newTargetBalance);
+					}
+					$onComplete($success);
+				});
+		} catch (\Throwable $error) {
+			unset($this->pendingCommandSaves[$senderId], $this->pendingCommandSaves[$targetId]);
+			throw $error;
+		}
+	}
+
+	/**
 	 * Close a temporary session, saving first if dirty.
 	 */
 	public function closeTempSession(string $name): void {

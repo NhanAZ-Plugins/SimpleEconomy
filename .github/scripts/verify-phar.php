@@ -36,7 +36,7 @@ try {
         }
     }
     $dependencies = array_column($data['dependencies'], 'version', 'name');
-    if (($dependencies['SimpleSQL'] ?? null) !== '1.0.1' || ($dependencies['libasynql'] ?? null) !== '4.2.3' || count($dependencies) !== 2) {
+    if (($dependencies['SimpleSQL'] ?? null) !== '1.1.0' || ($dependencies['libasynql'] ?? null) !== '4.2.3' || count($dependencies) !== 2) {
         throw new RuntimeException('Expected the declared SimpleSQL and libasynql versions.');
     }
     foreach (['SimpleSQL' => 'NhanAZ\\SimpleSQL', 'libasynql' => 'poggit\\libasynql'] as $name => $antigen) {
