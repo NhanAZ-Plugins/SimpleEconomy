@@ -3,19 +3,19 @@
 A hybrid SQL and YAML economy plugin for [Axolotl-PM](https://github.com/axolotl-pm/PocketMine-MP), powered by [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL).
 
 > [!WARNING]
-> SimpleEconomy passes the build workflow's PHPStan maximum-level check and isolated offline SQLite/YAML smoke test. The `/pay` path still lacks an atomic two-account transaction and failure tests. Do not treat a downloadable CI artifact as a verified production release.
+> The build workflow checks PHPStan at maximum level and isolated offline SQLite/YAML behavior. `/pay` currently rejects transfers because two-account atomic persistence has not been implemented. Do not treat a downloadable CI artifact as a verified production release.
 
 ---
 
 ## Storage and API
 
-SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror. It exposes balance methods and transaction events for other plugins. Balance changes can be visible in memory before a database save succeeds. The `/pay` path still needs a verified two-account transaction contract, so use isolated test data while evaluating it.
+SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror. It exposes balance methods and transaction events for other plugins. Balance changes can be visible in memory before a database save succeeds. `/pay` is unavailable until a verified two-account transaction contract exists, so use isolated test data while evaluating the remaining features.
 
 ---
 
 ## Features
 
-- **6 commands** - `/money`, `/pay`, `/setmoney`, `/addmoney`, `/reducemoney`, `/topmoney`
+- **5 active commands** - `/money`, `/setmoney`, `/addmoney`, `/reducemoney`, `/topmoney`. `/pay` returns an unavailable message.
 - **Name prefix matching** - type `/money nh` and it finds `NhanAZ`
 - **Offline player support** - check and modify balances of players who aren't online
 - **Leaderboard** - paginated `/topmoney` with async cache rebuild
@@ -58,13 +58,13 @@ When the workflow passes, its artifact includes `build-metadata.json` with the e
 | Command | Description | Permission | Default |
 |---|---|---|---|
 | `/money [player]` | Check your balance, or someone else's | `simpleeconomy.command.money` | Everyone |
-| `/pay <player> <amount>` | Send money to another player | `simpleeconomy.command.pay` | Everyone |
+| `/pay <player> <amount>` | Temporarily unavailable while atomic persistence is implemented | `simpleeconomy.command.pay` | Everyone |
 | `/topmoney [page]` | View the richest players | `simpleeconomy.command.topmoney` | Everyone |
 | `/setmoney <player> <amount>` | Set a player's balance | `simpleeconomy.command.setmoney` | OP |
 | `/addmoney <player> <amount>` | Add money to a player | `simpleeconomy.command.addmoney` | OP |
 | `/reducemoney <player> <amount>` | Remove money from a player | `simpleeconomy.command.reducemoney` | OP |
 
-**Tip:** All commands support name prefix matching. If `Steve` is online, `/pay st 100` works.
+**Tip:** Player lookup commands support name prefix matching. For example, `/money st` can find online player `Steve`.
 
 **Tip:** Admin commands (`/setmoney`, `/addmoney`, `/reducemoney`) work on offline players too.
 
