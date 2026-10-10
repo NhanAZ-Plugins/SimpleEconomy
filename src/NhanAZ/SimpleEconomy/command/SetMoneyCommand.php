@@ -66,10 +66,7 @@ class SetMoneyCommand extends Command implements PluginOwned {
 					return;
 				}
 
-				$session->set("balance", $amount);
-				$this->plugin->updateBalanceCache(strtolower($targetName), $amount);
-
-				$session->save(function (bool $success) use ($sender, $targetName, $oldBalance, $amount, $temporary, $lang): void {
+				$this->plugin->saveCommandBalance($session, $targetName, $oldBalance, $amount, function (bool $success) use ($sender, $targetName, $oldBalance, $amount, $temporary, $lang): void {
 					if ($success) {
 						// Fire post-transaction event
 						(new TransactionSuccessEvent($targetName, $oldBalance, $amount, TransactionEvent::TYPE_SET))->call();

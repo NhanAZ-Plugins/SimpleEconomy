@@ -51,6 +51,8 @@ class Main extends PluginBase implements Listener {
 
 	/** @var array<string, int> lowercased name => balance, sorted desc, bounded by leaderboardSize */
 	private array $balanceCache = [];
+	/** @var array<string, true> */
+	private array $pendingCommandSaves = [];
 
 	// ──────────────────────────────────────────────
 	//  Static accessor
@@ -218,6 +220,9 @@ class Main extends PluginBase implements Listener {
 			return false;
 		}
 		$lower = strtolower($name);
+		if (isset($this->pendingCommandSaves[$lower])) {
+			return false;
+		}
 		$session = $this->simpleSQL->getSession($lower);
 		if ($session === null) {
 			return false;
@@ -251,6 +256,9 @@ class Main extends PluginBase implements Listener {
 			return false;
 		}
 		$lower = strtolower($name);
+		if (isset($this->pendingCommandSaves[$lower])) {
+			return false;
+		}
 		$session = $this->simpleSQL->getSession($lower);
 		if ($session === null) {
 			return false;
@@ -286,6 +294,9 @@ class Main extends PluginBase implements Listener {
 			return false;
 		}
 		$lower = strtolower($name);
+		if (isset($this->pendingCommandSaves[$lower])) {
+			return false;
+		}
 		$session = $this->simpleSQL->getSession($lower);
 		if ($session === null) {
 			return false;
@@ -371,6 +382,10 @@ class Main extends PluginBase implements Listener {
 	 */
 	public function withPlayerSession(string $name, Closure $onSession, Closure $onError): void {
 		$lower = strtolower($name);
+		if (isset($this->pendingCommandSaves[$lower])) {
+			$onError($this->lang->get("general.data-loading", ["player" => $name]));
+			return;
+		}
 
 		// Already loaded (online player)
 		if ($this->simpleSQL->hasSession($lower)) {
@@ -404,6 +419,38 @@ class Main extends PluginBase implements Listener {
 				$onError($this->lang->get("general.data-access-error", ["player" => $name]));
 			}
 		});
+	}
+
+	/**
+	 * @param Closure(bool): void $onComplete
+	 */
+	public function saveCommandBalance(Session $session, string $name, int $oldBalance, int $newBalance, Closure $onComplete): void {
+		$lower = strtolower($name);
+		if (isset($this->pendingCommandSaves[$lower])) {
+			$onComplete(false);
+			return;
+		}
+		$this->pendingCommandSaves[$lower] = true;
+		try {
+			$session->set("balance", $newBalance);
+			$mutationVersion = $session->_getMutationVersion();
+			$session->save(function (bool $success) use ($session, $lower, $oldBalance, $newBalance, $mutationVersion, $onComplete): void {
+				if ($success) {
+					$this->updateBalanceCache($lower, $newBalance);
+				} elseif (!$session->isClosed()) {
+					if ($session->_getMutationVersion() === $mutationVersion) {
+						$session->set("balance", $oldBalance);
+					} else {
+						$this->getLogger()->warning("Could not restore the balance for '{$lower}' after a failed save because the session changed again.");
+					}
+				}
+				unset($this->pendingCommandSaves[$lower]);
+				$onComplete($success);
+			});
+		} catch (\Throwable $error) {
+			unset($this->pendingCommandSaves[$lower]);
+			throw $error;
+		}
 	}
 
 	/**

@@ -9,7 +9,7 @@ A hybrid SQL and YAML economy plugin for [Axolotl-PM](https://github.com/axolotl
 
 ## Storage and API
 
-SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror. It exposes balance methods and transaction events for other plugins. Balance changes can be visible in memory before a database save succeeds. `/pay` is unavailable until a verified two-account transaction contract exists, so use isolated test data while evaluating the remaining features.
+SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror. It exposes balance methods and transaction events for other plugins. The synchronous balance API can expose an in-memory change before a database save succeeds. Admin balance commands wait for SQL confirmation before reporting success or updating the leaderboard. If a save fails, they restore the previous session balance when no newer change has intervened; a persistent backend fault can still leave a recovery snapshot that needs operator attention. `/pay` is unavailable until a verified two-account transaction contract exists, so use isolated test data while evaluating the remaining features.
 
 ---
 
@@ -196,7 +196,7 @@ public function onTransaction(TransactionSubmitEvent $event): void {
 }
 ```
 
-**`TransactionSuccessEvent`** - fired after an in-memory balance change. It does not prove that an asynchronous SQL save succeeded. Read-only.
+**`TransactionSuccessEvent`** - fired after SQL confirms an admin command's balance change, or after a synchronous API method accepts an in-memory change. The latter does not prove that its asynchronous SQL save succeeded. Read-only.
 
 ```php
 use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
