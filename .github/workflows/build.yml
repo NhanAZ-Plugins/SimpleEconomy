@@ -100,6 +100,23 @@ jobs:
           php .github/scripts/verify-phar.php "$PHAR_PATH" "$BUILD_METADATA"
           cp "$BUILD_METADATA" build/build-metadata.json
 
+      - name: Download and verify pinned Axolotl-PM runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error \
+            https://github.com/axolotl-pm/PocketMine-MP/releases/download/5.49.1/PocketMine-MP.phar \
+            --output "$RUNNER_TEMP/PocketMine-MP.phar"
+          printf '%s  %s\n' \
+            'b62ce263c079a00498a49cd3eab0bfa454f4ba195e5f9d62e32927cfc805c665' \
+            "$RUNNER_TEMP/PocketMine-MP.phar" | sha256sum --check
+
+      - name: Smoke test offline balance persistence
+        env:
+          SERVER_PHAR: ${{ runner.temp }}/PocketMine-MP.phar
+          PLUGIN_PHAR: ${{ steps.build.outputs.phar }}
+        run: python3 .github/scripts/runtime-smoke.py
+
       - name: Upload PHAR from this commit
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
