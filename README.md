@@ -3,7 +3,7 @@
 A hybrid SQL and YAML economy plugin for [Axolotl-PM](https://github.com/axolotl-pm/PocketMine-MP), powered by [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL).
 
 > [!WARNING]
-> The build workflow checks PHPStan at maximum level and isolated offline SQLite/YAML behavior. `/pay` currently rejects transfers because two-account atomic persistence has not been implemented. Do not treat a downloadable CI artifact as a verified production release.
+> The build workflow checks PHPStan at maximum level, isolated offline SQLite/YAML behavior and the pinned example consumer's startup and console commands. `/pay` currently rejects transfers because two-account atomic persistence has not been implemented. Do not treat a downloadable CI artifact as a verified production release.
 
 ---
 
@@ -33,7 +33,7 @@ SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror.
 
 The [build workflow](.github/workflows/build.yml) uses [DevTools](https://github.com/NhanAZ/DevTools) to generate and validate a standalone PHAR when its checks pass. The workflow pins exact tool, dependency and Axolotl-PM source revisions. Its default GitHub run title identifies the triggering commit or pull request.
 
-The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revision and result of each run.
+The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. It also analyzes and builds a pinned [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) revision, then boots both PHARs to check offline persistence and example console commands. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revisions and result of each run.
 
 For isolated evaluation, extract `SimpleEconomy.phar` from a verified artifact and place it in your test server's `plugins/` folder. The PHAR contains the required virions.
 
@@ -138,7 +138,7 @@ No extra plugins or configuration needed. Just add the tags to your ScoreHud con
 
 ## For Developers
 
-> **Want a full working example?** Check out [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) - a complete plugin demonstrating how to use the SimpleEconomy API with real commands and event listeners.
+> **Want an API example?** See [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) for sample commands and event listeners. Its isolated console paths have been checked; connected-player behavior still needs testing.
 
 ### Quick Start - Using the API
 
