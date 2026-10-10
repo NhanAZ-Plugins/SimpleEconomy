@@ -21,6 +21,14 @@ jobs:
       - name: Check out SimpleEconomy
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Check out pinned SimpleEconomyExample consumer
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: NhanAZ-Plugins/SimpleEconomyExample
+          ref: 167062652db3f1fb99ecf368767975e43be9fa55
+          path: .devtools-dependencies/SimpleEconomyExample
+          persist-credentials: false
+
       - name: Check out SimpleSQL virion
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -103,6 +111,29 @@ jobs:
           php .github/scripts/verify-phar.php "$PHAR_PATH" "$BUILD_METADATA"
           cp "$BUILD_METADATA" build/build-metadata.json
 
+      - name: Analyze and build pinned example consumer
+        id: example
+        uses: NhanAZ/DevTools@6606444fc32787a3e50275fdb668c2310e899740 # v1.0.3
+        with:
+          project: .devtools-dependencies/SimpleEconomyExample
+          output: build-example
+          phpstan: "max"
+          phpstan-server: .devtools-servers/axolotl
+          phpstan-paths: |
+            src
+            virions/SimpleSQL/src
+            .devtools-dependencies/libasynql/libasynql/src
+            .devtools-dependencies/ScoreHud/src
+
+      - name: Verify example PHAR checksum
+        shell: bash
+        env:
+          EXAMPLE_PHAR: ${{ steps.example.outputs.phar }}
+          EXAMPLE_SHA256: ${{ steps.example.outputs.sha256 }}
+        run: |
+          set -euo pipefail
+          test "$(sha256sum "$EXAMPLE_PHAR" | cut -d ' ' -f 1)" = "$EXAMPLE_SHA256"
+
       - name: Download and verify pinned Axolotl-PM runtime
         shell: bash
         run: |
@@ -114,10 +145,11 @@ jobs:
             'b62ce263c079a00498a49cd3eab0bfa454f4ba195e5f9d62e32927cfc805c665' \
             "$RUNNER_TEMP/PocketMine-MP.phar" | sha256sum --check
 
-      - name: Smoke test offline balance persistence
+      - name: Smoke test balance persistence and example commands
         env:
           SERVER_PHAR: ${{ runner.temp }}/PocketMine-MP.phar
           PLUGIN_PHAR: ${{ steps.build.outputs.phar }}
+          EXAMPLE_PHAR: ${{ steps.example.outputs.phar }}
         run: python3 .github/scripts/runtime-smoke.py
 
       - name: Upload PHAR from this commit
