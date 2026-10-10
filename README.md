@@ -64,6 +64,8 @@ When the workflow passes, its artifact includes `build-metadata.json` with the e
 | `/addmoney <player> <amount>` | Add money to a player | `simpleeconomy.command.addmoney` | OP |
 | `/reducemoney <player> <amount>` | Remove money from a player | `simpleeconomy.command.reducemoney` | OP |
 
+Balances are nonnegative integers. Admin commands accept decimal amounts and round them down without converting through a floating-point number. They reject scientific notation and amounts outside PHP's integer range. `/setmoney` accepts zero, while `/addmoney` and `/reducemoney` require an amount greater than zero.
+
 **Tip:** Player lookup commands support name prefix matching. For example, `/money st` can find online player `Steve`.
 
 **Tip:** Admin commands (`/setmoney`, `/addmoney`, `/reducemoney`) work on offline players too.
@@ -161,7 +163,7 @@ $eco->reduceMoney("Steve", 200);  // bool - false if insufficient funds
 $display = $eco->formatMoney(1500000);  // "$1,500,000" or "$1.5M"
 ```
 
-These are the core synchronous balance methods. An invalid stored balance raises `InvalidBalanceException` instead of being converted to another amount. Handle that exception before taking follow-up actions or changing player data.
+These are the core synchronous balance methods. They reject negative amounts, and `addMoney()` rejects integer overflow. An invalid stored balance raises `InvalidBalanceException` instead of being converted to another amount. Handle that exception before taking follow-up actions or changing player data. A returned `true` does not prove that the asynchronous database save has completed.
 
 ### Async API - Offline Players
 

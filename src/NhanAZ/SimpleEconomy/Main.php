@@ -214,6 +214,9 @@ class Main extends PluginBase implements Listener {
 	 * Returns false if the player is offline or the transaction was cancelled by another plugin.
 	 */
 	public function setMoney(string $name, int $amount): bool {
+		if ($amount < 0) {
+			return false;
+		}
 		$lower = strtolower($name);
 		$session = $this->simpleSQL->getSession($lower);
 		if ($session === null) {
@@ -244,6 +247,9 @@ class Main extends PluginBase implements Listener {
 	 * Returns false if the player is offline or the transaction was cancelled.
 	 */
 	public function addMoney(string $name, int $amount): bool {
+		if ($amount < 0) {
+			return false;
+		}
 		$lower = strtolower($name);
 		$session = $this->simpleSQL->getSession($lower);
 		if ($session === null) {
@@ -251,7 +257,10 @@ class Main extends PluginBase implements Listener {
 		}
 
 		$oldBalance = BalanceReader::read($session);
-		$newBalance = $oldBalance + $amount;
+		$newBalance = BalanceAmount::add($oldBalance, $amount);
+		if ($newBalance === null) {
+			return false;
+		}
 
 		$submitEvent = new TransactionSubmitEvent($name, $oldBalance, $newBalance, TransactionEvent::TYPE_ADD);
 		$submitEvent->call();
@@ -273,6 +282,9 @@ class Main extends PluginBase implements Listener {
 	 * Returns false if the player is offline, has insufficient funds, or the transaction was cancelled.
 	 */
 	public function reduceMoney(string $name, int $amount): bool {
+		if ($amount < 0) {
+			return false;
+		}
 		$lower = strtolower($name);
 		$session = $this->simpleSQL->getSession($lower);
 		if ($session === null) {
@@ -280,11 +292,10 @@ class Main extends PluginBase implements Listener {
 		}
 
 		$oldBalance = BalanceReader::read($session);
-		if ($oldBalance < $amount) {
+		$newBalance = BalanceAmount::reduce($oldBalance, $amount);
+		if ($newBalance === null) {
 			return false;
 		}
-
-		$newBalance = $oldBalance - $amount;
 
 		$submitEvent = new TransactionSubmitEvent($name, $oldBalance, $newBalance, TransactionEvent::TYPE_REDUCE);
 		$submitEvent->call();

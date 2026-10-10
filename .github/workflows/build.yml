@@ -79,6 +79,9 @@ jobs:
           INPUT_INSTALL-PATH: ./.php-bin
         run: node .devtools-dependencies/setup-php-action/dist/index.js
 
+      - name: Check balance input and arithmetic boundaries
+        run: php tests/balance-amount.php
+
       - name: Analyze plugin and build PHAR with DevTools
         id: build
         uses: NhanAZ/DevTools@6606444fc32787a3e50275fdb668c2310e899740 # v1.0.3

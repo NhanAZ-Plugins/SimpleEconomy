@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NhanAZ\SimpleEconomy\command;
 
 use NhanAZ\SimpleEconomy\BalanceReader;
+use NhanAZ\SimpleEconomy\BalanceAmount;
 use NhanAZ\SimpleEconomy\event\TransactionEvent;
 use NhanAZ\SimpleEconomy\event\TransactionSubmitEvent;
 use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
@@ -35,14 +36,13 @@ class SetMoneyCommand extends Command implements PluginOwned {
 		}
 
 		$amountRaw = $args[1];
-		if (!is_numeric($amountRaw)) {
-			$sender->sendMessage($lang->get("general.amount-not-number"));
+		if (is_numeric($amountRaw) && str_starts_with(trim($amountRaw), '-')) {
+			$sender->sendMessage($lang->get("general.amount-not-negative"));
 			return;
 		}
-
-		$amount = (int) floor((float) $amountRaw);
-		if ($amount < 0) {
-			$sender->sendMessage($lang->get("general.amount-not-negative"));
+		$amount = BalanceAmount::parseCommand($amountRaw);
+		if ($amount === null) {
+			$sender->sendMessage($lang->get("general.amount-not-number"));
 			return;
 		}
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NhanAZ\SimpleEconomy\command;
 
 use NhanAZ\SimpleEconomy\BalanceReader;
+use NhanAZ\SimpleEconomy\BalanceAmount;
 use NhanAZ\SimpleEconomy\event\TransactionEvent;
 use NhanAZ\SimpleEconomy\event\TransactionSubmitEvent;
 use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
@@ -35,12 +36,15 @@ class AddMoneyCommand extends Command implements PluginOwned {
 		}
 
 		$amountRaw = $args[1];
-		if (!is_numeric($amountRaw)) {
+		if (is_numeric($amountRaw) && str_starts_with(trim($amountRaw), '-')) {
+			$sender->sendMessage($lang->get("general.amount-positive"));
+			return;
+		}
+		$amount = BalanceAmount::parseCommand($amountRaw);
+		if ($amount === null) {
 			$sender->sendMessage($lang->get("general.amount-not-number"));
 			return;
 		}
-
-		$amount = (int) floor((float) $amountRaw);
 		if ($amount <= 0) {
 			$sender->sendMessage($lang->get("general.amount-positive"));
 			return;
@@ -54,7 +58,14 @@ class AddMoneyCommand extends Command implements PluginOwned {
 			$targetName,
 			onSession: function (Session $session, bool $temporary) use ($sender, $targetName, $amount, $lang): void {
 				$oldBalance = BalanceReader::read($session);
-				$newBalance = $oldBalance + $amount;
+				$newBalance = BalanceAmount::add($oldBalance, $amount);
+				if ($newBalance === null) {
+					$sender->sendMessage($lang->get("general.amount-not-number"));
+					if ($temporary) {
+						$this->plugin->closeTempSession($targetName);
+					}
+					return;
+				}
 
 				// Fire pre-transaction event
 				$submitEvent = new TransactionSubmitEvent($targetName, $oldBalance, $newBalance, TransactionEvent::TYPE_ADD);
