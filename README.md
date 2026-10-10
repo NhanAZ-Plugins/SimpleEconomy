@@ -1,31 +1,15 @@
 # SimpleEconomy
 
-A production-ready economy plugin for [PocketMine-MP](https://github.com/pmmp/PocketMine-MP), powered by [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL).
+A hybrid SQL and YAML economy plugin for [Axolotl-PM](https://github.com/axolotl-pm/PocketMine-MP), powered by [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL).
 
-Built for **server owners who want a working economy in minutes** and **developers who want an API that doesn't fight them**.
+> [!WARNING]
+> SimpleEconomy is still being updated for the current SimpleSQL release. The source has unresolved PHPStan level max findings and transaction persistence checks. Do not treat a downloadable CI artifact as a verified production release.
 
 ---
 
-## Why another economy plugin?
+## Storage and API
 
-I know [BedrockEconomy](https://github.com/cooldogepm/BedrockEconomy) exists, and it's a great plugin - recommended on Poggit, actively maintained. So why SimpleEconomy?
-
-**Short answer:** Different philosophy, different strengths.
-
-| | SimpleEconomy | BedrockEconomy |
-|---|---|---|
-| **Storage** | Hybrid SQL + YAML via SimpleSQL | Pure SQL (libasynql) |
-| **API complexity** | 4 methods. That's it. | Full async ClosureAPI / fluent builders |
-| **Setup** | Drop-in, works instantly | Requires understanding async patterns |
-| **Offline player data** | Built-in (temporary sessions) | Requires manual SQL queries |
-| **ScoreHud integration** | Built-in | Separate plugin required |
-| **Multi-language** | 14 languages built-in | 4 languages |
-| **Transaction events** | Cancellable events for third-party control | Custom event system |
-| **Target audience** | Small-to-medium servers, non-dev admins | Advanced setups, dev-oriented |
-
-**Why not PR into BedrockEconomy?** BedrockEconomy is architecturally pure-SQL. SimpleEconomy's hybrid SQL-YAML approach (via SimpleSQL) is a fundamentally different storage philosophy - this isn't a feature addition, it's a different way of thinking about player data. Both approaches have merit, but they can't coexist in one codebase without compromise.
-
-**TL;DR:** BedrockEconomy is powerful and flexible. SimpleEconomy is simple and instant. Choose what fits your server.
+SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror. It exposes balance methods and transaction events for other plugins. Balance changes can be visible in memory before a database save succeeds. The `/pay` path still needs a verified two-account transaction contract, so use isolated test data while evaluating it.
 
 ---
 
@@ -45,13 +29,13 @@ I know [BedrockEconomy](https://github.com/cooldogepm/BedrockEconomy) exists, an
 
 ## Installation
 
-### From GitHub Actions (recommended)
+### From GitHub Actions
 
-Every commit is built as a standalone `.phar` by [DevTools](https://github.com/NhanAZ/DevTools). Open the repository's [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml), choose a successful `DevTools Build` run, then download the `SimpleEconomy-<commit SHA>` artifact.
+The [build workflow](.github/workflows/build.yml) uses [DevTools](https://github.com/NhanAZ/DevTools) to generate and validate a standalone PHAR when its checks pass. The workflow pins exact tool, dependency and Axolotl-PM source revisions. Its default GitHub run title identifies the triggering commit or pull request.
 
-The same job runs PHPStan level `4` against the pinned Axolotl-PM server source. ScoreHud, SimpleSQL, and libasynql source are included for symbol discovery. The existing analysis gate remains required. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes, and both dependency licenses before upload.
+The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revision and result of each run.
 
-Extract `SimpleEconomy.phar` from the artifact and place it in your server's `plugins/` folder. The PHAR already contains the required virions.
+After the static and runtime gates are complete, extract `SimpleEconomy.phar` from a verified artifact and place it in your server's `plugins/` folder. The PHAR contains the required virions.
 
 The workflow uploads an artifact for 14 days. It does not create a tag or GitHub Release for every commit.
 
@@ -59,13 +43,13 @@ The workflow uploads an artifact for 14 days. It does not create a tag or GitHub
 
 1. Clone this repository
 2. Put the **SimpleSQL** and **libasynql** source packages directly inside `virions/`
-3. Run the [DevTools v1.0.0 action](https://github.com/NhanAZ/DevTools/blob/v1.0.0/docs/github-actions.md), or use the same DevTools revision locally to build the project root
+3. Follow the [DevTools build documentation](https://github.com/NhanAZ/DevTools/blob/main/docs/github-actions.md) and the pinned [repository workflow](.github/workflows/build.yml) to build the project root
 
 The exact CI dependency revisions are pinned in `.github/workflows/build.yml`, while `devtools.yml` declares the compatible virion versions.
 
 The pinned libasynql source needs the narrow compatibility patch in `.github/patches/` before DevTools can safely shade it. The workflow checks that the patch still matches the pinned revision and fails instead of applying it ambiguously.
 
-This workflow uses official DevTools release `v1.0.0` (source `2d5f6011acb5c478d2201a9987d3687e937217a4`). The download includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up your data before replacing it; rollback replaces only the plugin PHAR, not the database or player data. A successful build/PHPStan run is not a gameplay or live SQL test.
+When the workflow passes, its artifact includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up player data before replacing it. Rolling back the PHAR does not roll back SQL or YAML data. A successful build and PHPStan run does not establish gameplay or live SQL compatibility.
 
 ---
 
@@ -318,7 +302,7 @@ SimpleEconomy/
 
 ## License
 
-[MIT License](LICENSE) - do whatever you want with it.
+Distributed under the [MIT License](LICENSE).
 
 ---
 
@@ -326,7 +310,5 @@ SimpleEconomy/
 
 - **[DevTools](https://github.com/NhanAZ/DevTools)** - standalone PHAR builder and virion shader used by this repository's workflow
 - **[SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL)** - the hybrid SQL-YAML engine that powers this plugin
-- **[libasynql](https://github.com/poggit/libasynql)** - async SQL library for PocketMine-MP
+- **[libasynql](https://github.com/poggit/libasynql)** - asynchronous SQL library
 - **[ScoreHud](https://github.com/Flavionsky/ScoreHud)** - scoreboard addon (optional integration)
-
-DevTools officially launches on 2026-10-10 as a consolidated, signed `v1.0.0`. Refresh cached prelaunch tags/checkouts and old SHA pins. Earlier downloaded PHARs remain their original bytes; keep a local working copy for rollback. The launch [rollout guide](https://github.com/NhanAZ/DevTools/blob/v1.0.0/docs/org-rollout.md) explains the new source identity.

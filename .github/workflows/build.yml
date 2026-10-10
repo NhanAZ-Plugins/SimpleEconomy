@@ -1,4 +1,4 @@
-name: DevTools Build
+name: Build and validate SimpleEconomy
 
 on:
   push:
@@ -19,18 +19,18 @@ jobs:
 
     steps:
       - name: Check out SimpleEconomy
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Check out SimpleSQL virion
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: NhanAZ-Libraries/SimpleSQL
-          ref: 8586047e349039e017cdc5efce7e6714a903daad
+          ref: 1dba602e54ec6975da9fae1a68824ea061f2f489 # SimpleSQL v1.0.1
           path: virions/SimpleSQL
           persist-credentials: false
 
       - name: Check out libasynql source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: poggit/libasynql
           ref: 270f8ae93e3271206eadd42ca81862ab9a54f322
@@ -38,7 +38,7 @@ jobs:
           persist-credentials: false
 
       - name: Check out ScoreHud API source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Ifera/ScoreHud
           ref: 3f5b13b3daef0de3d2f5f81ad899dbbcc9eaf52f
@@ -46,15 +46,15 @@ jobs:
           persist-credentials: false
 
       - name: Check out Axolotl-PM server source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: axolotl-pm/PocketMine-MP
-          ref: b9a3b244993fb8a6df97241f3a3fbe44e2076f4c
+          ref: dfe0d07e48a9e8d5a4a242fa43ff1cd3b743a955 # Axolotl-PM 5.49.1
           path: .devtools-servers/axolotl
           persist-credentials: false
 
       - name: Check out Axolotl-PM PHP setup helper
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: axolotl-pm/setup-php-action
           ref: b8c3f9add4f2ad4a5e2624a1112aba899ee8db0e
@@ -79,14 +79,14 @@ jobs:
           INPUT_INSTALL-PATH: ./.php-bin
         run: node .devtools-dependencies/setup-php-action/dist/index.js
 
-      - name: Analyze Axolotl-PM server and build PHAR
+      - name: Analyze plugin and build PHAR with DevTools
         id: build
-        uses: NhanAZ/DevTools@v1.0.0
+        uses: NhanAZ/DevTools@6606444fc32787a3e50275fdb668c2310e899740 # v1.0.3
         with:
           project: .
           virions: virions
           output: build
-          phpstan: "4"
+          phpstan: "max"
           phpstan-server: .devtools-servers/axolotl
           phpstan-paths: .devtools-dependencies/ScoreHud/src
 
@@ -101,7 +101,7 @@ jobs:
           cp "$BUILD_METADATA" build/build-metadata.json
 
       - name: Upload PHAR from this commit
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ steps.build.outputs.plugin-name }}-${{ github.sha }}
           path: |
