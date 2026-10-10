@@ -42,12 +42,15 @@ class LeaderboardTask extends AsyncTask {
 			}
 
 			$data = @yaml_parse($content);
-			if (!is_array($data) || !isset($data["data"]["balance"])) {
+			if (!is_array($data) || !isset($data["data"]) || !is_array($data["data"])) {
+				continue;
+			}
+			$balance = $data["data"]["balance"] ?? null;
+			if (!is_int($balance) || $balance < 0) {
 				continue;
 			}
 
 			$name = strtolower(pathinfo($file->getFilename(), PATHINFO_FILENAME));
-			$balance = (int) $data["data"]["balance"];
 			$entries[$name] = $balance;
 
 			// Keep array bounded: if over 2x limit, trim to limit
@@ -76,7 +79,9 @@ class LeaderboardTask extends AsyncTask {
 		}
 
 		foreach ($result as $name => $balance) {
-			$plugin->updateBalanceCache((string) $name, (int) $balance);
+			if ((is_string($name) || is_int($name)) && is_int($balance) && $balance >= 0) {
+				$plugin->updateBalanceCache((string) $name, $balance);
+			}
 		}
 	}
 }

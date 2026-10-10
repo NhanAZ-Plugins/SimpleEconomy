@@ -61,6 +61,7 @@ class LangManager {
 	/**
 	 * Flatten a nested array into dot-notation keys.
 	 *
+	 * @param array<array-key, mixed> $data
 	 * @return array<string, string>
 	 */
 	private function flatten(array $data, string $prefix = ""): array {
@@ -69,7 +70,7 @@ class LangManager {
 			$fullKey = $prefix === "" ? (string) $key : $prefix . "." . $key;
 			if (is_array($value)) {
 				$result = array_merge($result, $this->flatten($value, $fullKey));
-			} else {
+			} elseif (is_scalar($value)) {
 				$result[$fullKey] = (string) $value;
 			}
 		}
