@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: NhanAZ-Libraries/SimpleSQL
-          ref: 2eb6621d03f0a30a522b6706cf3f85b11c40fb85 # SimpleSQL v1.1.0 candidate
+          ref: 4a9a5b1a25a75776053a35b7c400d34e95c1becd # SimpleSQL v1.1.1 source
           path: virions/SimpleSQL
           persist-credentials: false
 

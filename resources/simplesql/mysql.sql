@@ -17,6 +17,8 @@
         -- #    :revision int
         INSERT INTO simplesql_data (id, data, revision) VALUES (:id, :data, :revision)
         ON DUPLICATE KEY UPDATE data = VALUES(data), revision = VALUES(revision);
+        -- #&
+        SELECT id, data, revision FROM simplesql_data WHERE id = :id;
     -- #}
     -- #{ pair_engine
         SELECT ENGINE AS engine FROM information_schema.TABLES
@@ -33,6 +35,8 @@
             (:first_id, :first_data, :first_revision),
             (:second_id, :second_data, :second_revision)
         ON DUPLICATE KEY UPDATE data = VALUES(data), revision = VALUES(revision);
+        -- #&
+        SELECT id, data, revision FROM simplesql_data WHERE id IN (:first_id, :second_id);
     -- #}
     -- #{ delete
         -- #    :id string

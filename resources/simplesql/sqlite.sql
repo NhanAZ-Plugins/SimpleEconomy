@@ -17,6 +17,8 @@
         -- #    :revision int
         INSERT INTO simplesql_data (id, data, revision) VALUES (:id, :data, :revision)
         ON CONFLICT(id) DO UPDATE SET data = excluded.data, revision = excluded.revision;
+        -- #&
+        SELECT id, data, revision FROM simplesql_data WHERE id = :id;
     -- #}
     -- #{ pair_engine
         SELECT 'sqlite' AS engine FROM sqlite_master WHERE type = 'table' AND name = 'simplesql_data';
@@ -32,6 +34,8 @@
             (:first_id, :first_data, :first_revision),
             (:second_id, :second_data, :second_revision)
         ON CONFLICT(id) DO UPDATE SET data = excluded.data, revision = excluded.revision;
+        -- #&
+        SELECT id, data, revision FROM simplesql_data WHERE id IN (:first_id, :second_id);
     -- #}
     -- #{ delete
         -- #    :id string
