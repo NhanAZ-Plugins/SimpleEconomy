@@ -63,7 +63,7 @@ class PayCommand extends Command implements PluginOwned {
 		}
 
 		$this->plugin->withPlayerSession($senderName,
-			onSession: function (Session $senderSession, bool $temporary) use ($sender, $receiver, $senderName, $targetName, $amount, $lang): void {
+			onSession: function (Session $senderSession, bool $temporary) use ($sender, $senderName, $targetName, $amount, $lang): void {
 				if ($temporary) {
 					$this->plugin->closeTempSession($senderName);
 					$sender->sendMessage($lang->get("pay.loading-self"));
@@ -76,10 +76,14 @@ class PayCommand extends Command implements PluginOwned {
 					return;
 				}
 				$this->plugin->withPlayerSession($targetName,
-					onSession: function (Session $targetSession, bool $targetTemporary) use ($sender, $receiver, $senderSession, $senderName, $senderBalance, $newSenderBalance, $targetName, $amount, $lang): void {
-						if ($targetTemporary || !$receiver->isOnline()) {
-							if ($targetTemporary) $this->plugin->closeTempSession($targetName);
+					onSession: function (Session $targetSession, bool $targetTemporary) use ($sender, $senderSession, $senderName, $senderBalance, $newSenderBalance, $targetName, $amount, $lang): void {
+						if ($targetTemporary) {
+							$this->plugin->closeTempSession($targetName);
 							$sender->sendMessage($lang->get("pay.loading-target", ["player" => $targetName]));
+							return;
+						}
+						if ($this->plugin->getServer()->getPlayerExact($targetName) === null) {
+							$sender->sendMessage($lang->get("general.player-not-online", ["player" => $targetName]));
 							return;
 						}
 						$targetBalance = BalanceReader::read($targetSession);
@@ -95,7 +99,7 @@ class PayCommand extends Command implements PluginOwned {
 							return;
 						}
 						$this->plugin->saveTransfer($senderSession, $senderName, $senderBalance, $targetSession, $targetName, $targetBalance, $amount,
-							function (bool $success) use ($sender, $receiver, $senderName, $senderBalance, $newSenderBalance, $targetName, $targetBalance, $newTargetBalance, $amount, $lang): void {
+							function (bool $success) use ($sender, $senderName, $senderBalance, $newSenderBalance, $targetName, $targetBalance, $newTargetBalance, $amount, $lang): void {
 								if (!$success) {
 									$sender->sendMessage($lang->get("general.save-failed", ["player" => $targetName]));
 									return;
@@ -104,7 +108,7 @@ class PayCommand extends Command implements PluginOwned {
 								(new TransactionSuccessEvent($targetName, $targetBalance, $newTargetBalance, TransactionEvent::TYPE_PAY))->call();
 								$formatted = $this->plugin->formatMoney($amount);
 								if ($sender->isOnline()) $sender->sendMessage($lang->get("pay.sent", ["amount" => $formatted, "player" => $targetName]));
-								if ($receiver->isOnline()) $receiver->sendMessage($lang->get("pay.received", ["amount" => $formatted, "player" => $senderName]));
+								$this->plugin->getServer()->getPlayerExact($targetName)?->sendMessage($lang->get("pay.received", ["amount" => $formatted, "player" => $senderName]));
 							});
 					},
 					onError: function (string $message) use ($sender): void { $sender->sendMessage($message); },
