@@ -46,6 +46,8 @@ def run_server(root: Path, data: Path, plugins: Path, mode: str) -> str:
                 content = log.read_text(encoding="utf-8", errors="replace")
                 if "Done (" in content and marker in content:
                     break
+                if "/CRITICAL]:" in content or "/EMERGENCY]:" in content:
+                    break
                 time.sleep(0.25)
             content = log.read_text(encoding="utf-8", errors="replace")
             if "Done (" not in content or marker not in content:
@@ -100,6 +102,7 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-mysql-", dir=os.environ.g
 
     run_server(root, data, plugins, "success")
     before = database("read")
+    print(json.dumps({"mysql_before_fault": before}), flush=True)
     balances = {row["id"]: json.loads(row["data"])["balance"] for row in before}
     if balances != {"proberecipient": 13, "probesender": 37}:
         raise RuntimeError(f"MySQL paired success did not persist both balances: {before}")

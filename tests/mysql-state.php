@@ -20,6 +20,17 @@ if ($engine !== "InnoDB") {
 }
 if ($action === "fault") {
 	$db->exec("CREATE TRIGGER reject_transfer_row BEFORE INSERT ON simplesql_data FOR EACH ROW BEGIN IF NEW.id = 'proberecipient' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'intentional transfer fault probe'; END IF; END");
+	$db->beginTransaction();
+	try {
+		$db->exec("INSERT INTO simplesql_data (id, data, revision) VALUES ('proberecipient', '{\"balance\":13}', 1) ON DUPLICATE KEY UPDATE data = VALUES(data), revision = VALUES(revision)");
+		$db->rollBack();
+		throw new RuntimeException("The MySQL fault trigger did not reject the recipient upsert");
+	} catch (PDOException $error) {
+		$db->rollBack();
+		if (!str_contains($error->getMessage(), "intentional transfer fault probe")) {
+			throw $error;
+		}
+	}
 	echo "Installed second-row MySQL fault trigger\n";
 } elseif ($action === "read") {
 	$rows = $db->query("SELECT id, data, revision FROM simplesql_data WHERE id IN ('probesender', 'proberecipient') ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
