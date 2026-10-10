@@ -1,6 +1,6 @@
 name: SimpleEconomy
 main: NhanAZ\SimpleEconomy\Main
-version: 1.0.0
+version: 1.1.0-beta.1
 api: 5.0.0
 author: NhanAZ
 description: "An economy plugin powered by SimpleSQL hybrid SQL-YAML storage with paired SQL transfers."
