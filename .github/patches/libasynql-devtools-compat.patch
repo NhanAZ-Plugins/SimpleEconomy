@@ -32,3 +32,20 @@ index eebc64d..9511e25 100644
  	}
  
  	public function __construct(string $name, array $query, string $doc, array $variables, ?string $file, int $lineNo){
+diff --git a/libasynql/src/poggit/libasynql/mysqli/MysqliThread.php b/libasynql/src/poggit/libasynql/mysqli/MysqliThread.php
+--- a/libasynql/src/poggit/libasynql/mysqli/MysqliThread.php
++++ b/libasynql/src/poggit/libasynql/mysqli/MysqliThread.php
+@@ -177,8 +177,10 @@ class MysqliThread extends SqlSlaveThread{
+ 			}, $params));
+ 			$stmt->bind_param($types, ...$params);
+ 			try{
+-				$stmt->execute();
+-			}catch(mysqli_sql_exception){
+-				throw new SqlError(SqlError::STAGE_EXECUTE, $mysqli->error, $query, $params);
++				if(!$stmt->execute()){
++					throw new SqlError(SqlError::STAGE_EXECUTE, $stmt->error, $query, $params);
++				}
++			}catch(mysqli_sql_exception $error){
++				throw new SqlError(SqlError::STAGE_EXECUTE, $error->getMessage(), $query, $params);
+ 			}
+ 			switch($mode){
