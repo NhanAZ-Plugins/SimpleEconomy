@@ -79,7 +79,7 @@ class LeaderboardTask extends AsyncTask {
 		}
 
 		foreach ($result as $name => $balance) {
-			if ((is_string($name) || is_int($name)) && is_int($balance) && $balance >= 0) {
+			if (is_int($balance) && $balance >= 0) {
 				$plugin->updateBalanceCache((string) $name, $balance);
 			}
 		}
