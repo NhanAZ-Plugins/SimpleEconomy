@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NhanAZ\SimpleEconomy;
 
 use Closure;
+use InvalidArgumentException;
 use NhanAZ\SimpleEconomy\command\AddMoneyCommand;
 use NhanAZ\SimpleEconomy\command\MoneyCommand;
 use NhanAZ\SimpleEconomy\command\PayCommand;
@@ -23,7 +24,7 @@ use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 
 /**
- * SimpleEconomy - A production-ready economy plugin powered by SimpleSQL.
+ * SimpleEconomy plugin powered by SimpleSQL.
  *
  * Features:
  *   - Simple API for other plugins (getMoney, setMoney, addMoney, reduceMoney)
@@ -71,35 +72,54 @@ class Main extends PluginBase implements Listener {
 	// ──────────────────────────────────────────────
 
 	protected function onEnable(): void {
-		self::$instance = $this;
-
 		$this->saveDefaultConfig();
 
 		// Config version check
-		$configVersion = (int) $this->getConfig()->get("config-version", 0);
+		$configVersion = self::configInt($this->getConfig()->get("config-version", 0), "config-version", 0);
 		if ($configVersion < self::CONFIG_VERSION) {
 			$this->getLogger()->warning("Your config.yml is outdated (v$configVersion, latest: v" . self::CONFIG_VERSION . "). Please regenerate it.");
 		}
 
-		$this->defaultBalance = (int) $this->getConfig()->get("default-balance", 1000);
-		$this->topmoneyPerPage = (int) $this->getConfig()->get("topmoney-per-page", 10);
-		$this->leaderboardSize = (int) $this->getConfig()->get("leaderboard-size", 100);
+		$this->defaultBalance = self::configInt($this->getConfig()->get("default-balance", 1000), "default-balance", 0);
+		$this->topmoneyPerPage = self::configInt($this->getConfig()->get("topmoney-per-page", 10), "topmoney-per-page", 1);
+		$this->leaderboardSize = self::configInt($this->getConfig()->get("leaderboard-size", 100), "leaderboard-size", 1);
 
 		// Currency
 		$currencyConfig = $this->getConfig()->get("currency", []);
-		$symbol = (string) ($currencyConfig["symbol"] ?? "$");
-		$formatterMode = (string) ($currencyConfig["formatter"] ?? CurrencyFormatter::DEFAULT);
+		if (!is_array($currencyConfig)) {
+			throw new InvalidArgumentException("Config 'currency' must be a mapping.");
+		}
+		$symbol = self::configString($currencyConfig["symbol"] ?? "$", "currency.symbol");
+		$formatterMode = self::configString($currencyConfig["formatter"] ?? CurrencyFormatter::DEFAULT, "currency.formatter");
+		if ($formatterMode !== CurrencyFormatter::DEFAULT && $formatterMode !== CurrencyFormatter::COMPACT) {
+			throw new InvalidArgumentException("Config 'currency.formatter' must be 'default' or 'compact'.");
+		}
 		$this->formatter = new CurrencyFormatter($symbol, $formatterMode);
 
 		// Language
-		$language = (string) $this->getConfig()->get("language", "eng");
+		$language = self::configString($this->getConfig()->get("language", "eng"), "language");
+		if (!in_array($language, ["eng", "vie", "kor", "rus", "spa", "ukr", "zho", "ind", "tur", "fra", "por", "deu", "jpn", "ita"], true)) {
+			throw new InvalidArgumentException("Config 'language' must name a bundled language.");
+		}
 		$this->lang = new LangManager($this, $language);
 
 		// SimpleSQL
+		$databaseConfig = $this->getConfig()->get("database");
+		if (!is_array($databaseConfig)) {
+			throw new InvalidArgumentException("Config 'database' must be a mapping.");
+		}
+		$dbConfig = [];
+		foreach ($databaseConfig as $key => $value) {
+			if (!is_string($key)) {
+				throw new InvalidArgumentException("Config 'database' must use string keys.");
+			}
+			$dbConfig[$key] = $value;
+		}
 		$this->simpleSQL = SimpleSQL::create(
 			plugin: $this,
-			dbConfig: $this->getConfig()->get("database"),
+			dbConfig: $dbConfig,
 		);
+		self::$instance = $this;
 
 		// Rebuild leaderboard cache asynchronously (S3 compliant)
 		$this->getServer()->getAsyncPool()->submitTask(
@@ -129,6 +149,20 @@ class Main extends PluginBase implements Listener {
 		if (isset($this->simpleSQL)) {
 			$this->simpleSQL->close();
 		}
+	}
+
+	private static function configInt(mixed $value, string $key, int $minimum): int {
+		if (!is_int($value) || $value < $minimum) {
+			throw new InvalidArgumentException("Config '$key' must be an integer of at least $minimum.");
+		}
+		return $value;
+	}
+
+	private static function configString(mixed $value, string $key): string {
+		if (!is_string($value)) {
+			throw new InvalidArgumentException("Config '$key' must be a string.");
+		}
+		return $value;
 	}
 
 	// ──────────────────────────────────────────────

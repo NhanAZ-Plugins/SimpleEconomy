@@ -95,6 +95,8 @@ database:
   type: sqlite
 ```
 
+The plugin requires integer values for `config-version` and `default-balance`, positive integers for `topmoney-per-page` and `leaderboard-size`, a bundled language code, valid currency settings and a database mapping. Invalid values stop startup instead of being silently converted. Back up `config.yml` and player data before editing storage settings.
+
 ### Supported Languages
 
 | Code | Language |
