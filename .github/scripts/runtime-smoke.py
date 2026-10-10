@@ -12,8 +12,9 @@ from pathlib import Path
 
 server = Path(os.environ["SERVER_PHAR"])
 plugin = Path(os.environ["PLUGIN_PHAR"])
-if not server.is_file() or not plugin.is_file():
-    raise RuntimeError("Pinned server PHAR and verified plugin PHAR are required")
+example = Path(os.environ["EXAMPLE_PHAR"])
+if not server.is_file() or not plugin.is_file() or not example.is_file():
+    raise RuntimeError("Pinned server and verified producer and example PHARs are required")
 
 with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.get("RUNNER_TEMP")) as temporary:
     root = Path(temporary)
@@ -22,6 +23,7 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
     data.mkdir()
     plugins.mkdir()
     shutil.copy2(plugin, plugins / "SimpleEconomy.phar")
+    shutil.copy2(example, plugins / "SimpleEconomyExample.phar")
     (data / "server.properties").write_text(
         "language=eng\nserver-ip=127.0.0.1\nserver-port=0\nenable-ipv6=off\n"
         "enable-query=off\nxbox-auth=off\nlevel-type=FLAT\nview-distance=2\nmax-players=1\n",
@@ -55,7 +57,14 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
                 process.stdin.write("setmoney OfflineTester 42\n")
                 process.stdin.flush()
                 time.sleep(5)
+                process.stdin.write("setmoney OfflineTester -1\n")
+                process.stdin.write("addmoney OfflineTester 9223372036854775807\n")
+                process.stdin.write("reducemoney OfflineTester -1\n")
                 process.stdin.write("money OfflineTester\n")
+                process.stdin.write("wallet\n")
+                process.stdin.write("richest\n")
+                process.stdin.write("reward OfflineTester 1\n")
+                process.stdin.write("fine OfflineTester 1\n")
                 process.stdin.flush()
                 time.sleep(2)
             if process.poll() is None and process.stdin is not None:
@@ -92,6 +101,14 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
     evidence = {
         "ready": ready,
         "plugin_enabled": "Enabling SimpleEconomy v" in content,
+        "example_enabled": "Enabling SimpleEconomyExample v" in content,
+        "example_disabled": "Disabling SimpleEconomyExample v" in content,
+        "example_commands": {
+            "wallet": "This command can only be used in-game." in content,
+            "richest": "No players found on the leaderboard." in content or "=== Top 5 Richest Players ===" in content,
+            "reward": "Failed! Is the player online?" in content,
+            "fine": "Failed! Player may be offline or doesn't have enough money." in content,
+        },
         "exit_code": exit_code,
         "database_rows": rows,
         "mirror_balances": mirror_balances,
@@ -101,6 +118,9 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
     if (
         not ready
         or not evidence["plugin_enabled"]
+        or not evidence["example_enabled"]
+        or not evidence["example_disabled"]
+        or not all(evidence["example_commands"].values())
         or exit_code != 0
         or errors
         or not any(name == "offlinetester" and json.loads(value).get("balance") == 42 for name, value, _ in rows)

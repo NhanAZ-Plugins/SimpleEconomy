@@ -3,7 +3,7 @@ main: NhanAZ\SimpleEconomy\Main
 version: 1.0.0
 api: 5.0.0
 author: NhanAZ
-description: "A production-ready economy plugin powered by SimpleSQL - Hybrid SQL-YAML storage."
+description: "An economy plugin powered by SimpleSQL hybrid SQL-YAML storage. Transfers are temporarily unavailable."
 softdepend: ScoreHud
 
 permissions:

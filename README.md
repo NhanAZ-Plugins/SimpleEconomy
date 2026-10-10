@@ -3,19 +3,19 @@
 A hybrid SQL and YAML economy plugin for [Axolotl-PM](https://github.com/axolotl-pm/PocketMine-MP), powered by [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL).
 
 > [!WARNING]
-> SimpleEconomy passes the build workflow's PHPStan maximum-level check and isolated offline SQLite/YAML smoke test. The `/pay` path still lacks an atomic two-account transaction and failure tests. Do not treat a downloadable CI artifact as a verified production release.
+> The build workflow checks PHPStan at maximum level, isolated offline SQLite/YAML behavior and the pinned example consumer's startup and console commands. `/pay` currently rejects transfers because two-account atomic persistence has not been implemented. Do not treat a downloadable CI artifact as a verified production release.
 
 ---
 
 ## Storage and API
 
-SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror. It exposes balance methods and transaction events for other plugins. Balance changes can be visible in memory before a database save succeeds. The `/pay` path still needs a verified two-account transaction contract, so use isolated test data while evaluating it.
+SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror. It exposes balance methods and transaction events for other plugins. Balance changes can be visible in memory before a database save succeeds. `/pay` is unavailable until a verified two-account transaction contract exists, so use isolated test data while evaluating the remaining features.
 
 ---
 
 ## Features
 
-- **6 commands** - `/money`, `/pay`, `/setmoney`, `/addmoney`, `/reducemoney`, `/topmoney`
+- **5 active commands** - `/money`, `/setmoney`, `/addmoney`, `/reducemoney`, `/topmoney`. `/pay` returns an unavailable message.
 - **Name prefix matching** - type `/money nh` and it finds `NhanAZ`
 - **Offline player support** - check and modify balances of players who aren't online
 - **Leaderboard** - paginated `/topmoney` with async cache rebuild
@@ -33,7 +33,7 @@ SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror.
 
 The [build workflow](.github/workflows/build.yml) uses [DevTools](https://github.com/NhanAZ/DevTools) to generate and validate a standalone PHAR when its checks pass. The workflow pins exact tool, dependency and Axolotl-PM source revisions. Its default GitHub run title identifies the triggering commit or pull request.
 
-The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revision and result of each run.
+The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. It also analyzes and builds a pinned [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) revision, then boots both PHARs to check offline persistence and example console commands. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revisions and result of each run.
 
 For isolated evaluation, extract `SimpleEconomy.phar` from a verified artifact and place it in your test server's `plugins/` folder. The PHAR contains the required virions.
 
@@ -58,13 +58,15 @@ When the workflow passes, its artifact includes `build-metadata.json` with the e
 | Command | Description | Permission | Default |
 |---|---|---|---|
 | `/money [player]` | Check your balance, or someone else's | `simpleeconomy.command.money` | Everyone |
-| `/pay <player> <amount>` | Send money to another player | `simpleeconomy.command.pay` | Everyone |
+| `/pay <player> <amount>` | Temporarily unavailable while atomic persistence is implemented | `simpleeconomy.command.pay` | Everyone |
 | `/topmoney [page]` | View the richest players | `simpleeconomy.command.topmoney` | Everyone |
 | `/setmoney <player> <amount>` | Set a player's balance | `simpleeconomy.command.setmoney` | OP |
 | `/addmoney <player> <amount>` | Add money to a player | `simpleeconomy.command.addmoney` | OP |
 | `/reducemoney <player> <amount>` | Remove money from a player | `simpleeconomy.command.reducemoney` | OP |
 
-**Tip:** All commands support name prefix matching. If `Steve` is online, `/pay st 100` works.
+Balances are nonnegative integers. Admin commands accept decimal amounts and round them down without converting through a floating-point number. They reject scientific notation and amounts outside PHP's integer range. `/setmoney` accepts zero, while `/addmoney` and `/reducemoney` require an amount greater than zero.
+
+**Tip:** Player lookup commands support name prefix matching. For example, `/money st` can find online player `Steve`.
 
 **Tip:** Admin commands (`/setmoney`, `/addmoney`, `/reducemoney`) work on offline players too.
 
@@ -136,7 +138,7 @@ No extra plugins or configuration needed. Just add the tags to your ScoreHud con
 
 ## For Developers
 
-> **Want a full working example?** Check out [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) - a complete plugin demonstrating how to use the SimpleEconomy API with real commands and event listeners.
+> **Want an API example?** See [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) for sample commands and event listeners. Its isolated console paths have been checked; connected-player behavior still needs testing.
 
 ### Quick Start - Using the API
 
@@ -161,7 +163,7 @@ $eco->reduceMoney("Steve", 200);  // bool - false if insufficient funds
 $display = $eco->formatMoney(1500000);  // "$1,500,000" or "$1.5M"
 ```
 
-These are the core synchronous balance methods. An invalid stored balance raises `InvalidBalanceException` instead of being converted to another amount. Handle that exception before taking follow-up actions or changing player data.
+These are the core synchronous balance methods. They reject negative amounts, and `addMoney()` rejects integer overflow. An invalid stored balance raises `InvalidBalanceException` instead of being converted to another amount. Handle that exception before taking follow-up actions or changing player data. A returned `true` does not prove that the asynchronous database save has completed.
 
 ### Async API - Offline Players
 
