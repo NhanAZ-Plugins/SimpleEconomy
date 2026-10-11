@@ -144,7 +144,7 @@ No extra plugins or configuration needed. Just add the tags to your ScoreHud con
 
 ## For Developers
 
-> **Want an API example?** See [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) for sample commands and event listeners. Its isolated console paths have been checked; connected-player behavior still needs testing.
+> **Want an API example?** See [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) for sample commands and event listeners. Its four commands have been checked with a connected protocol client on one Axolotl-PM runtime.
 
 ### Quick Start - Using the API
 
@@ -170,6 +170,18 @@ $display = $eco->formatMoney(1500000);  // "$1,500,000" or "$1.5M"
 ```
 
 These are the core synchronous balance methods. They reject negative amounts, and `addMoney()` rejects integer overflow. An invalid stored balance raises `InvalidBalanceException` instead of being converted to another amount. Handle that exception before taking follow-up actions or changing player data. A returned `true` does not prove that the asynchronous database save has completed.
+
+For an online balance change that needs SQL confirmation, use a callback instead:
+
+```php
+$eco->addMoneyConfirmed("Steve", 500, function (bool $saved): void {
+    if ($saved) {
+        // SQL save and readback succeeded. The YAML mirror is queued separately.
+    }
+});
+```
+
+`setMoneyConfirmed()` and `reduceMoneyConfirmed()` use the same callback contract. The callback receives `false` for an unavailable session, invalid amount, cancelled transaction, insufficient funds, conflicting save or SQL failure. A `true` result means SQL persistence was confirmed by readback, but it does not mean the YAML mirror has finished writing. The original synchronous methods remain available with their existing immediate acceptance semantics.
 
 ### Async API - Offline Players
 

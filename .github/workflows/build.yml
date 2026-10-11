@@ -154,7 +154,9 @@ jobs:
           test "$(sha256sum "$EXAMPLE_PHAR" | cut -d ' ' -f 1)" = "$EXAMPLE_SHA256"
 
       - name: Build isolated paired-transfer test plugin
-        run: php -d phar.readonly=0 tests/build-transfer-probe.php build/TransferProbe.phar
+        run: |
+          php -l tests/transfer-probe/src/NhanAZ/TransferProbe/Main.php
+          php -d phar.readonly=0 tests/build-transfer-probe.php build/TransferProbe.phar
 
       - name: Download and verify pinned Axolotl-PM runtime
         shell: bash

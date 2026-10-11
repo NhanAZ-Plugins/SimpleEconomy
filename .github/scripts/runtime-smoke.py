@@ -114,6 +114,7 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
         "example_enabled": "Enabling SimpleEconomyExample v" in content,
         "example_disabled": "Disabling SimpleEconomyExample v" in content,
         "transfer_success": "TRANSFER_PROBE_SUCCESS" in content,
+        "confirmed_changes": "CONFIRMED_PROBE_SUCCESS" in content,
         "example_commands": {
             "wallet": "This command can only be used in-game." in content,
             "richest": "No players found on the leaderboard." in content or "=== Top 5 Richest Players ===" in content,
@@ -132,6 +133,7 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
         or not evidence["example_enabled"]
         or not evidence["example_disabled"]
         or not evidence["transfer_success"]
+        or not evidence["confirmed_changes"]
         or not all(evidence["example_commands"].values())
         or exit_code != 0
         or errors
@@ -210,3 +212,38 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
     ):
         print(failure_content[-12000:])
         raise RuntimeError("A failed SQL save appeared as a committed balance")
+
+    with closing(sqlite3.connect(databases[0])) as connection:
+        connection.execute(
+            "CREATE TRIGGER smoke_reject_confirmed BEFORE UPDATE ON simplesql_data "
+            "WHEN NEW.id = 'probesender' BEGIN SELECT RAISE(ABORT, 'intentional confirmed fault probe'); END"
+        )
+        connection.commit()
+
+    confirmed_ready, confirmed_exit, confirmed_content = run_server(
+        root, data, plugins, root / "confirmed-failure-server.log",
+        [("money ProbeSender", 2)], "confirmed-failure"
+    )
+    with closing(sqlite3.connect(databases[0])) as connection:
+        confirmed_rows = connection.execute(
+            "SELECT id, data, revision FROM simplesql_data WHERE id IN ('probesender', 'proberecipient') ORDER BY id"
+        ).fetchall()
+    confirmed_errors = [
+        line for line in confirmed_content.splitlines()
+        if "/CRITICAL]:" in line or "/EMERGENCY]:" in line or (
+            "/ERROR]:" in line
+            and "intentional confirmed fault probe" not in line
+            and "unsaved data was written" not in line
+        )
+    ]
+    confirmed_evidence = {
+        "ready": confirmed_ready,
+        "exit_code": confirmed_exit,
+        "save_rejected": "CONFIRMED_PROBE_ROLLBACK" in confirmed_content,
+        "rows_unchanged": confirmed_rows == baseline_probe_rows,
+        "unexpected_errors": confirmed_errors,
+    }
+    print(json.dumps({"confirmed_failure_probe": confirmed_evidence}, indent=2))
+    if not confirmed_ready or confirmed_exit != 0 or not confirmed_evidence["save_rejected"] or not confirmed_evidence["rows_unchanged"] or confirmed_errors:
+        print(confirmed_content[-12000:])
+        raise RuntimeError("A confirmed API call reported success before SQL persistence")

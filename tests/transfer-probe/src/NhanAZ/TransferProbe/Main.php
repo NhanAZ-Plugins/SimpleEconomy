@@ -17,8 +17,16 @@ final class Main extends PluginBase {
 		$property->setAccessible(true);
 		$manager = $property->getValue($economy);
 		$mode = getenv("SIMPLEECONOMY_TRANSFER_PROBE_MODE") ?: "success";
-		if (!in_array($mode, ["success", "failure"], true)) throw new RuntimeException("Unknown transfer probe mode");
+		if (!in_array($mode, ["success", "failure", "confirmed-failure"], true)) throw new RuntimeException("Unknown transfer probe mode");
 		$manager->openSession("probesender", function ($sender) use ($manager, $economy, $mode): void {
+			if ($mode === "confirmed-failure") {
+				if ($sender->get("balance") !== 37) throw new RuntimeException("Confirmed failure probe account changed");
+				$economy->addMoneyConfirmed("ProbeSender", 3, function (bool $saved) use ($sender): void {
+					if ($saved || $sender->get("balance") !== 37) throw new RuntimeException("Failed SQL save changed the visible balance");
+					$this->getLogger()->info("CONFIRMED_PROBE_ROLLBACK");
+				});
+				return;
+			}
 			$manager->openSession("proberecipient", function ($recipient) use ($sender, $economy, $mode): void {
 				if ($mode === "failure") {
 					if ($sender->get("balance") !== 37 || $recipient->get("balance") !== 13) {
@@ -42,11 +50,27 @@ final class Main extends PluginBase {
 
 	private function transfer(Economy $economy, object $sender, object $recipient, bool $expectSuccess): void {
 		$economy->saveTransfer($sender, "ProbeSender", $expectSuccess ? 42 : 37, $recipient, "ProbeRecipient", $expectSuccess ? 8 : 13, 5,
-			function (bool $success) use ($sender, $recipient, $expectSuccess): void {
+			function (bool $success) use ($economy, $sender, $recipient, $expectSuccess): void {
 				if ($success !== $expectSuccess || $sender->get("balance") !== 37 || $recipient->get("balance") !== 13) {
 					throw new RuntimeException("Paired transfer state or SQL result was incorrect");
 				}
 				$this->getLogger()->info($expectSuccess ? "TRANSFER_PROBE_SUCCESS" : "TRANSFER_PROBE_ROLLBACK");
+				if ($expectSuccess) {
+					$this->verifyConfirmedChanges($economy, $sender);
+				}
 			});
+	}
+
+	private function verifyConfirmedChanges(Economy $economy, object $session): void {
+		$economy->addMoneyConfirmed("ProbeSender", 3, function (bool $saved) use ($economy, $session): void {
+			if (!$saved || $session->get("balance") !== 40) throw new RuntimeException("Confirmed add was not saved");
+			$economy->reduceMoneyConfirmed("ProbeSender", 3, function (bool $saved) use ($economy, $session): void {
+				if (!$saved || $session->get("balance") !== 37) throw new RuntimeException("Confirmed reduction was not saved");
+				$economy->setMoneyConfirmed("ProbeSender", 37, function (bool $saved) use ($session): void {
+					if (!$saved || $session->get("balance") !== 37) throw new RuntimeException("Confirmed set was not saved");
+					$this->getLogger()->info("CONFIRMED_PROBE_SUCCESS");
+				});
+			});
+		});
 	}
 }

@@ -323,6 +323,63 @@ class Main extends PluginBase implements Listener {
 		return true;
 	}
 
+	/**
+	 * Report whether the balance was saved to SQL and confirmed by readback.
+	 * The YAML mirror is queued separately after SQL succeeds.
+	 * @param Closure(bool): void $onComplete
+	 */
+	public function setMoneyConfirmed(string $name, int $amount, Closure $onComplete): void {
+		$this->changeMoneyConfirmed($name, $amount, TransactionEvent::TYPE_SET, $onComplete);
+	}
+
+	/** @param Closure(bool): void $onComplete */
+	public function addMoneyConfirmed(string $name, int $amount, Closure $onComplete): void {
+		$this->changeMoneyConfirmed($name, $amount, TransactionEvent::TYPE_ADD, $onComplete);
+	}
+
+	/** @param Closure(bool): void $onComplete */
+	public function reduceMoneyConfirmed(string $name, int $amount, Closure $onComplete): void {
+		$this->changeMoneyConfirmed($name, $amount, TransactionEvent::TYPE_REDUCE, $onComplete);
+	}
+
+	/** @param Closure(bool): void $onComplete */
+	private function changeMoneyConfirmed(string $name, int $amount, string $type, Closure $onComplete): void {
+		$lower = strtolower($name);
+		if ($amount < 0 || isset($this->pendingCommandSaves[$lower])) {
+			$onComplete(false);
+			return;
+		}
+		$session = $this->simpleSQL->getSession($lower);
+		if ($session === null) {
+			$onComplete(false);
+			return;
+		}
+		$oldBalance = BalanceReader::read($session);
+		$newBalance = match ($type) {
+			TransactionEvent::TYPE_SET => $amount,
+			TransactionEvent::TYPE_ADD => BalanceAmount::add($oldBalance, $amount),
+			TransactionEvent::TYPE_REDUCE => BalanceAmount::reduce($oldBalance, $amount),
+			default => throw new InvalidArgumentException('Unsupported balance change type'),
+		};
+		if ($newBalance === null) {
+			$onComplete(false);
+			return;
+		}
+		$submitEvent = new TransactionSubmitEvent($name, $oldBalance, $newBalance, $type);
+		$submitEvent->call();
+		if ($submitEvent->isCancelled()) {
+			$onComplete(false);
+			return;
+		}
+		$this->saveCommandBalance($session, $name, $oldBalance, $newBalance,
+			function (bool $success) use ($name, $oldBalance, $newBalance, $type, $onComplete): void {
+				if ($success) {
+					(new TransactionSuccessEvent($name, $oldBalance, $newBalance, $type))->call();
+				}
+				$onComplete($success);
+			});
+	}
+
 	// ──────────────────────────────────────────────
 	//  Public API - Asynchronous (online + offline)
 	// ──────────────────────────────────────────────
