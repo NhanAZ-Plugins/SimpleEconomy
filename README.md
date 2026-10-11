@@ -51,6 +51,12 @@ The pinned libasynql source needs the narrow compatibility patch in `.github/pat
 
 When the workflow passes, its artifact includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up player data before replacing it. Rolling back the PHAR does not roll back SQL or YAML data. A successful build and PHPStan run does not establish gameplay or live SQL compatibility.
 
+### Upgrading from v1.0.0
+
+Back up the SQL database, YAML mirror and configuration before upgrading. The published [v1.0.0 PHAR](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.0.0) failed to start on the tested Axolotl-PM 5.49.1 server because its bundled libasynql attempted to load DEVirion. An upgrade from a running v1.0.0 server has therefore not been verified.
+
+For a limited storage check, a test database was created with the SQLite schema embedded in that release. A separate YAML document used the `revision` and `data` fields written by its SimpleSQL code. The [beta PHAR](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.1.0-beta.1) read the seeded balances of 1,234 and 3,456, then persisted 1,240 and 3,460 after admin updates. These fixtures do not cover every legacy dataset or a MySQL upgrade. Keep a data backup and a previously working PHAR for rollback.
+
 ---
 
 ## Commands
