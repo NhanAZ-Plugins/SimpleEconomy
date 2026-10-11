@@ -3,7 +3,7 @@
 A hybrid SQL and YAML economy plugin for [Axolotl-PM](https://github.com/axolotl-pm/PocketMine-MP), powered by [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL).
 
 > [!WARNING]
-> The build workflow checks PHPStan at maximum level, isolated SQLite/YAML behavior, a paired-transfer success and fault probe, and the pinned example consumer's startup and console commands. Connected-player `/pay` behavior and a live MySQL deployment remain unverified. Do not treat a downloadable CI artifact as a verified production release.
+> The build workflow checks PHPStan at maximum level, isolated SQLite/YAML behavior, a paired-transfer success and fault probe, and the pinned example consumer's startup and console commands. The [beta release](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.1.0-beta.1) has also passed an isolated two-client Bedrock protocol test: `/pay` notified both players and persisted both SQLite balances. A real game UI and production MySQL deployment remain unverified. Do not treat a downloadable CI artifact as a verified production release.
 
 ---
 
