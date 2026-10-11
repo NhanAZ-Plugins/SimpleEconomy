@@ -118,8 +118,8 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-smoke-", dir=os.environ.g
         "example_commands": {
             "wallet": "This command can only be used in-game." in content,
             "richest": "No players found on the leaderboard." in content or "=== Top 5 Richest Players ===" in content,
-            "reward": "Failed! Is the player online?" in content,
-            "fine": "Failed! Player may be offline or doesn't have enough money." in content,
+            "reward": "Reward failed. The player may be offline, the transaction was cancelled, or the SQL save failed." in content,
+            "fine": "Fine failed. The player may be offline, lack funds, the transaction was cancelled, or the SQL save failed." in content,
         },
         "exit_code": exit_code,
         "database_rows": rows,
