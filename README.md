@@ -3,7 +3,7 @@
 A hybrid SQL and YAML economy plugin for [Axolotl-PM](https://github.com/axolotl-pm/PocketMine-MP), powered by [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL).
 
 > [!WARNING]
-> The build workflow checks PHPStan at maximum level, isolated SQLite/YAML behavior, a paired-transfer success and fault probe, and the pinned example consumer's startup and console commands. The current [beta.2 prerelease](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.1.0-beta.2) adds confirmed balance callbacks. Its exact producer PHAR passed a two-client offline protocol test of `/pay Target 5`: both players received the expected messages, SQLite stored 995 for the sender and 1,005 for the target at revision 2, and `/money` still returned 995 after a server restart. This was not a live Bedrock game test. A separate headless client exercised the beta.2 callbacks through the example consumer: `/reward` and `/fine` saved their updates to SQL, and the balance persisted after shutdown. A real game UI and production MySQL deployment remain unverified.
+> Stable [v1.1.0](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.1.0) adds confirmed balance callbacks. The beta.2 prerelease PHAR passed a two-client offline protocol test of `/pay Target 5`: both players received the expected messages, SQLite stored 995 for the sender and 1,005 for the target at revision 2, and `/money` still returned 995 after a server restart. A headless client also exercised the callbacks through the example consumer: `/reward` and `/fine` saved their updates to SQL, and the balance persisted after shutdown. These tests do not cover a live Bedrock game UI or a production MySQL deployment.
 
 ---
 
@@ -53,11 +53,11 @@ When the workflow passes, its artifact includes `build-metadata.json` with the e
 
 ### Upgrading from v1.0.0
 
-Back up the SQL database, YAML mirror and configuration before upgrading. The published [v1.0.0 PHAR](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.0.0) failed to start on the tested Axolotl-PM 5.49.1 server because its bundled libasynql attempted to load DEVirion. An upgrade from a running v1.0.0 server has therefore not been verified.
+Back up the SQL database, YAML mirror and configuration before upgrading. The published [v1.0.0 PHAR](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.0.0) did not start in a standard Axolotl-PM 5.49.1 runtime because its bundled libasynql attempted to load DEVirion. A controlled test could load the exact PHAR only with a development-only DEVirion PM5 loader and deterministic plugin load order; this does not prove that an unmodified production v1.0.0 installation can upgrade directly.
 
 For a limited storage check, a test database was created with the SQLite schema embedded in that release. A separate YAML document used the `revision` and `data` fields written by its SimpleSQL code. The [beta PHAR](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.1.0-beta.1) read the seeded balances of 1,234 and 3,456, then persisted 1,240 and 3,460 after admin updates. Those beta.1 SQLite/YAML fixtures do not cover every legacy dataset or MySQL. Keep a data backup and a previously working PHAR for rollback.
 
-The current source also passed a limited MySQL compatibility probe in [CI run 38385798697](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/runs/38385798697). It used an isolated InnoDB database with the exact v1.0.0 MySQL table definition, loaded a synthetic balance of 1,234, and persisted 1,240 at revision 2. This checks the current source against that table shape; it does not start the published v1.0.0 PHAR or prove a live-server upgrade or compatibility with every existing database.
+The exact v1.0.0 PHAR was also exercised against a synthetic SQLite database made from its embedded schema. With the development loader described above, it read balance 1,234 and saved 1,240; the beta.2 PHAR then read 1,240 and saved 1,250. This verifies that controlled SQLite data path, not a stock-server upgrade, every legacy dataset or production database. The current source also passed a limited MySQL compatibility probe in [CI run 38385798697](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/runs/38385798697), using an isolated InnoDB database with the exact v1.0.0 table definition and synthetic balance 1,234; it persisted 1,240 at revision 2. That CI job does not establish compatibility with every existing database.
 
 ---
 
