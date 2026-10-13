@@ -55,7 +55,9 @@ When the workflow passes, its artifact includes `build-metadata.json` with the e
 
 Back up the SQL database, YAML mirror and configuration before upgrading. The published [v1.0.0 PHAR](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.0.0) failed to start on the tested Axolotl-PM 5.49.1 server because its bundled libasynql attempted to load DEVirion. An upgrade from a running v1.0.0 server has therefore not been verified.
 
-For a limited storage check, a test database was created with the SQLite schema embedded in that release. A separate YAML document used the `revision` and `data` fields written by its SimpleSQL code. The [beta PHAR](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.1.0-beta.1) read the seeded balances of 1,234 and 3,456, then persisted 1,240 and 3,460 after admin updates. These fixtures do not cover every legacy dataset or a MySQL upgrade. Keep a data backup and a previously working PHAR for rollback.
+For a limited storage check, a test database was created with the SQLite schema embedded in that release. A separate YAML document used the `revision` and `data` fields written by its SimpleSQL code. The [beta PHAR](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.1.0-beta.1) read the seeded balances of 1,234 and 3,456, then persisted 1,240 and 3,460 after admin updates. Those beta.1 SQLite/YAML fixtures do not cover every legacy dataset or MySQL. Keep a data backup and a previously working PHAR for rollback.
+
+The current source also passed a limited MySQL compatibility probe in [CI run 38385798697](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/runs/38385798697). It used an isolated InnoDB database with the exact v1.0.0 MySQL table definition, loaded a synthetic balance of 1,234, and persisted 1,240 at revision 2. This checks the current source against that table shape; it does not start the published v1.0.0 PHAR or prove a live-server upgrade or compatibility with every existing database.
 
 ---
 
