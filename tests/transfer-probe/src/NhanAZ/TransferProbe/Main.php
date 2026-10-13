@@ -17,7 +17,17 @@ final class Main extends PluginBase {
 		$property->setAccessible(true);
 		$manager = $property->getValue($economy);
 		$mode = getenv("SIMPLEECONOMY_TRANSFER_PROBE_MODE") ?: "success";
-		if (!in_array($mode, ["success", "failure", "confirmed-failure"], true)) throw new RuntimeException("Unknown transfer probe mode");
+		if (!in_array($mode, ["success", "failure", "confirmed-failure", "legacy-read"], true)) throw new RuntimeException("Unknown transfer probe mode");
+		if ($mode === "legacy-read") {
+			$manager->openSession("codexlegacy", function ($session) use ($economy): void {
+				if ($session->get("balance") !== 1234) throw new RuntimeException("Legacy MySQL balance was not loaded");
+				$economy->addMoneyConfirmed("CodexLegacy", 6, function (bool $saved) use ($session): void {
+					if (!$saved || $session->get("balance") !== 1240) throw new RuntimeException("Legacy MySQL balance was not migrated and saved");
+					$this->getLogger()->info("LEGACY_MIGRATION_PROBE_SUCCESS");
+				});
+			}, function (string $error): void { throw new RuntimeException($error); });
+			return;
+		}
 		$manager->openSession("probesender", function ($sender) use ($manager, $economy, $mode): void {
 			if ($mode === "confirmed-failure") {
 				if ($sender->get("balance") !== 37) throw new RuntimeException("Confirmed failure probe account changed");

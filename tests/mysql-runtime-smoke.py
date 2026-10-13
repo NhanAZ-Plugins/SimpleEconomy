@@ -17,18 +17,23 @@ for required in (server, plugin, probe):
         raise RuntimeError(f"Missing verified PHAR: {required}")
 
 
-def database(action: str) -> object:
+def database(action: str, schema: str = "simple_economy") -> object:
     result = subprocess.run(
         ["php", "tests/mysql-state.php", action],
         check=True,
         capture_output=True,
         text=True,
+        env={**os.environ, "SIMPLEECONOMY_MYSQL_DATABASE": schema},
     )
-    return json.loads(result.stdout) if action == "read" else result.stdout.strip()
+    return json.loads(result.stdout) if action in ("read", "legacy-read") else result.stdout.strip()
 
 
 def run_server(root: Path, data: Path, plugins: Path, mode: str) -> str:
-    marker = "TRANSFER_PROBE_SUCCESS" if mode == "success" else "TRANSFER_PROBE_ROLLBACK"
+    marker = {
+        "success": "TRANSFER_PROBE_SUCCESS",
+        "failure": "TRANSFER_PROBE_ROLLBACK",
+        "legacy-read": "LEGACY_MIGRATION_PROBE_SUCCESS",
+    }[mode]
     log = root / f"mysql-{mode}.log"
     with log.open("w", encoding="utf-8") as output:
         process = subprocess.Popen(
@@ -82,12 +87,18 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-mysql-", dir=os.environ.g
     config_dir.mkdir(parents=True)
     shutil.copy2(plugin, plugins / "SimpleEconomy.phar")
     shutil.copy2(probe, plugins / "SimpleEconomyTransferProbe.phar")
-    (config_dir / "config.yml").write_text(
-        "config-version: 1\nlanguage: eng\ndatabase:\n  type: mysql\n"
-        "  mysql:\n    host: 127.0.0.1\n    username: root\n"
-        "    password: simplesql-ci-only\n    schema: simple_economy\n  worker-limit: 1\n",
-        encoding="utf-8",
-    )
+    config_path = config_dir / "config.yml"
+
+    def set_schema(schema: str) -> None:
+        config_path.write_text(
+            "config-version: 1\nlanguage: eng\ndatabase:\n  type: mysql\n"
+            "  mysql:\n    host: 127.0.0.1\n    username: root\n"
+            f"    password: simplesql-ci-only\n    schema: {schema}\n  worker-limit: 1\n",
+            encoding="utf-8",
+        )
+
+    set_schema("simple_economy")
+
     (data / "server.properties").write_text(
         "language=eng\nserver-ip=127.0.0.1\nserver-port=0\nenable-ipv6=off\n"
         "enable-query=off\nxbox-auth=off\nlevel-type=FLAT\nview-distance=2\nmax-players=1\n",
@@ -112,4 +123,21 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-mysql-", dir=os.environ.g
     after = database("read")
     if after != before:
         raise RuntimeError(f"MySQL paired failure changed a row: before={before}, after={after}")
-    print(json.dumps({"mysql_engine": "InnoDB", "success_balances": balances, "second_row_fault_rollback": True}))
+    database("create-legacy-database")
+    set_schema("simple_economy_legacy")
+    database("seed-legacy", "simple_economy_legacy")
+    run_server(root, data, plugins, "legacy-read")
+    migrated = database("legacy-read", "simple_economy_legacy")
+    if (
+        len(migrated) != 1
+        or migrated[0]["id"] != "codexlegacy"
+        or json.loads(migrated[0]["data"])["balance"] != 1240
+        or int(migrated[0]["revision"]) != 2
+    ):
+        raise RuntimeError(f"Legacy MySQL row was not migrated and persisted: {migrated}")
+    print(json.dumps({
+        "mysql_engine": "InnoDB",
+        "success_balances": balances,
+        "second_row_fault_rollback": True,
+        "legacy_schema_migration": migrated,
+    }))
