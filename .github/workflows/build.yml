@@ -73,6 +73,14 @@ jobs:
           path: .devtools-servers/axolotl
           persist-credentials: false
 
+      - name: Check out Axolotl-PM 5.0.0 API-floor source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: axolotl-pm/PocketMine-MP
+          ref: b16cc69974d4e805d21e6328ab77c0e17cd7116d # Axolotl-PM 5.0.0
+          path: .devtools-servers/axolotl-api-floor
+          persist-credentials: false
+
       - name: Check out Axolotl-PM PHP setup helper
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -106,6 +114,10 @@ jobs:
           INPUT_INSTALL-PATH: ./.php-bin
         run: node .devtools-dependencies/setup-php-action/dist/index.js
 
+      - name: Install API-floor Axolotl-PM source dependencies
+        run: composer install --no-dev --no-interaction --prefer-dist --no-progress
+        working-directory: .devtools-servers/axolotl-api-floor
+
       - name: Check balance input and arithmetic boundaries
         run: php tests/balance-amount.php
 
@@ -129,6 +141,13 @@ jobs:
           set -euo pipefail
           php .github/scripts/verify-phar.php "$PHAR_PATH" "$BUILD_METADATA"
           cp "$BUILD_METADATA" build/build-metadata.json
+
+      - name: Smoke test the build on Axolotl-PM 5.0.0
+        env:
+          AXOLOTL_SOURCE: .devtools-servers/axolotl-api-floor
+          PLUGIN_PHAR: ${{ steps.build.outputs.phar }}
+          PLUGIN_SHA256: ${{ steps.build.outputs.sha256 }}
+        run: python3 tests/api-floor-runtime-smoke.py
 
       - name: Analyze and build pinned example consumer
         id: example
