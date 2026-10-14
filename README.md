@@ -3,7 +3,7 @@
 A hybrid SQL and YAML economy plugin for [Axolotl-PM](https://github.com/axolotl-pm/PocketMine-MP), powered by [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL).
 
 > [!WARNING]
-> Stable [v1.1.0](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.1.0) adds confirmed balance callbacks. The beta.2 prerelease PHAR passed a two-client offline protocol test of `/pay Target 5`: both players received the expected messages, SQLite stored 995 for the sender and 1,005 for the target at revision 2, and `/money` still returned 995 after a server restart. A headless client also exercised the callbacks through the example consumer: `/reward` and `/fine` saved their updates to SQL, and the balance persisted after shutdown. These tests do not cover a live Bedrock game UI or a production MySQL deployment.
+> Stable [v1.1.1](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.1.1) includes a PHP 8.4 nullability correction for bundled libasynql. Stable [v1.1.0](https://github.com/NhanAZ-Plugins/SimpleEconomy/releases/tag/v1.1.0) introduced confirmed balance callbacks. The beta.2 prerelease PHAR passed a two-client offline protocol test of `/pay Target 5`: both players received the expected messages, SQLite stored 995 for the sender and 1,005 for the target at revision 2, and `/money` still returned 995 after a server restart. A headless client also exercised the callbacks through the example consumer: `/reward` and `/fine` saved their updates to SQL, and the balance persisted after shutdown. These tests do not cover a live Bedrock game UI or a production MySQL deployment.
 
 ---
 
