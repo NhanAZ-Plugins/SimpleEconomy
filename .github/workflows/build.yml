@@ -123,7 +123,7 @@ jobs:
 
       - name: Analyze plugin and build PHAR with DevTools
         id: build
-        uses: NhanAZ/DevTools@6180fb4a04e5981ccb24128823970de3e8fd3830 # v1.0.12
+        uses: NhanAZ/DevTools@8d13a75aaf4f330fdbd93737d58be9cacc41e262 # v1.0.15
         with:
           project: .
           virions: virions
@@ -151,7 +151,7 @@ jobs:
 
       - name: Analyze and build pinned example consumer
         id: example
-        uses: NhanAZ/DevTools@6180fb4a04e5981ccb24128823970de3e8fd3830 # v1.0.12
+        uses: NhanAZ/DevTools@8d13a75aaf4f330fdbd93737d58be9cacc41e262 # v1.0.15
         with:
           project: .devtools-dependencies/SimpleEconomyExample
           output: build-example
