@@ -95,6 +95,8 @@ jobs:
           set -euo pipefail
           git -C .devtools-dependencies/libasynql apply --check "$GITHUB_WORKSPACE/.github/patches/libasynql-devtools-compat.patch"
           git -C .devtools-dependencies/libasynql apply "$GITHUB_WORKSPACE/.github/patches/libasynql-devtools-compat.patch"
+          git -C .devtools-dependencies/libasynql apply --unidiff-zero --check "$GITHUB_WORKSPACE/.github/patches/libasynql-php84-nullability.patch"
+          git -C .devtools-dependencies/libasynql apply --unidiff-zero "$GITHUB_WORKSPACE/.github/patches/libasynql-php84-nullability.patch"
           mkdir -p virions/libasynql
           cp -R .devtools-dependencies/libasynql/libasynql/. virions/libasynql/
           cp .devtools-dependencies/libasynql/LICENSE virions/libasynql/LICENSE

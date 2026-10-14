@@ -1,0 +1,48 @@
+diff --git a/libasynql/src/poggit/libasynql/DataConnector.php b/libasynql/src/poggit/libasynql/DataConnector.php
+--- a/libasynql/src/poggit/libasynql/DataConnector.php
++++ b/libasynql/src/poggit/libasynql/DataConnector.php
+@@ -75 +75 @@
+-	public function loadQueryFile($fh, string $fileName = null) : void;
++	public function loadQueryFile($fh, ?string $fileName = null) : void;
+diff --git a/libasynql/src/poggit/libasynql/SqlError.php b/libasynql/src/poggit/libasynql/SqlError.php
+--- a/libasynql/src/poggit/libasynql/SqlError.php
++++ b/libasynql/src/poggit/libasynql/SqlError.php
+@@ -63 +63 @@
+-	public function __construct(string $stage, string $errorMessage, string $query = null, array $args = null){
++	public function __construct(string $stage, string $errorMessage, ?string $query = null, ?array $args = null){
+diff --git a/libasynql/src/poggit/libasynql/base/DataConnectorImpl.php b/libasynql/src/poggit/libasynql/base/DataConnectorImpl.php
+--- a/libasynql/src/poggit/libasynql/base/DataConnectorImpl.php
++++ b/libasynql/src/poggit/libasynql/base/DataConnectorImpl.php
+@@ -102 +102 @@
+-	public function loadQueryFile($fh, string $fileName = null) : void{
++	public function loadQueryFile($fh, ?string $fileName = null) : void{
+diff --git a/libasynql/src/poggit/libasynql/base/SqlSlaveThread.php b/libasynql/src/poggit/libasynql/base/SqlSlaveThread.php
+--- a/libasynql/src/poggit/libasynql/base/SqlSlaveThread.php
++++ b/libasynql/src/poggit/libasynql/base/SqlSlaveThread.php
+@@ -47 +47 @@
+-	protected function __construct(SleeperHandlerEntry $entry, QuerySendQueue $bufferSend = null, QueryRecvQueue $bufferRecv = null){
++	protected function __construct(SleeperHandlerEntry $entry, ?QuerySendQueue $bufferSend = null, ?QueryRecvQueue $bufferRecv = null){
+diff --git a/libasynql/src/poggit/libasynql/generic/GenericStatementFileParseException.php b/libasynql/src/poggit/libasynql/generic/GenericStatementFileParseException.php
+--- a/libasynql/src/poggit/libasynql/generic/GenericStatementFileParseException.php
++++ b/libasynql/src/poggit/libasynql/generic/GenericStatementFileParseException.php
+@@ -32 +32 @@
+-	public function __construct(string $problem, int $lineNo, string $file = null){
++	public function __construct(string $problem, int $lineNo, ?string $file = null){
+diff --git a/libasynql/src/poggit/libasynql/libasynql.php b/libasynql/src/poggit/libasynql/libasynql.php
+--- a/libasynql/src/poggit/libasynql/libasynql.php
++++ b/libasynql/src/poggit/libasynql/libasynql.php
+@@ -76 +76 @@
+-	public static function create(PluginBase $plugin, $configData, array $sqlMap, bool $logQueries = null) : DataConnector{
++	public static function create(PluginBase $plugin, $configData, array $sqlMap, ?bool $logQueries = null) : DataConnector{
+diff --git a/libasynql/src/poggit/libasynql/mysqli/MysqliThread.php b/libasynql/src/poggit/libasynql/mysqli/MysqliThread.php
+--- a/libasynql/src/poggit/libasynql/mysqli/MysqliThread.php
++++ b/libasynql/src/poggit/libasynql/mysqli/MysqliThread.php
+@@ -72 +72 @@
+-	public function __construct(MysqlCredentials $credentials, SleeperHandlerEntry $entry, AttachableThreadSafeLogger $logger, QuerySendQueue $bufferSend = null, QueryRecvQueue $bufferRecv = null){
++	public function __construct(MysqlCredentials $credentials, SleeperHandlerEntry $entry, AttachableThreadSafeLogger $logger, ?QuerySendQueue $bufferSend = null, ?QueryRecvQueue $bufferRecv = null){
+diff --git a/libasynql/src/poggit/libasynql/sqlite3/Sqlite3Thread.php b/libasynql/src/poggit/libasynql/sqlite3/Sqlite3Thread.php
+--- a/libasynql/src/poggit/libasynql/sqlite3/Sqlite3Thread.php
++++ b/libasynql/src/poggit/libasynql/sqlite3/Sqlite3Thread.php
+@@ -65 +65 @@
+-	public function __construct(string $path, SleeperHandlerEntry $entry, QuerySendQueue $send = null, QueryRecvQueue $recv = null){
++	public function __construct(string $path, SleeperHandlerEntry $entry, ?QuerySendQueue $send = null, ?QueryRecvQueue $recv = null){
