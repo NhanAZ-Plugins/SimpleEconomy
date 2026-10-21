@@ -1,0 +1,85 @@
+# Managed by BedrockNexus Plugins. Builds the plugin on every push and uploads
+# it as the "plugin-package" artifact; BedrockNexus copies the build a
+# developer picks and creates the GitHub release after a moderator approves it.
+name: BedrockNexus Publish
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bedrocknexus-publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Validate and package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          tools: composer
+      - name: Validate PHP sources and dependencies
+        run: |
+          set -euo pipefail
+          find src -type f -name "*.php" -print0 | xargs -0 -n1 php -l
+          if [ -f composer.json ]; then composer validate --no-check-publish && composer install --no-interaction --no-progress --prefer-dist; fi
+      - name: Package PocketMine plugin
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          include_paths=(plugin.yml src)
+          for optional_path in resources vendor; do
+            if [ -e "${optional_path}" ]; then
+              include_paths+=("${optional_path}")
+            fi
+          done
+          # Packed with PHP's own Phar class: nothing is downloaded at build
+          # time, and the same sources always give the same file list.
+          cat > "${RUNNER_TEMP}/build-phar.php" <<'PHP'
+          <?php
+          [, $out] = $argv;
+          $files = [];
+          foreach (array_slice($argv, 2) as $path) {
+              if (!is_dir($path)) {
+                  $files[] = $path;
+                  continue;
+              }
+              $entries = new RecursiveIteratorIterator(
+                  new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+              );
+              foreach ($entries as $entry) {
+                  if ($entry->isFile()) {
+                      $files[] = $entry->getPathname();
+                  }
+              }
+          }
+          sort($files);
+          $phar = new Phar($out);
+          $phar->startBuffering();
+          foreach ($files as $file) {
+              $phar->addFile($file, $file);
+          }
+          $phar->setStub('<?php __HALT_COMPILER();');
+          $phar->stopBuffering();
+          echo count($files), " files packed into ", basename($out), PHP_EOL;
+          PHP
+          php -dphar.readonly=0 "${RUNNER_TEMP}/build-phar.php" \
+            "${RUNNER_TEMP}/SimpleEconomy.phar" "${include_paths[@]}"
+          mv "${RUNNER_TEMP}/SimpleEconomy.phar" 'dist/SimpleEconomy.phar'
+          test -s 'dist/SimpleEconomy.phar'
+      - name: Upload plugin for BedrockNexus
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-package
+          path: dist/SimpleEconomy.phar
+          if-no-files-found: error
