@@ -13,6 +13,7 @@ from pathlib import Path
 source = Path(os.environ["AXOLOTL_SOURCE"]).resolve()
 plugin = Path(os.environ["PLUGIN_PHAR"]).resolve()
 expected_plugin_sha256 = os.environ["PLUGIN_SHA256"]
+php_binary = os.environ.get("PHP_BIN", "php")
 expected_server_commit = "b16cc69974d4e805d21e6328ab77c0e17cd7116d"
 
 if not (source / "src" / "PocketMine.php").is_file() or not (source / "vendor" / "autoload.php").is_file():
@@ -52,7 +53,7 @@ with tempfile.TemporaryDirectory(prefix="simpleeconomy-api-floor-", dir=os.envir
     with log.open("w", encoding="utf-8") as output:
         process = subprocess.Popen(
             [
-                "php",
+                php_binary,
                 str(source / "src" / "PocketMine.php"),
                 "--no-wizard",
                 "--disable-ansi",

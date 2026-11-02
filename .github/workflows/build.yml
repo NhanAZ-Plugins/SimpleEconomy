@@ -144,11 +144,20 @@ jobs:
           php .github/scripts/verify-phar.php "$PHAR_PATH" "$BUILD_METADATA"
           cp "$BUILD_METADATA" build/build-metadata.json
 
+      - name: Set up PHP 8.2 for API-floor smoke test
+        shell: bash
+        env:
+          INPUT_PHP-VERSION: "8.2"
+          INPUT_PM-VERSION-MAJOR: "5"
+          INPUT_INSTALL-PATH: ./.php82-bin
+        run: node .devtools-dependencies/setup-php-action/dist/index.js
+
       - name: Smoke test the build on Axolotl-PM 5.0.0
         env:
           AXOLOTL_SOURCE: .devtools-servers/axolotl-api-floor
           PLUGIN_PHAR: ${{ steps.build.outputs.phar }}
           PLUGIN_SHA256: ${{ steps.build.outputs.sha256 }}
+          PHP_BIN: ${{ github.workspace }}/.php82-bin/bin/php7/bin/php
         run: python3 tests/api-floor-runtime-smoke.py
 
       - name: Analyze and build pinned example consumer
