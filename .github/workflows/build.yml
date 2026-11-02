@@ -160,6 +160,14 @@ jobs:
           PHP_BIN: ${{ github.workspace }}/.php82-bin/bin/php7/bin/php
         run: python3 tests/api-floor-runtime-smoke.py
 
+      - name: Restore PHP 8.4 for remaining build checks
+        shell: bash
+        env:
+          INPUT_PHP-VERSION: "8.4"
+          INPUT_PM-VERSION-MAJOR: "5"
+          INPUT_INSTALL-PATH: ./.php-bin
+        run: node .devtools-dependencies/setup-php-action/dist/index.js
+
       - name: Analyze and build pinned example consumer
         id: example
         uses: NhanAZ/DevTools@v2 # v2
