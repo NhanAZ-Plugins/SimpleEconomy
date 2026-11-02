@@ -69,7 +69,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: axolotl-pm/PocketMine-MP
-          ref: dfe0d07e48a9e8d5a4a242fa43ff1cd3b743a955 # Axolotl-PM 5.49.1
+          ref: e881fc1bc1c401545baf6bd1f824e41ff3f57bd1 # Axolotl-PM 5.51.1
           path: .devtools-servers/axolotl
           persist-credentials: false
 
@@ -125,7 +125,7 @@ jobs:
 
       - name: Analyze plugin and build PHAR with DevTools
         id: build
-        uses: NhanAZ/DevTools@8d13a75aaf4f330fdbd93737d58be9cacc41e262 # v1.0.15
+        uses: NhanAZ/DevTools@v2 # v2
         with:
           project: .
           virions: virions
@@ -153,7 +153,7 @@ jobs:
 
       - name: Analyze and build pinned example consumer
         id: example
-        uses: NhanAZ/DevTools@8d13a75aaf4f330fdbd93737d58be9cacc41e262 # v1.0.15
+        uses: NhanAZ/DevTools@v2 # v2
         with:
           project: .devtools-dependencies/SimpleEconomyExample
           output: build-example
@@ -184,10 +184,10 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --location --silent --show-error \
-            https://github.com/axolotl-pm/PocketMine-MP/releases/download/5.49.1/PocketMine-MP.phar \
+            https://github.com/axolotl-pm/PocketMine-MP/releases/download/5.51.1/PocketMine-MP.phar \
             --output "$RUNNER_TEMP/PocketMine-MP.phar"
           printf '%s  %s\n' \
-            'b62ce263c079a00498a49cd3eab0bfa454f4ba195e5f9d62e32927cfc805c665' \
+            'bcfbd0deff349c2b25b1688299a7d54f1fc8a080d2f95e19884f8e341319021a' \
             "$RUNNER_TEMP/PocketMine-MP.phar" | sha256sum --check
 
       - name: Smoke test balance persistence and example commands
