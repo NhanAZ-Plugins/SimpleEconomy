@@ -1,85 +1,57 @@
-# Managed by BedrockNexus Plugins. Builds the plugin on every push and uploads
-# it as the "plugin-package" artifact; BedrockNexus copies the build a
-# developer picks and creates the GitHub release after a moderator approves it.
+# Copy into the plugin repository. Hub replaces SimpleEconomy on installation.
 name: BedrockNexus Publish
 
 on:
   push:
-    branches:
-      - "**"
+    branches: ['**']
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: bedrocknexus-publish-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   build:
-    name: Validate and package
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - name: Check out plugin source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          php-version: "8.2"
-          tools: composer
-      - name: Validate PHP sources and dependencies
+          persist-credentials: false
+
+      - name: Set up PHP for Axolotl-PM 5
+        uses: axolotl-pm/setup-php-action@b8c3f9add4f2ad4a5e2624a1112aba899ee8db0e # 1.0.0
+        with:
+          php-version: '8.4'
+          install-path: ../bin
+          pm-version-major: '5'
+
+      - name: Check PHP syntax
+        run: find src -name '*.php' -print0 | xargs -0 -r -n1 php -l
+
+      - name: Build with DevTools
+        id: build
+        uses: NhanAZ/DevTools@41cf43a4db67d47ef3d3f004b82309b3fc61c128 # v2.0.0
+        with:
+          project: .
+          output: build
+          prepare-dependencies: 'false'
+
+      - name: Stage the plugin file
+        env:
+          SOURCE_PHAR: ${{ steps.build.outputs.phar }}
+          OUTPUT_PHAR: 'dist/SimpleEconomy.phar'
         run: |
-          set -euo pipefail
-          find src -type f -name "*.php" -print0 | xargs -0 -n1 php -l
-          if [ -f composer.json ]; then composer validate --no-check-publish && composer install --no-interaction --no-progress --prefer-dist; fi
-      - name: Package PocketMine plugin
-        run: |
-          set -euo pipefail
           mkdir -p dist
-          include_paths=(plugin.yml src)
-          for optional_path in resources vendor; do
-            if [ -e "${optional_path}" ]; then
-              include_paths+=("${optional_path}")
-            fi
-          done
-          # Packed with PHP's own Phar class: nothing is downloaded at build
-          # time, and the same sources always give the same file list.
-          cat > "${RUNNER_TEMP}/build-phar.php" <<'PHP'
-          <?php
-          [, $out] = $argv;
-          $files = [];
-          foreach (array_slice($argv, 2) as $path) {
-              if (!is_dir($path)) {
-                  $files[] = $path;
-                  continue;
-              }
-              $entries = new RecursiveIteratorIterator(
-                  new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
-              );
-              foreach ($entries as $entry) {
-                  if ($entry->isFile()) {
-                      $files[] = $entry->getPathname();
-                  }
-              }
-          }
-          sort($files);
-          $phar = new Phar($out);
-          $phar->startBuffering();
-          foreach ($files as $file) {
-              $phar->addFile($file, $file);
-          }
-          $phar->setStub('<?php __HALT_COMPILER();');
-          $phar->stopBuffering();
-          echo count($files), " files packed into ", basename($out), PHP_EOL;
-          PHP
-          php -dphar.readonly=0 "${RUNNER_TEMP}/build-phar.php" \
-            "${RUNNER_TEMP}/SimpleEconomy.phar" "${include_paths[@]}"
-          mv "${RUNNER_TEMP}/SimpleEconomy.phar" 'dist/SimpleEconomy.phar'
-          test -s 'dist/SimpleEconomy.phar'
-      - name: Upload plugin for BedrockNexus
-        uses: actions/upload-artifact@v4
+          cp -- "$SOURCE_PHAR" "$OUTPUT_PHAR"
+
+      - name: Upload plugin for build selection
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: plugin-package
-          path: dist/SimpleEconomy.phar
+          path: 'dist/SimpleEconomy.phar'
           if-no-files-found: error
