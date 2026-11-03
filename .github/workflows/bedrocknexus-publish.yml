@@ -30,12 +30,39 @@ jobs:
           install-path: ../bin
           pm-version-major: '5'
 
+      - name: Check out SimpleSQL virion
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: NhanAZ-Libraries/SimpleSQL
+          ref: 4a9a5b1a25a75776053a35b7c400d34e95c1becd # SimpleSQL v1.1.1 source
+          path: virions/SimpleSQL
+          persist-credentials: false
+
+      - name: Check out libasynql virion source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: poggit/libasynql
+          ref: 270f8ae93e3271206eadd42ca81862ab9a54f322
+          path: .devtools-dependencies/libasynql
+          persist-credentials: false
+
+      - name: Prepare libasynql virion
+        run: |
+          set -euo pipefail
+          git -C .devtools-dependencies/libasynql apply --check "$GITHUB_WORKSPACE/.github/patches/libasynql-devtools-compat.patch"
+          git -C .devtools-dependencies/libasynql apply "$GITHUB_WORKSPACE/.github/patches/libasynql-devtools-compat.patch"
+          git -C .devtools-dependencies/libasynql apply --unidiff-zero --check "$GITHUB_WORKSPACE/.github/patches/libasynql-php84-nullability.patch"
+          git -C .devtools-dependencies/libasynql apply --unidiff-zero "$GITHUB_WORKSPACE/.github/patches/libasynql-php84-nullability.patch"
+          mkdir -p virions/libasynql
+          cp -R .devtools-dependencies/libasynql/libasynql/. virions/libasynql/
+          cp .devtools-dependencies/libasynql/LICENSE virions/libasynql/LICENSE
+
       - name: Check PHP syntax
         run: find src -name '*.php' -print0 | xargs -0 -r -n1 php -l
 
       - name: Build with DevTools
         id: build
-        uses: NhanAZ/DevTools@41cf43a4db67d47ef3d3f004b82309b3fc61c128 # v2.0.0
+        uses: NhanAZ/DevTools@5c68bdc7440e962c69f69317d96374315d25d645 # v2.0.1
         with:
           project: .
           output: build
