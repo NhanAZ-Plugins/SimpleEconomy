@@ -30,13 +30,21 @@ jobs:
           install-path: ../bin
           pm-version-major: '5'
 
-      - name: Check out SimpleSQL virion
+      - name: Check out SimpleSQL virion source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: NhanAZ-Libraries/SimpleSQL
           ref: 4a9a5b1a25a75776053a35b7c400d34e95c1becd # SimpleSQL v1.1.1 source
-          path: virions/SimpleSQL
+          path: .devtools-dependencies/SimpleSQL
           persist-credentials: false
+
+      - name: Stage SimpleSQL virion source
+        run: |
+          set -euo pipefail
+          mkdir -p virions/SimpleSQL
+          cp -R .devtools-dependencies/SimpleSQL/src virions/SimpleSQL/src
+          cp .devtools-dependencies/SimpleSQL/virion.yml virions/SimpleSQL/virion.yml
+          cp .devtools-dependencies/SimpleSQL/LICENSE virions/SimpleSQL/LICENSE
 
       - name: Check out libasynql virion source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
