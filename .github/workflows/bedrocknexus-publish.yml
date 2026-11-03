@@ -62,7 +62,7 @@ jobs:
 
       - name: Build with DevTools
         id: build
-        uses: NhanAZ/DevTools@13ed3284bce02e4b771eb2428bf2f226f79394b6 # v2.0.1
+        uses: NhanAZ/DevTools@3f5752b32da49bfd1e5c28bad304d110a42f76ff # v2.0.2
         with:
           project: .
           output: build
