@@ -51,7 +51,7 @@ try {
         }
     }
     foreach (['sqlite.sql', 'mysql.sql'] as $file) {
-        $assertBytes('resources/devtools-virions/SimpleSQL/simplesql/' . $file, $root . '/virions/SimpleSQL/resources/simplesql/' . $file);
+        $assertBytes('resources/simplesql/' . $file, $root . '/.devtools-dependencies/SimpleSQL/resources/simplesql/' . $file);
     }
     fwrite(STDOUT, "Verified PHAR hash, plugin resources, SQL resources, both private virion APIs and licenses. Runtime SQL remains a separate check.\n");
 } catch (Throwable $error) {
