@@ -1,0 +1,49 @@
+{
+    "name": "nhanaz/simple-economy",
+    "description": "An economy plugin powered by SimpleSQL hybrid SQL-YAML storage",
+    "type": "pocketmine-plugin",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "axolotl-pm/pocketmine-mp": "5.51.1",
+        "nhanaz/simplesql": "dev-main#dc616f820ced270817afe26f3ab3e4a9b385070b",
+        "sof3/await-generator": "dev-devtools-shading-compat as 3.6.1",
+        "sof3/libasynql": "dev-master#270f8ae93e3271206eadd42ca81862ab9a54f322"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/axolotl-pm/PocketMine-MP",
+            "no-api": true
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/NhanAZ-Libraries/SimpleSQL",
+            "no-api": true
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/NhanAZ-Libraries/await-generator",
+            "no-api": true
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/poggit/libasynql",
+            "no-api": true
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "NhanAZ\\SimpleEconomy\\": "src/NhanAZ/SimpleEconomy/"
+        }
+    },
+    "config": {
+        "allow-plugins": false,
+        "platform": {
+            "php": "8.4.0"
+        },
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

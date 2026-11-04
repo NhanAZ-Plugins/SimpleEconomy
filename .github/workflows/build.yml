@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: NhanAZ-Libraries/SimpleSQL
-          ref: 4a9a5b1a25a75776053a35b7c400d34e95c1becd # SimpleSQL v1.1.1 source
+          ref: dc616f820ced270817afe26f3ab3e4a9b385070b # SimpleSQL source with Composer resource policy
           path: .devtools-dependencies/SimpleSQL
           persist-credentials: false
 
@@ -134,11 +134,12 @@ jobs:
 
       - name: Analyze plugin and build PHAR with DevTools
         id: build
-        uses: NhanAZ/DevTools@v2 # v2
+        uses: NhanAZ/DevTools@8b7db655845dc5d9e5e51b26a5d0815d5f7e5323 # v2.1.1
         with:
           project: .
-          virions: virions
+          virions: .devtools-virions
           output: build
+          prepare-dependencies: "true"
           phpstan: "max"
           phpstan-server: .devtools-servers/axolotl
           phpstan-paths: .devtools-dependencies/ScoreHud/src
@@ -179,7 +180,7 @@ jobs:
 
       - name: Analyze and build pinned example consumer
         id: example
-        uses: NhanAZ/DevTools@v2 # v2
+        uses: NhanAZ/DevTools@8b7db655845dc5d9e5e51b26a5d0815d5f7e5323 # v2.1.1
         with:
           project: .devtools-dependencies/SimpleEconomyExample
           output: build-example

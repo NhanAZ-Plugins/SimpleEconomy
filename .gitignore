@@ -10,6 +10,7 @@
 /virions/
 /.devtools-dependencies/
 /.devtools-servers/
+/.devtools-virions/
 /dist/
 
 # OS
