@@ -40,7 +40,7 @@ jobs:
           project: .
           virions: .devtools-virions
           output: build
-          prepare-dependencies: 'true'
+          prepare-dependencies: ${{ hashFiles('composer.lock') != '' }}
 
       - name: Stage the plugin file
         env:
