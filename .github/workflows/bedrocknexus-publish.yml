@@ -19,7 +19,7 @@ jobs:
         shell: bash
     steps:
       - name: Check out plugin source
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -35,11 +35,12 @@ jobs:
 
       - name: Build with DevTools
         id: build
-        uses: NhanAZ/DevTools@41cf43a4db67d47ef3d3f004b82309b3fc61c128 # v2.0.0
+        uses: NhanAZ/DevTools@8b7db655845dc5d9e5e51b26a5d0815d5f7e5323 # v2.1.1
         with:
           project: .
+          virions: .devtools-virions
           output: build
-          prepare-dependencies: 'false'
+          prepare-dependencies: ${{ hashFiles('composer.lock') != '' }}
 
       - name: Stage the plugin file
         env:
