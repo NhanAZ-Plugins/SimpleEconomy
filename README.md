@@ -42,12 +42,12 @@ The workflow uploads an artifact for 14 days. It does not create a tag or GitHub
 ### From source
 
 1. Clone this repository
-2. Put the **SimpleSQL** and **libasynql** source packages directly inside `virions/`
+2. Run `composer install --no-dev --no-interaction --prefer-dist --no-progress`
 3. Follow the [DevTools build documentation](https://github.com/NhanAZ/DevTools/blob/main/docs/github-actions.md) and the pinned [repository workflow](.github/workflows/build.yml) to build the project root
 
-The exact CI dependency revisions are pinned in `.github/workflows/build.yml`, while `devtools.yml` declares the compatible virion versions.
+`composer.lock` pins the compatible Axolotl-PM, SimpleSQL, await-generator and libasynql revisions. DevTools reads the locked Composer packages and prepares the virions before shading them into the PHAR; no manually staged `virions/` folder or `devtools.yml` file is required for the project build.
 
-The pinned libasynql source needs the narrow compatibility patch in `.github/patches/` before DevTools can safely shade it. The workflow checks that the patch still matches the pinned revision and fails instead of applying it ambiguously.
+The workflow still keeps a separately pinned, patched libasynql checkout for the example-consumer compatibility test. That fixture path is distinct from the Composer-first project build.
 
 When the workflow passes, its artifact includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up player data before replacing it. Rolling back the PHAR does not roll back SQL or YAML data. A successful build and PHPStan run does not establish gameplay or live SQL compatibility.
 
@@ -296,7 +296,8 @@ Once these libraries support SimpleEconomy, plugins using them (shop plugins, au
 ```
 SimpleEconomy/
 ├── .github/workflows/build.yml # Per-commit DevTools build
-├── devtools.yml                # Required release virions
+├── composer.json               # Locked build dependencies
+├── composer.lock
 ├── plugin.yml
 ├── LICENSE
 ├── resources/

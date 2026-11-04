@@ -70,7 +70,9 @@ def run_server(root: Path, data: Path, plugins: Path, mode: str) -> str:
     unexpected = [
         line for line in content.splitlines()
         if "/CRITICAL]:" in line or "/EMERGENCY]:" in line or (
-            "/ERROR]:" in line and "intentional transfer fault probe" not in line
+            "/ERROR]:" in line
+            and "intentional transfer fault probe" not in line
+            and not (mode == "failure" and "Paired SQL write was not confirmed by a readback." in line)
         )
     ]
     if unexpected:
