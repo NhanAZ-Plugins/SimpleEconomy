@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: NhanAZ-Libraries/SimpleSQL
-          ref: dc616f820ced270817afe26f3ab3e4a9b385070b # SimpleSQL source with Composer resource policy
+          ref: de93de3471ee809e936b3f06cffba239cc0a5c0b # SimpleSQL source with PHP 8.4 virion compatibility
           path: .devtools-dependencies/SimpleSQL
           persist-credentials: false
 
