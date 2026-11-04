@@ -35,12 +35,11 @@ jobs:
 
       - name: Build with DevTools
         id: build
-        uses: NhanAZ/DevTools@8b7db655845dc5d9e5e51b26a5d0815d5f7e5323 # v2.1.1
+        uses: NhanAZ/DevTools@3f5752b32da49bfd1e5c28bad304d110a42f76ff # v2.0.2
         with:
           project: .
-          virions: .devtools-virions
           output: build
-          prepare-dependencies: 'true'
+          prepare-dependencies: 'false'
 
       - name: Stage the plugin file
         env:
