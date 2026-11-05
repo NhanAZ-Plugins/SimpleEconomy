@@ -50,6 +50,6 @@ reducemoney:
 
 topmoney:
   empty: "§eBelum ada data ekonomi."
-  header: "§6══ Top Uang §7(Halaman {page}/{max}) §6══"
+  header: "Top Uang (Halaman {page}/{max})"
   entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
-  footer: "§6══════════════════════"
+  footer: ""

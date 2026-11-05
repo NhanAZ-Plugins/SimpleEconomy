@@ -50,6 +50,6 @@ reducemoney:
 
 topmoney:
   empty: "§e経済データはまだありません。"
-  header: "§6══ 所持金ランキング §7({page}/{max}ページ) §6══"
+  header: "所持金ランキング ({page}/{max}ページ)"
   entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
-  footer: "§6══════════════════════"
+  footer: ""

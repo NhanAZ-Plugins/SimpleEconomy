@@ -50,6 +50,6 @@ reducemoney:
 
 topmoney:
   empty: "§e경제 데이터가 아직 없습니다."
-  header: "§6══ 부자 순위 §7({page}/{max}페이지) §6══"
+  header: "부자 순위 ({page}/{max}페이지)"
   entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
-  footer: "§6══════════════════════"
+  footer: ""

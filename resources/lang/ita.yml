@@ -50,6 +50,6 @@ reducemoney:
 
 topmoney:
   empty: "§eNessun dato economico disponibile."
-  header: "§6══ Top Soldi §7(Pagina {page}/{max}) §6══"
+  header: "Top Soldi (Pagina {page}/{max})"
   entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
-  footer: "§6══════════════════════"
+  footer: ""

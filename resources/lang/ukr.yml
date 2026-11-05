@@ -50,6 +50,6 @@ reducemoney:
 
 topmoney:
   empty: "§eЕкономічних даних поки немає."
-  header: "§6══ Топ балансу §7(Стор. {page}/{max}) §6══"
+  header: "Топ балансу (Стор. {page}/{max})"
   entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
-  footer: "§6══════════════════════"
+  footer: ""

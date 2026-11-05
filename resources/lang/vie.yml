@@ -50,6 +50,6 @@ reducemoney:
 
 topmoney:
   empty: "§eChưa có dữ liệu kinh tế nào."
-  header: "§6══ BXH Tiền §7(Trang {page}/{max}) §6══"
+  header: "BXH Tiền (Trang {page}/{max})"
   entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
-  footer: "§6══════════════════════"
+  footer: ""

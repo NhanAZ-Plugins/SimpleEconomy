@@ -50,6 +50,6 @@ reducemoney:
 
 topmoney:
   empty: "§eAucune donnée économique disponible."
-  header: "§6══ Top Argent §7(Page {page}/{max}) §6══"
+  header: "Top Argent (Page {page}/{max})"
   entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
-  footer: "§6══════════════════════"
+  footer: ""

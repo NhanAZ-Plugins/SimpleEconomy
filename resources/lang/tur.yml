@@ -50,6 +50,6 @@ reducemoney:
 
 topmoney:
   empty: "§eHenüz ekonomi verisi yok."
-  header: "§6══ Para Sıralaması §7(Sayfa {page}/{max}) §6══"
+  header: "Para Sıralaması (Sayfa {page}/{max})"
   entry: "§e#{rank} {highlight}{player} §7- §a{balance}"
-  footer: "§6══════════════════════"
+  footer: ""
