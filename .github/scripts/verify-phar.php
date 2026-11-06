@@ -55,7 +55,7 @@ try {
         'sof3/await-generator' => [
             'name' => 'sof3.await-generator',
             'composerVersion' => 'dev-devtools-shading-compat',
-            'reference' => '51b0294595af5053ed46e3858a80b6a956c75128',
+            'reference' => '150476bea0cf0ffc6c2cd7d81932ad1ae0d3dd9c',
             'antigen' => 'SOFe\\AwaitGenerator',
             'entryClass' => 'Await',
         ],
