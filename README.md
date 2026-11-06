@@ -32,7 +32,7 @@ SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror.
 
 ### From GitHub Actions
 
-The [build workflow](.github/workflows/build.yml) uses [DevTools](https://github.com/NhanAZ/DevTools) to generate and validate a standalone PHAR when its checks pass. The workflow pins exact tool, dependency and Axolotl-PM source revisions. Its default GitHub run title identifies the triggering commit or pull request.
+The [build workflow](.github/workflows/build.yml) uses [DevTools](https://github.com/AxolotlBucketLabs/DevTools) to generate and validate a standalone PHAR when its checks pass. The workflow pins exact tool, dependency and Axolotl-PM source revisions. Its default GitHub run title identifies the triggering commit or pull request.
 
 The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. It also analyzes and builds a pinned [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) revision, then boots both PHARs with an isolated test plugin to check persistence, paired writes, injected SQL failures and example console commands. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revisions and result of each run.
 
@@ -44,7 +44,7 @@ The workflow uploads an artifact for 14 days. It does not create a tag or GitHub
 
 1. Clone this repository
 2. Run `composer install --no-dev --no-interaction --prefer-dist --no-progress`
-3. Follow the [DevTools build documentation](https://github.com/NhanAZ/DevTools/blob/main/docs/github-actions.md) and the pinned [repository workflow](.github/workflows/build.yml) to build the project root
+3. Follow the [DevTools build documentation](https://github.com/AxolotlBucketLabs/DevTools/blob/main/docs/github-actions.md) and the pinned [repository workflow](.github/workflows/build.yml) to build the project root
 
 `composer.lock` pins the compatible Axolotl-PM, SimpleSQL, await-generator and libasynql revisions. DevTools reads the locked Composer packages and prepares the virions before shading them into the PHAR; no manually staged `virions/` folder or `devtools.yml` file is required for the project build.
 
@@ -340,7 +340,7 @@ Distributed under the [MIT License](LICENSE).
 
 ## Credits
 
-- **[DevTools](https://github.com/NhanAZ/DevTools)** - standalone PHAR builder and virion shader used by this repository's workflow
+- **[DevTools](https://github.com/AxolotlBucketLabs/DevTools)** - standalone PHAR builder and virion shader used by this repository's workflow
 - **[SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL)** - the hybrid SQL-YAML engine that powers this plugin
 - **[libasynql](https://github.com/poggit/libasynql)** - asynchronous SQL library
 - **[ScoreHud](https://github.com/Flavionsky/ScoreHud)** - scoreboard addon (optional integration)
