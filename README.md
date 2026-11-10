@@ -44,7 +44,7 @@ The workflow uploads an artifact for 14 days. It does not create a tag or GitHub
 
 1. Clone this repository
 2. Run `composer install --no-dev --no-interaction --prefer-dist --no-progress`
-3. Follow the [DevTools build documentation](https://github.com/AxolotlBucketLabs/DevTools/blob/main/docs/github-actions.md) and the pinned [repository workflow](.github/workflows/build.yml) to build the project root
+3. Follow the [DevTools build documentation](https://github.com/AxolotlBucketLabs/DevTools/blob/main/docs/github-actions.md) and the [repository workflow](.github/workflows/build.yml) to build the project root
 
 `composer.lock` pins the compatible Axolotl-PM, SimpleSQL, await-generator and libasynql revisions. DevTools reads the locked Composer packages and prepares the virions before shading them into the PHAR; no manually staged `virions/` folder or `devtools.yml` file is required for the project build.
 

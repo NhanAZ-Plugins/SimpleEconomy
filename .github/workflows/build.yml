@@ -134,7 +134,7 @@ jobs:
 
       - name: Analyze plugin and build PHAR with DevTools
         id: build
-        uses: AxolotlBucketLabs/DevTools@04fd726101109739bf1fd629dbe8499d3e2864bb # v3.0.0
+        uses: AxolotlBucketLabs/DevTools@latest
         with:
           project: .
           virions: .devtools-virions
@@ -180,7 +180,7 @@ jobs:
 
       - name: Analyze and build pinned example consumer
         id: example
-        uses: AxolotlBucketLabs/DevTools@04fd726101109739bf1fd629dbe8499d3e2864bb # v3.0.0
+        uses: AxolotlBucketLabs/DevTools@latest
         with:
           project: .devtools-dependencies/SimpleEconomyExample
           output: build-example
