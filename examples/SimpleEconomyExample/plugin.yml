@@ -1,8 +1,9 @@
 name: SimpleEconomyExample
-main: NhanAZ\SimpleEconomyExample\Main
+main: AxolotlBucketLabs\SimpleEconomyExample\Main
 version: 1.0.1
 api: 5.0.0
 author: NhanAZ
+authors: [AxolotlBucketLabs]
 description: "Example plugin demonstrating how to use the SimpleEconomy API."
 depend: SimpleEconomy
 

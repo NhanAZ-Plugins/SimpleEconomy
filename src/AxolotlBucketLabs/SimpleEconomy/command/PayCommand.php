@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomy\command;
+namespace AxolotlBucketLabs\SimpleEconomy\command;
 
-use NhanAZ\SimpleEconomy\BalanceAmount;
-use NhanAZ\SimpleEconomy\BalanceReader;
-use NhanAZ\SimpleEconomy\event\TransactionEvent;
-use NhanAZ\SimpleEconomy\event\TransactionSubmitEvent;
-use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
-use NhanAZ\SimpleEconomy\Main;
+use AxolotlBucketLabs\SimpleEconomy\BalanceAmount;
+use AxolotlBucketLabs\SimpleEconomy\BalanceReader;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionEvent;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionSubmitEvent;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionSuccessEvent;
+use AxolotlBucketLabs\SimpleEconomy\Main;
 use NhanAZ\SimpleSQL\Session;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;

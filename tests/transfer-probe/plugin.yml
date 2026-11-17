@@ -1,5 +1,5 @@
 name: SimpleEconomyTransferProbe
-main: NhanAZ\TransferProbe\Main
+main: AxolotlBucketLabs\TransferProbe\Main
 version: 0.0.1
 api: 5.0.0
 depend:

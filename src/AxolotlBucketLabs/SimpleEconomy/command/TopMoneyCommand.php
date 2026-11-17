@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomy\command;
+namespace AxolotlBucketLabs\SimpleEconomy\command;
 
-use NhanAZ\SimpleEconomy\Main;
+use AxolotlBucketLabs\SimpleEconomy\Main;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\PluginOwned;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomy\command;
+namespace AxolotlBucketLabs\SimpleEconomy\command;
 
-use NhanAZ\SimpleEconomy\BalanceReader;
-use NhanAZ\SimpleEconomy\Main;
+use AxolotlBucketLabs\SimpleEconomy\BalanceReader;
+use AxolotlBucketLabs\SimpleEconomy\Main;
 use NhanAZ\SimpleSQL\Session;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;

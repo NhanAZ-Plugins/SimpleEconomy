@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomy\command;
+namespace AxolotlBucketLabs\SimpleEconomy\command;
 
-use NhanAZ\SimpleEconomy\BalanceReader;
-use NhanAZ\SimpleEconomy\BalanceAmount;
-use NhanAZ\SimpleEconomy\event\TransactionEvent;
-use NhanAZ\SimpleEconomy\event\TransactionSubmitEvent;
-use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
-use NhanAZ\SimpleEconomy\Main;
+use AxolotlBucketLabs\SimpleEconomy\BalanceReader;
+use AxolotlBucketLabs\SimpleEconomy\BalanceAmount;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionEvent;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionSubmitEvent;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionSuccessEvent;
+use AxolotlBucketLabs\SimpleEconomy\Main;
 use NhanAZ\SimpleSQL\Session;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\PluginOwnedTrait;
 
-class ReduceMoneyCommand extends Command implements PluginOwned {
+class SetMoneyCommand extends Command implements PluginOwned {
 	use PluginOwnedTrait;
 
 	public function __construct(
 		private readonly Main $plugin,
 	) {
-		parent::__construct("reducemoney", "Reduce money from a player's balance (OP only).", "/reducemoney <player> <amount>");
-		$this->setPermission("simpleeconomy.command.reducemoney");
+		parent::__construct("setmoney", "Set a player's balance (OP only).", "/setmoney <player> <amount>");
+		$this->setPermission("simpleeconomy.command.setmoney");
 		$this->owningPlugin = $plugin;
 	}
 
@@ -31,22 +31,18 @@ class ReduceMoneyCommand extends Command implements PluginOwned {
 		$lang = $this->plugin->getLang();
 
 		if (count($args) < 2) {
-			$sender->sendMessage($lang->get("reducemoney.usage"));
+			$sender->sendMessage($lang->get("setmoney.usage"));
 			return;
 		}
 
 		$amountRaw = $args[1];
 		if (is_numeric($amountRaw) && str_starts_with(trim($amountRaw), '-')) {
-			$sender->sendMessage($lang->get("general.amount-positive"));
+			$sender->sendMessage($lang->get("general.amount-not-negative"));
 			return;
 		}
 		$amount = BalanceAmount::parseCommand($amountRaw);
 		if ($amount === null) {
 			$sender->sendMessage($lang->get("general.amount-not-number"));
-			return;
-		}
-		if ($amount <= 0) {
-			$sender->sendMessage($lang->get("general.amount-positive"));
 			return;
 		}
 
@@ -59,22 +55,8 @@ class ReduceMoneyCommand extends Command implements PluginOwned {
 			onSession: function (Session $session, bool $temporary) use ($sender, $targetName, $amount, $lang): void {
 				$oldBalance = BalanceReader::read($session);
 
-				if ($oldBalance < $amount) {
-					$sender->sendMessage($lang->get("reducemoney.insufficient", [
-						"player" => $targetName,
-						"balance" => $this->plugin->formatMoney($oldBalance),
-						"amount" => $this->plugin->formatMoney($amount),
-					]));
-					if ($temporary) {
-						$this->plugin->closeTempSession($targetName);
-					}
-					return;
-				}
-
-				$newBalance = $oldBalance - $amount;
-
 				// Fire pre-transaction event
-				$submitEvent = new TransactionSubmitEvent($targetName, $oldBalance, $newBalance, TransactionEvent::TYPE_REDUCE);
+				$submitEvent = new TransactionSubmitEvent($targetName, $oldBalance, $amount, TransactionEvent::TYPE_SET);
 				$submitEvent->call();
 				if ($submitEvent->isCancelled()) {
 					$sender->sendMessage($lang->get("general.transaction-cancelled"));
@@ -84,22 +66,21 @@ class ReduceMoneyCommand extends Command implements PluginOwned {
 					return;
 				}
 
-				$this->plugin->saveCommandBalance($session, $targetName, $oldBalance, $newBalance, function (bool $success) use ($sender, $targetName, $oldBalance, $amount, $newBalance, $temporary, $lang): void {
+				$this->plugin->saveCommandBalance($session, $targetName, $oldBalance, $amount, function (bool $success) use ($sender, $targetName, $oldBalance, $amount, $temporary, $lang): void {
 					if ($success) {
 						// Fire post-transaction event
-						(new TransactionSuccessEvent($targetName, $oldBalance, $newBalance, TransactionEvent::TYPE_REDUCE))->call();
+						(new TransactionSuccessEvent($targetName, $oldBalance, $amount, TransactionEvent::TYPE_SET))->call();
 
-						$sender->sendMessage($lang->get("reducemoney.success", [
-							"amount" => $this->plugin->formatMoney($amount),
+						$sender->sendMessage($lang->get("setmoney.success", [
 							"player" => $targetName,
-							"balance" => $this->plugin->formatMoney($newBalance),
+							"old" => $this->plugin->formatMoney($oldBalance),
+							"new" => $this->plugin->formatMoney($amount),
 						]));
 
 						$target = $this->plugin->getServer()->getPlayerExact($targetName);
 						if ($target !== null && strtolower($target->getName()) !== strtolower($sender->getName())) {
-							$target->sendMessage($lang->get("reducemoney.notify", [
+							$target->sendMessage($lang->get("setmoney.notify", [
 								"amount" => $this->plugin->formatMoney($amount),
-								"balance" => $this->plugin->formatMoney($newBalance),
 							]));
 						}
 					} else {

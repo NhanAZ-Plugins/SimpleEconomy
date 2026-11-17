@@ -1,5 +1,5 @@
 {
-    "name": "nhanaz/simple-economy",
+    "name": "axolotlbucketlabs/simple-economy",
     "description": "An economy plugin powered by SimpleSQL hybrid SQL-YAML storage",
     "type": "pocketmine-plugin",
     "license": "MIT",
@@ -40,7 +40,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "NhanAZ\\SimpleEconomy\\": "src/NhanAZ/SimpleEconomy/"
+            "AxolotlBucketLabs\\SimpleEconomy\\": "src/AxolotlBucketLabs/SimpleEconomy/"
         }
     },
     "config": {

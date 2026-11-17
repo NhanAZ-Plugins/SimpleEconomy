@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\TransferProbe;
+namespace AxolotlBucketLabs\TransferProbe;
 
-use NhanAZ\SimpleEconomy\Main as Economy;
+use AxolotlBucketLabs\SimpleEconomy\Main as Economy;
 use pocketmine\plugin\PluginBase;
 use ReflectionProperty;
 use RuntimeException;

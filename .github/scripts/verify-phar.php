@@ -13,7 +13,7 @@ try {
         throw new RuntimeException('PHAR bytes differ from the build result.');
     }
     $phar = new Phar($path);
-    foreach (['src/NhanAZ/SimpleEconomy/EconomyProviderTagsListener.php', 'src/NhanAZ/SimpleEconomy/ProviderBalanceFormatter.php'] as $sourceFile) {
+    foreach (['src/AxolotlBucketLabs/SimpleEconomy/EconomyProviderTagsListener.php', 'src/AxolotlBucketLabs/SimpleEconomy/ProviderBalanceFormatter.php'] as $sourceFile) {
         if (!isset($phar[$sourceFile])) {
             throw new RuntimeException("Missing economy-provider source file: {$sourceFile}");
         }

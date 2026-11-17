@@ -18,10 +18,10 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomyExample;
+namespace AxolotlBucketLabs\SimpleEconomyExample;
 
 use Closure;
-use NhanAZ\SimpleEconomy\Main as SimpleEconomy;
+use AxolotlBucketLabs\SimpleEconomy\Main as SimpleEconomy;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;

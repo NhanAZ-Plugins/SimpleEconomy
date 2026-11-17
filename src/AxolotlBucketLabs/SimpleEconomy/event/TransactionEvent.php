@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomy\event;
+namespace AxolotlBucketLabs\SimpleEconomy\event;
 
 use pocketmine\event\Event;
 

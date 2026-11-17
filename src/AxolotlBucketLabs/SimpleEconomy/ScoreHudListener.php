@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomy;
+namespace AxolotlBucketLabs\SimpleEconomy;
 
 use Ifera\ScoreHud\event\PlayerTagsUpdateEvent;
 use Ifera\ScoreHud\event\TagsResolveEvent;
 use Ifera\ScoreHud\scoreboard\ScoreTag;
-use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionSuccessEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\player\Player;

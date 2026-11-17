@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomy;
+namespace AxolotlBucketLabs\SimpleEconomy;
 
 use Closure;
 use InvalidArgumentException;
-use NhanAZ\SimpleEconomy\command\AddMoneyCommand;
-use NhanAZ\SimpleEconomy\command\MoneyCommand;
-use NhanAZ\SimpleEconomy\command\PayCommand;
-use NhanAZ\SimpleEconomy\command\ReduceMoneyCommand;
-use NhanAZ\SimpleEconomy\command\SetMoneyCommand;
-use NhanAZ\SimpleEconomy\command\TopMoneyCommand;
-use NhanAZ\SimpleEconomy\event\TransactionEvent;
-use NhanAZ\SimpleEconomy\event\TransactionSubmitEvent;
-use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
+use AxolotlBucketLabs\SimpleEconomy\command\AddMoneyCommand;
+use AxolotlBucketLabs\SimpleEconomy\command\MoneyCommand;
+use AxolotlBucketLabs\SimpleEconomy\command\PayCommand;
+use AxolotlBucketLabs\SimpleEconomy\command\ReduceMoneyCommand;
+use AxolotlBucketLabs\SimpleEconomy\command\SetMoneyCommand;
+use AxolotlBucketLabs\SimpleEconomy\command\TopMoneyCommand;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionEvent;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionSubmitEvent;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionSuccessEvent;
 use NhanAZ\SimpleSQL\Session;
 use NhanAZ\SimpleSQL\SimpleSQL;
 use pocketmine\event\Listener;

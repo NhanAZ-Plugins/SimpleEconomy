@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../src/NhanAZ/SimpleEconomy/BalanceAmount.php';
+require_once __DIR__ . '/../src/AxolotlBucketLabs/SimpleEconomy/BalanceAmount.php';
 
-use NhanAZ\SimpleEconomy\BalanceAmount;
+use AxolotlBucketLabs\SimpleEconomy\BalanceAmount;
 
 $inputs = [
 	['1.9', 1],

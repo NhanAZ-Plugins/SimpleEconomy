@@ -16,7 +16,7 @@ try {
 
     $phar = new Phar($path);
     $root = dirname(__DIR__, 2);
-    foreach (['plugin.yml', 'LICENSE', 'src/NhanAZ/SimpleEconomyExample/Main.php', 'src/NhanAZ/SimpleEconomyExample/EventListener.php'] as $relative) {
+    foreach (['plugin.yml', 'LICENSE', 'src/AxolotlBucketLabs/SimpleEconomyExample/Main.php', 'src/AxolotlBucketLabs/SimpleEconomyExample/EventListener.php'] as $relative) {
         $source = file_get_contents($root . '/' . $relative);
         if (!is_string($source)) {
             throw new RuntimeException("Cannot read source content: {$relative}");

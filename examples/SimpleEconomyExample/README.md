@@ -28,7 +28,7 @@ depend: SimpleEconomy
 Get the plugin instance and read the balance of an online player:
 
 ```php
-use NhanAZ\SimpleEconomy\Main as SimpleEconomy;
+use AxolotlBucketLabs\SimpleEconomy\Main as SimpleEconomy;
 
 $economy = SimpleEconomy::getInstance();
 if ($economy === null) {
@@ -61,7 +61,7 @@ Do not implement a transfer as two separate balance updates. They are not atomic
 
 `TransactionSubmitEvent` fires before a transaction and can cancel it. `TransactionSuccessEvent` is read-only. Synchronous balance methods dispatch it after updating the in-memory session, before the asynchronous SQL save finishes. Confirmed API methods and administrative commands dispatch it after SQL confirms the write.
 
-The example plugin includes working [command handlers](src/NhanAZ/SimpleEconomyExample/Main.php) and [event listeners](src/NhanAZ/SimpleEconomyExample/EventListener.php).
+The example plugin includes working [command handlers](src/AxolotlBucketLabs/SimpleEconomyExample/Main.php) and [event listeners](src/AxolotlBucketLabs/SimpleEconomyExample/EventListener.php).
 
 ## License
 

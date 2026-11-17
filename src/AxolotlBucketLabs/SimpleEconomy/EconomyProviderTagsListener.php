@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomy;
+namespace AxolotlBucketLabs\SimpleEconomy;
 
 use Ifera\ScoreHud\event\PlayerTagsUpdateEvent;
 use Ifera\ScoreHud\event\TagsResolveEvent;

@@ -1,8 +1,9 @@
 name: SimpleEconomy
-main: NhanAZ\SimpleEconomy\Main
+main: AxolotlBucketLabs\SimpleEconomy\Main
 version: 1.1.1
 api: 5.0.0
 author: NhanAZ
+authors: [AxolotlBucketLabs]
 description: "An economy plugin powered by SimpleSQL hybrid SQL-YAML storage with paired SQL transfers."
 softdepend: ScoreHud
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomy;
+namespace AxolotlBucketLabs\SimpleEconomy;
 
 use NhanAZ\SimpleSQL\Session;
 

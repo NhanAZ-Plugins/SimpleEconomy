@@ -19,11 +19,11 @@
 
 declare(strict_types=1);
 
-namespace NhanAZ\SimpleEconomyExample;
+namespace AxolotlBucketLabs\SimpleEconomyExample;
 
-use NhanAZ\SimpleEconomy\event\TransactionEvent;
-use NhanAZ\SimpleEconomy\event\TransactionSubmitEvent;
-use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionEvent;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionSubmitEvent;
+use AxolotlBucketLabs\SimpleEconomy\event\TransactionSuccessEvent;
 use pocketmine\event\Listener;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;

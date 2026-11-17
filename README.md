@@ -87,6 +87,8 @@ Do not implement transfers as two separate balance updates. The `/pay` command s
 
 ## Upgrading
 
+This release uses the `AxolotlBucketLabs\SimpleEconomy` namespace and the Composer package `axolotlbucketlabs/simple-economy`. Update imports from `NhanAZ\SimpleEconomy\...` and the Composer requirement before upgrading.
+
 Back up the database, YAML mirror, and configuration before upgrading. A direct production upgrade from `v1.0.0` has not been verified against existing server data. Keep the previous PHAR available in case you need to roll back.
 
 ## License and credits
