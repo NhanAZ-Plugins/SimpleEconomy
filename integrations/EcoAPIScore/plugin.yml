@@ -1,0 +1,13 @@
+name: EcoAPIScore
+main: NhanAZ\EcoAPIScore\Main
+api: 5.0.0
+version: 1.0.0
+author: NhanAZ
+description: Generic ScoreHud tags backed by EcoAPI providers.
+depend:
+  - ScoreHud
+softdepend:
+  - EconomyAPI
+  - BedrockEconomy
+  - SimpleEconomy
+  - EcoAPIPlugin

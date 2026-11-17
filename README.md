@@ -32,13 +32,13 @@ SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror.
 
 ### From GitHub Actions
 
-The [build workflow](.github/workflows/build.yml) uses [DevTools](https://github.com/AxolotlBucketLabs/DevTools) to generate and validate a standalone PHAR when its checks pass. The workflow pins exact tool, dependency and Axolotl-PM source revisions. Its default GitHub run title identifies the triggering commit or pull request.
+The [build workflow](.github/workflows/build.yml) uses [DevTools](https://github.com/AxolotlBucketLabs/DevTools) to generate and validate separate PHARs for SimpleEconomy and its example plugin when the checks pass. The workflow pins exact dependency and Axolotl-PM source revisions. Its default GitHub run title identifies the triggering commit or pull request.
 
-The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. It also analyzes and builds a pinned [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) revision, then boots both PHARs with an isolated test plugin to check persistence, paired writes, injected SQL failures and example console commands. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revisions and result of each run.
+The same job runs PHPStan at maximum level against pinned Axolotl-PM server source. ScoreHud, SimpleSQL and libasynql source are included for symbol discovery. It also analyzes and builds the local [SimpleEconomyExample](examples/SimpleEconomyExample/README.md), then boots both PHARs with an isolated test plugin to check persistence, paired writes, injected SQL failures and example console commands. The artifact verifier checks the reported SHA-256, plugin and SQL resources, private virion API classes and dependency licenses before upload. See the [Actions page](https://github.com/NhanAZ-Plugins/SimpleEconomy/actions/workflows/build.yml) for the exact revisions and result of each run.
 
 For isolated evaluation, extract `SimpleEconomy.phar` from a verified artifact and place it in your test server's `plugins/` folder. The PHAR contains the required virions.
 
-The workflow uploads an artifact for 14 days. It does not create a tag or GitHub Release for every commit.
+The workflow uploads both PHAR artifacts for inspection. It does not create a tag or GitHub Release for every commit.
 
 ### From source
 
@@ -48,7 +48,7 @@ The workflow uploads an artifact for 14 days. It does not create a tag or GitHub
 
 `composer.lock` pins the compatible Axolotl-PM, SimpleSQL, await-generator and libasynql revisions. DevTools reads the locked Composer packages and prepares the virions before shading them into the PHAR; no manually staged `virions/` folder or `devtools.yml` file is required for the project build.
 
-The workflow still keeps a separately pinned, patched libasynql checkout for the example-consumer compatibility test. That fixture path is distinct from the Composer-first project build.
+The repository also includes [EcoAPIScore](integrations/EcoAPIScore/README.md), an optional plugin that exposes generic EcoAPI tags to ScoreHud. It builds as a separate PHAR and keeps its own GPL-3.0-or-later license.
 
 When the workflow passes, its artifact includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up player data before replacing it. Rolling back the PHAR does not roll back SQL or YAML data. A successful build and PHPStan run does not establish gameplay or live SQL compatibility.
 
@@ -145,9 +145,13 @@ No extra plugins or configuration needed. Just add the tags to your ScoreHud con
 
 ---
 
+## Example and optional integration
+
+[`examples/SimpleEconomyExample`](examples/SimpleEconomyExample/README.md) demonstrates the SimpleEconomy API. [`integrations/EcoAPIScore`](integrations/EcoAPIScore/README.md) adds generic EcoAPI-backed ScoreHud tags as a separate plugin. Neither component is required to use SimpleEconomy's built-in ScoreHud tags.
+
 ## For Developers
 
-> **Want an API example?** See [SimpleEconomyExample](https://github.com/NhanAZ-Plugins/SimpleEconomyExample) for sample commands and event listeners. Its four commands have been checked with a connected protocol client on one Axolotl-PM runtime.
+> **Want an API example?** See [SimpleEconomyExample](examples/SimpleEconomyExample/README.md) for sample commands and event listeners. Its four commands have been checked with a connected protocol client on one Axolotl-PM runtime.
 
 ### Quick Start - Using the API
 
@@ -311,7 +315,7 @@ SimpleEconomy/
 │       ├── vie.yml          # Tiếng Việt
 │       ├── kor.yml          # 한국어
 │       └── ... (14 languages)
-└── src/NhanAZ/SimpleEconomy/
+├── src/NhanAZ/SimpleEconomy/
     ├── Main.php             # Core plugin + API
     ├── LangManager.php      # Multi-language system
     ├── CurrencyFormatter.php # $1,000 / $1K formatting
@@ -328,13 +332,15 @@ SimpleEconomy/
         ├── TransactionEvent.php       # Base event
         ├── TransactionSubmitEvent.php  # Pre-transaction (cancellable)
         └── TransactionSuccessEvent.php # Post-transaction
+├── examples/SimpleEconomyExample/ # API example plugin, with its own license
+└── integrations/EcoAPIScore/ # Optional EcoAPI and ScoreHud integration plugin
 ```
 
 ---
 
 ## License
 
-Distributed under the [MIT License](LICENSE).
+SimpleEconomy is distributed under the [MIT License](LICENSE). SimpleEconomyExample has its own MIT license, and EcoAPIScore has its own GPL-3.0-or-later license in its directory.
 
 ---
 

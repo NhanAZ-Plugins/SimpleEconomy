@@ -1,0 +1,6 @@
+/vendor/
+/build/
+/virions/
+/.php-bin/
+/.devtools-dependencies/
+/*.phar

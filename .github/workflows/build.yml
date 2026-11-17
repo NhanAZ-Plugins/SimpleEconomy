@@ -33,14 +33,6 @@ jobs:
       - name: Check out SimpleEconomy
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Check out pinned SimpleEconomyExample consumer
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          repository: NhanAZ-Plugins/SimpleEconomyExample
-          ref: f63acaf279b2f6b5b68a4b4be1405249060603b7 # SimpleEconomyExample v1.0.1-beta.1
-          path: .devtools-dependencies/SimpleEconomyExample
-          persist-credentials: false
-
       - name: Check out SimpleSQL virion source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -178,11 +170,11 @@ jobs:
           INPUT_INSTALL-PATH: ./.php-bin
         run: node .devtools-dependencies/setup-php-action/dist/index.js
 
-      - name: Analyze and build pinned example consumer
+      - name: Analyze and build local example consumer
         id: example
         uses: AxolotlBucketLabs/DevTools@latest
         with:
-          project: .devtools-dependencies/SimpleEconomyExample
+          project: examples/SimpleEconomyExample
           output: build-example
           phpstan: "max"
           phpstan-server: .devtools-servers/axolotl
@@ -192,14 +184,16 @@ jobs:
             .devtools-dependencies/libasynql/libasynql/src
             .devtools-dependencies/ScoreHud/src
 
-      - name: Verify example PHAR checksum
+      - name: Verify example PHAR and source contents
         shell: bash
         env:
           EXAMPLE_PHAR: ${{ steps.example.outputs.phar }}
-          EXAMPLE_SHA256: ${{ steps.example.outputs.sha256 }}
+          EXAMPLE_METADATA: ${{ steps.example.outputs.metadata }}
         run: |
           set -euo pipefail
-          test "$(sha256sum "$EXAMPLE_PHAR" | cut -d ' ' -f 1)" = "$EXAMPLE_SHA256"
+          php examples/SimpleEconomyExample/.github/scripts/verify-phar.php \
+            "$EXAMPLE_PHAR" "$EXAMPLE_METADATA"
+          cp "$EXAMPLE_METADATA" build-example/build-metadata.json
 
       - name: Build isolated paired-transfer test plugin
         run: |
@@ -241,4 +235,13 @@ jobs:
           path: |
             ${{ steps.build.outputs.phar }}
             build/build-metadata.json
+          if-no-files-found: error
+
+      - name: Upload verified example PHAR
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: SimpleEconomyExample-${{ github.sha }}
+          path: |
+            ${{ steps.example.outputs.phar }}
+            build-example/build-metadata.json
           if-no-files-found: error

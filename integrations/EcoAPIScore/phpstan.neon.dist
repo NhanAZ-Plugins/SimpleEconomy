@@ -1,0 +1,7 @@
+parameters:
+    level: max
+    paths:
+        - src
+    scanDirectories:
+        - vendor/axolotl-pm/pocketmine-mp/src
+        - stubs
