@@ -46,12 +46,21 @@ jobs:
           path: .devtools-dependencies/axolotl-pm
           persist-credentials: false
 
-      - name: Set up PHP
-        uses: pmmp/setup-php-action@3c38c259834f945351a662392836d90eb08abff0 # 3.2.0
+      - name: Check out Axolotl-PM PHP setup helper
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          php-version: 8.4
-          pm-version-major: 5
-          install-path: ./.php-bin
+          repository: axolotl-pm/setup-php-action
+          ref: b8c3f9add4f2ad4a5e2624a1112aba899ee8db0e
+          path: .devtools-dependencies/setup-php-action
+          persist-credentials: false
+
+      - name: Set up Axolotl-PM PHP with Node 24
+        shell: bash
+        env:
+          INPUT_PHP-VERSION: "8.4"
+          INPUT_PM-VERSION-MAJOR: "5"
+          INPUT_INSTALL-PATH: ./.php-bin
+        run: node .devtools-dependencies/setup-php-action/dist/index.js
 
       - name: Validate and install Composer dependencies
         working-directory: integrations/EcoAPIScore
