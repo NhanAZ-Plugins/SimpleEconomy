@@ -35,7 +35,7 @@ jobs:
 
       - name: Build with DevTools
         id: build
-        uses: AxolotlBucketLabs/DevTools@latest # v3.0.0
+        uses: AxolotlBucketLabs/DevTools@38076540e62b84a1016eda5345d394e8d4c50b28 # v4.1.0
         with:
           project: .
           virions: .devtools-virions

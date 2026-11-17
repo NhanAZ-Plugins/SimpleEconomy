@@ -126,7 +126,7 @@ jobs:
 
       - name: Analyze plugin and build PHAR with DevTools
         id: build
-        uses: AxolotlBucketLabs/DevTools@latest
+        uses: AxolotlBucketLabs/DevTools@38076540e62b84a1016eda5345d394e8d4c50b28 # v4.1.0
         with:
           project: .
           virions: .devtools-virions
@@ -172,7 +172,7 @@ jobs:
 
       - name: Analyze and build local example consumer
         id: example
-        uses: AxolotlBucketLabs/DevTools@latest
+        uses: AxolotlBucketLabs/DevTools@38076540e62b84a1016eda5345d394e8d4c50b28 # v4.1.0
         with:
           project: examples/SimpleEconomyExample
           output: build-example
