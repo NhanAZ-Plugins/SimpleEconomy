@@ -1,3 +1,0 @@
-# How often the addon refreshes balances for online players.
-# This is a fallback for economy providers without a common balance-change event.
-refresh-period: 5

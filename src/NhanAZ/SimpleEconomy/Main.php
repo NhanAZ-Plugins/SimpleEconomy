@@ -134,6 +134,13 @@ class Main extends PluginBase implements Listener {
 		// ScoreHud integration (softdepend - only if ScoreHud is installed)
 		if ($this->getServer()->getPluginManager()->getPlugin("ScoreHud") !== null) {
 			$this->getServer()->getPluginManager()->registerEvents(new ScoreHudListener($this), $this);
+
+			$refreshPeriod = $this->getConfig()->getNested("scorehud.provider.refresh-period", 5);
+			if (!is_int($refreshPeriod) || $refreshPeriod < 1) {
+				$this->getLogger()->warning("Config 'scorehud.provider.refresh-period' must be a positive integer. Using 5 seconds.");
+				$refreshPeriod = 5;
+			}
+			(new EconomyProviderTagsListener($this, $refreshPeriod))->start();
 		}
 
 		// Commands - fallback prefix = plugin name (C2a)

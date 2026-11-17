@@ -21,7 +21,7 @@ SimpleEconomy uses SimpleSQL for asynchronous SQL persistence and a YAML mirror.
 - **Offline player support** - check and modify balances of players who aren't online
 - **Leaderboard** - paginated `/topmoney` with async cache rebuild
 - **14 languages** - English, Vietnamese, Korean, Russian, Spanish, Ukrainian, Chinese, Indonesian, Turkish, French, Portuguese, German, Japanese, Italian
-- **ScoreHud integration** - built-in scoreboard tags, no extra plugin needed
+- **ScoreHud tags** - built-in balance tags and economy-provider tags under the SimpleEconomy namespace
 - **Transaction events** - other plugins can listen to, or even cancel, economy transactions
 - **Currency formatting** - `$1,000,000` (default) or `$1.5M` (compact)
 - **SQLite & MySQL** - switch with one line in config
@@ -46,9 +46,9 @@ The workflow uploads both PHAR artifacts for inspection. It does not create a ta
 2. Run `composer install --no-dev --no-interaction --prefer-dist --no-progress`
 3. Follow the [DevTools build documentation](https://github.com/AxolotlBucketLabs/DevTools/blob/main/docs/github-actions.md) and the [repository workflow](.github/workflows/build.yml) to build the project root
 
-`composer.lock` pins the compatible Axolotl-PM, SimpleSQL, await-generator and libasynql revisions. DevTools reads the locked Composer packages and prepares the virions before shading them into the PHAR; no manually staged `virions/` folder or `devtools.yml` file is required for the project build.
+`composer.lock` pins the compatible Axolotl-PM, EcoAPI, SimpleSQL, await-generator and libasynql revisions. DevTools reads the locked Composer packages and prepares the virions before shading them into the SimpleEconomy PHAR. No manually staged `virions/` folder or `devtools.yml` file is required for the project build.
 
-The repository also includes [EcoAPIScore](integrations/EcoAPIScore/README.md), an optional plugin that exposes generic EcoAPI tags to ScoreHud. It builds as a separate PHAR and keeps its own GPL-3.0-or-later license.
+SimpleEconomy includes economy-provider tags directly. The provider API is bundled in its PHAR, so it does not need to be installed separately. The tags are registered when ScoreHud is installed.
 
 When the workflow passes, its artifact includes `build-metadata.json` with the exact PHAR hash and resolved dependencies. Keep the last known working PHAR and back up player data before replacing it. Rolling back the PHAR does not roll back SQL or YAML data. A successful build and PHPStan run does not establish gameplay or live SQL compatibility.
 
@@ -133,21 +133,35 @@ All language files are saved to `plugin_data/SimpleEconomy/lang/` - you can edit
 
 ## ScoreHud Integration
 
-If [ScoreHud](https://github.com/Flavionsky/ScoreHud) is installed, SimpleEconomy automatically provides these scoreboard tags:
+If [ScoreHud](https://github.com/Flavionsky/ScoreHud) is installed, SimpleEconomy provides its built-in tags and tags backed by the first available economy provider.
 
 | Tag | Example | Description |
 |---|---|---|
 | `{simpleeconomy.balance}` | `$1,000` | Formatted balance |
 | `{simpleeconomy.rank}` | `3` | Leaderboard position |
 | `{simpleeconomy.raw}` | `1000` | Raw balance number |
+| `{simpleeconomy.provider.balance}` | `1000` | Provider balance without formatting |
+| `{simpleeconomy.provider.raw}` | `1000` | Provider balance without formatting |
+| `{simpleeconomy.provider.money}` | `$1,000` | Provider balance with its currency symbol |
+| `{simpleeconomy.provider.formatted}` | `$1,000` | Provider balance with its currency symbol |
+| `{simpleeconomy.provider.name}` | `BedrockEconomy` | Selected provider name |
+| `{simpleeconomy.provider.currency}` | `$` | Selected provider currency symbol |
 
-No extra plugins or configuration needed. Just add the tags to your ScoreHud config.
+Add the tags you want to use to your ScoreHud config. Provider balances refresh every five seconds by default. Change the interval in `plugin_data/SimpleEconomy/config.yml`:
+
+```yaml
+scorehud:
+  provider:
+    refresh-period: 5
+```
+
+The refresh period must be a positive integer number of seconds. ScoreHud is required for these tags, but a separate provider API plugin is not.
 
 ---
 
-## Example and optional integration
+## Example
 
-[`examples/SimpleEconomyExample`](examples/SimpleEconomyExample/README.md) demonstrates the SimpleEconomy API. [`integrations/EcoAPIScore`](integrations/EcoAPIScore/README.md) adds generic EcoAPI-backed ScoreHud tags as a separate plugin. Neither component is required to use SimpleEconomy's built-in ScoreHud tags.
+[`examples/SimpleEconomyExample`](examples/SimpleEconomyExample/README.md) demonstrates the SimpleEconomy API.
 
 ## For Developers
 
@@ -320,7 +334,9 @@ SimpleEconomy/
     ├── LangManager.php      # Multi-language system
     ├── CurrencyFormatter.php # $1,000 / $1K formatting
     ├── LeaderboardTask.php  # Async cache builder
-    ├── ScoreHudListener.php # ScoreHud integration
+    ├── ScoreHudListener.php # SimpleEconomy ScoreHud tags
+    ├── EconomyProviderTagsListener.php # Provider-backed ScoreHud tags
+    ├── ProviderBalanceFormatter.php # Provider balance formatting
     ├── command/
     │   ├── MoneyCommand.php
     │   ├── PayCommand.php
@@ -333,14 +349,13 @@ SimpleEconomy/
         ├── TransactionSubmitEvent.php  # Pre-transaction (cancellable)
         └── TransactionSuccessEvent.php # Post-transaction
 ├── examples/SimpleEconomyExample/ # API example plugin, with its own license
-└── integrations/EcoAPIScore/ # Optional EcoAPI and ScoreHud integration plugin
 ```
 
 ---
 
 ## License
 
-SimpleEconomy is distributed under the [MIT License](LICENSE). SimpleEconomyExample has its own MIT license, and EcoAPIScore has its own GPL-3.0-or-later license in its directory.
+SimpleEconomy's own code is distributed under the [MIT License](LICENSE). SimpleEconomyExample has its own MIT license. The bundled EcoAPI virion is licensed under Apache-2.0, and its license is included in the PHAR.
 
 ---
 
@@ -348,5 +363,6 @@ SimpleEconomy is distributed under the [MIT License](LICENSE). SimpleEconomyExam
 
 - **[DevTools](https://github.com/AxolotlBucketLabs/DevTools)** - standalone PHAR builder and virion shader used by this repository's workflow
 - **[SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL)** - the hybrid SQL-YAML engine that powers this plugin
+- **[EcoAPI](https://github.com/NhanAZ-Libraries/EcoAPI)** - the economy provider API used by generic ScoreHud tags
 - **[libasynql](https://github.com/poggit/libasynql)** - asynchronous SQL library
 - **[ScoreHud](https://github.com/Flavionsky/ScoreHud)** - scoreboard addon (optional integration)

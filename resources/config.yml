@@ -28,6 +28,12 @@ topmoney-per-page: 10
 # Higher = more complete leaderboard, but uses more memory.
 leaderboard-size: 100
 
+# ScoreHud integration.
+scorehud:
+  provider:
+    # Seconds between provider balance refreshes.
+    refresh-period: 5
+
 # Database configuration (passed directly to SimpleSQL / libasynql).
 database:
   # Database type: "sqlite" or "mysql"

@@ -13,6 +13,11 @@ try {
         throw new RuntimeException('PHAR bytes differ from the build result.');
     }
     $phar = new Phar($path);
+    foreach (['src/NhanAZ/SimpleEconomy/EconomyProviderTagsListener.php', 'src/NhanAZ/SimpleEconomy/ProviderBalanceFormatter.php'] as $sourceFile) {
+        if (!isset($phar[$sourceFile])) {
+            throw new RuntimeException("Missing economy-provider source file: {$sourceFile}");
+        }
+    }
     $root = dirname(__DIR__, 2);
     $assertBytes = static function (string $archivePath, string $sourcePath) use ($phar): void {
         $source = file_get_contents($sourcePath);
@@ -45,6 +50,13 @@ try {
         $dependencies[$package] = $dependency;
     }
     $expected = [
+        'nhanaz/ecoapi' => [
+            'name' => 'nhanaz.ecoapi',
+            'composerVersion' => 'v1.0.0',
+            'reference' => '343aef3606da1bc16d006799b27914cc8ff31d17',
+            'antigen' => 'NhanAZ\\EcoAPI',
+            'entryClass' => 'EcoAPI',
+        ],
         'nhanaz/simplesql' => [
             'name' => 'nhanaz.simplesql',
             'composerVersion' => 'dev-main',
@@ -68,7 +80,7 @@ try {
         ],
     ];
     if (array_diff_key($dependencies, $expected) !== [] || array_diff_key($expected, $dependencies) !== []) {
-        throw new RuntimeException('Expected the locked SimpleSQL, await-generator and libasynql Composer dependencies.');
+        throw new RuntimeException('Expected the locked EcoAPI, SimpleSQL, await-generator and libasynql Composer dependencies.');
     }
     foreach ($expected as $package => $expectation) {
         $dependency = $dependencies[$package];
@@ -96,7 +108,7 @@ try {
     foreach (['sqlite.sql', 'mysql.sql'] as $file) {
         $assertBytes('resources/simplesql/' . $file, $root . '/vendor/nhanaz/simplesql/resources/simplesql/' . $file);
     }
-    fwrite(STDOUT, "Verified PHAR hash, plugin resources, SQL resources, both private virion APIs and licenses. Runtime SQL remains a separate check.\n");
+    fwrite(STDOUT, "Verified PHAR hash, plugin resources, SQL resources, all four shaded virion APIs and licenses. Runtime SQL remains a separate check.\n");
 } catch (Throwable $error) {
     fwrite(STDERR, $error->getMessage() . "\n");
     exit(1);

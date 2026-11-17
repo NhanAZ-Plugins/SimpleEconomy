@@ -11,6 +11,7 @@ use NhanAZ\SimpleEconomy\event\TransactionSuccessEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\player\Player;
+use function in_array;
 
 /**
  * ScoreHud integration - provides economy tags for scoreboards.
@@ -83,8 +84,12 @@ class ScoreHudListener implements Listener {
 	 * Resolve tags on demand when ScoreHud requests them.
 	 */
 	public function onTagResolve(TagsResolveEvent $event): void {
-		$player = $event->getPlayer();
 		$tag = $event->getTag();
+		if (!in_array($tag->getName(), [self::TAG_BALANCE, self::TAG_RANK, self::TAG_RAW], true)) {
+			return;
+		}
+
+		$player = $event->getPlayer();
 
 		$balance = $this->plugin->getMoney($player->getName());
 
