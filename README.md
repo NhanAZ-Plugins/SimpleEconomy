@@ -85,12 +85,6 @@ The [SimpleEconomyExample](examples/SimpleEconomyExample/README.md) shows how to
 
 Do not implement transfers as two separate balance updates. The `/pay` command saves both sides of a transfer together.
 
-## Upgrading
-
-This release uses the `AxolotlBucketLabs\SimpleEconomy` namespace and the Composer package `axolotlbucketlabs/simple-economy`. Update imports from `NhanAZ\SimpleEconomy\...` and the Composer requirement before upgrading.
-
-Back up the database, YAML mirror, and configuration before upgrading. A direct production upgrade from `v1.0.0` has not been verified against existing server data. Keep the previous PHAR available in case you need to roll back.
-
 ## License and credits
 
 SimpleEconomy's code is distributed under the [MIT License](LICENSE). Bundled dependencies retain their own licenses.
