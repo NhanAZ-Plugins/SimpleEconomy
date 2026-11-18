@@ -6,7 +6,7 @@
     "require": {
         "php": "^8.4",
         "axolotl-pm/pocketmine-mp": "5.51.1",
-        "nhanaz/ecoapi": "^1.0",
+        "axolotlbucketlabs/economy-provider-api": "dev-main#39539bd4985564db1bbf93103ded602fb8c04846 as 2.0.0",
         "nhanaz/simplesql": "dev-main#dc616f820ced270817afe26f3ab3e4a9b385070b",
         "sof3/await-generator": "dev-devtools-shading-compat as 3.6.1",
         "sof3/libasynql": "dev-master#270f8ae93e3271206eadd42ca81862ab9a54f322"
@@ -19,7 +19,7 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/NhanAZ-Libraries/EcoAPI",
+            "url": "https://github.com/AxolotlBucketLabs/EconomyProviderAPI",
             "no-api": true
         },
         {

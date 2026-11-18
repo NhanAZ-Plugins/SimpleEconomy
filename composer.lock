@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3af9f1e88748d5b0f5dd881429d27004",
+    "content-hash": "6d008107c227257dd6720c79a4ee054d",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -399,6 +399,55 @@
             "time": "2026-08-25T14:15:14+00:00"
         },
         {
+            "name": "axolotlbucketlabs/economy-provider-api",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AxolotlBucketLabs/EconomyProviderAPI",
+                "reference": "39539bd4985564db1bbf93103ded602fb8c04846"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AxolotlBucketLabs/EconomyProviderAPI/zipball/39539bd4985564db1bbf93103ded602fb8c04846",
+                "reference": "39539bd4985564db1bbf93103ded602fb8c04846",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1",
+                "pocketmine/pocketmine-mp": "^5.0.0"
+            },
+            "require-dev": {
+                "axolotl-pm/pocketmine-mp": "5.51.1",
+                "phpstan/phpstan": "^2.1"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "virion": {
+                    "spec": "3.0",
+                    "namespace-root": "AxolotlBucketLabs\\EcoAPI"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AxolotlBucketLabs\\EcoAPI\\": "src/AxolotlBucketLabs/EcoAPI/"
+                }
+            },
+            "scripts": {
+                "phpstan": [
+                    "@php vendor/bin/phpstan analyse --level=max --no-progress -c phpstan.neon.dist src example/src"
+                ],
+                "test": [
+                    "@php tests/provider-money.php"
+                ]
+            },
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Simple and unified economy API library for PocketMine-MP plugins",
+            "time": "2026-11-18T01:20:48+00:00"
+        },
+        {
             "name": "brick/math",
             "version": "1.0.0",
             "source": {
@@ -510,54 +559,6 @@
                 "source": "https://github.com/cweiske/jsonmapper/tree/v6.0.0"
             },
             "time": "2026-06-29T16:03:16+00:00"
-        },
-        {
-            "name": "nhanaz/ecoapi",
-            "version": "v1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/NhanAZ-Libraries/EcoAPI",
-                "reference": "343aef3606da1bc16d006799b27914cc8ff31d17"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/NhanAZ-Libraries/EcoAPI/zipball/343aef3606da1bc16d006799b27914cc8ff31d17",
-                "reference": "343aef3606da1bc16d006799b27914cc8ff31d17",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.1",
-                "pocketmine/pocketmine-mp": "^5.0.0"
-            },
-            "require-dev": {
-                "axolotl-pm/pocketmine-mp": "5.49.1",
-                "phpstan/phpstan": "^2.1"
-            },
-            "type": "library",
-            "extra": {
-                "virion": {
-                    "spec": "3.0",
-                    "namespace-root": "NhanAZ\\EcoAPI"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "NhanAZ\\EcoAPI\\": "src/NhanAZ/EcoAPI/"
-                }
-            },
-            "scripts": {
-                "phpstan": [
-                    "@php vendor/bin/phpstan analyse --level=max --no-progress -c phpstan.neon.dist src example/src"
-                ],
-                "test": [
-                    "@php tests/provider-money.php"
-                ]
-            },
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "Simple and unified economy API library for PocketMine-MP plugins",
-            "time": "2026-10-13T18:19:00+00:00"
         },
         {
             "name": "nhanaz/simplesql",
@@ -1372,6 +1373,12 @@
     "packages-dev": [],
     "aliases": [
         {
+            "package": "axolotlbucketlabs/economy-provider-api",
+            "version": "dev-main",
+            "alias": "2.0.0",
+            "alias_normalized": "2.0.0.0"
+        },
+        {
             "package": "sof3/await-generator",
             "version": "dev-devtools-shading-compat",
             "alias": "3.6.1",
@@ -1380,6 +1387,7 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "axolotlbucketlabs/economy-provider-api": 20,
         "nhanaz/simplesql": 20,
         "sof3/await-generator": 20,
         "sof3/libasynql": 20

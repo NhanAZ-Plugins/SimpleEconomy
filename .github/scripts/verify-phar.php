@@ -50,11 +50,11 @@ try {
         $dependencies[$package] = $dependency;
     }
     $expected = [
-        'nhanaz/ecoapi' => [
-            'name' => 'nhanaz.ecoapi',
-            'composerVersion' => 'v1.0.0',
-            'reference' => '343aef3606da1bc16d006799b27914cc8ff31d17',
-            'antigen' => 'NhanAZ\\EcoAPI',
+        'axolotlbucketlabs/economy-provider-api' => [
+            'name' => 'axolotlbucketlabs.economy-provider-api',
+            'composerVersion' => 'dev-main',
+            'reference' => '39539bd4985564db1bbf93103ded602fb8c04846',
+            'antigen' => 'AxolotlBucketLabs\\EcoAPI',
             'entryClass' => 'EcoAPI',
         ],
         'nhanaz/simplesql' => [
