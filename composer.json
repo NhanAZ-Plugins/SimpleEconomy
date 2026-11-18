@@ -6,7 +6,7 @@
     "require": {
         "php": "^8.4",
         "axolotl-pm/pocketmine-mp": "5.51.1",
-        "axolotlbucketlabs/economy-provider-api": "dev-main#39539bd4985564db1bbf93103ded602fb8c04846 as 2.0.0",
+        "axolotlbucketlabs/economy-provider-api": "dev-main#e2e1ed9344b1da1892aea025d7721a6f3196e111 as 3.0.0",
         "axolotlbucketlabs/simple-sql": "dev-main#a1763696c974a1fc02632b4804be1e982a6dd982 as 2.0.0",
         "sof3/await-generator": "dev-devtools-shading-compat as 3.6.1",
         "sof3/libasynql": "dev-master#270f8ae93e3271206eadd42ca81862ab9a54f322"

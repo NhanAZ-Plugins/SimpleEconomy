@@ -53,9 +53,9 @@ try {
         'axolotlbucketlabs/economy-provider-api' => [
             'name' => 'axolotlbucketlabs.economy-provider-api',
             'composerVersion' => 'dev-main',
-            'reference' => '39539bd4985564db1bbf93103ded602fb8c04846',
-            'antigen' => 'AxolotlBucketLabs\\EcoAPI',
-            'entryClass' => 'EcoAPI',
+            'reference' => 'e2e1ed9344b1da1892aea025d7721a6f3196e111',
+            'antigen' => 'AxolotlBucketLabs\\EconomyProviderAPI',
+            'entryClass' => 'EconomyProviderAPI',
         ],
         'axolotlbucketlabs/simple-sql' => [
             'name' => 'axolotlbucketlabs.simple-sql',
@@ -80,7 +80,7 @@ try {
         ],
     ];
     if (array_diff_key($dependencies, $expected) !== [] || array_diff_key($expected, $dependencies) !== []) {
-        throw new RuntimeException('Expected the locked EcoAPI, SimpleSQL, await-generator and libasynql Composer dependencies.');
+        throw new RuntimeException('Expected the locked EconomyProviderAPI, SimpleSQL, await-generator and libasynql Composer dependencies.');
     }
     foreach ($expected as $package => $expectation) {
         $dependency = $dependencies[$package];

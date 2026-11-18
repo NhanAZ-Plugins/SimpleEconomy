@@ -77,7 +77,7 @@ When ScoreHud is installed, SimpleEconomy registers its own balance tags and tag
 | `{simpleeconomy.provider.name}` | Selected economy provider. |
 | `{simpleeconomy.provider.currency}` | Provider currency symbol. |
 
-Provider balances refresh every five seconds by default. Change `scorehud.provider.refresh-period` in the configuration to adjust the interval. ScoreHud is required for these tags. The EcoAPI provider library is bundled with SimpleEconomy.
+Provider balances refresh every five seconds by default. Change `scorehud.provider.refresh-period` in the configuration to adjust the interval. ScoreHud is required for these tags. The EconomyProviderAPI provider library is bundled with SimpleEconomy.
 
 ## Plugin API
 

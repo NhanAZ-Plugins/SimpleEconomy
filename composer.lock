@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "20151ecfbd611e1948889650b57b7133",
+    "content-hash": "4a7fd3a98f569676a2831e82f86fc8a2",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -404,12 +404,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/AxolotlBucketLabs/EconomyProviderAPI",
-                "reference": "39539bd4985564db1bbf93103ded602fb8c04846"
+                "reference": "e2e1ed9344b1da1892aea025d7721a6f3196e111"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AxolotlBucketLabs/EconomyProviderAPI/zipball/39539bd4985564db1bbf93103ded602fb8c04846",
-                "reference": "39539bd4985564db1bbf93103ded602fb8c04846",
+                "url": "https://api.github.com/repos/AxolotlBucketLabs/EconomyProviderAPI/zipball/e2e1ed9344b1da1892aea025d7721a6f3196e111",
+                "reference": "e2e1ed9344b1da1892aea025d7721a6f3196e111",
                 "shasum": ""
             },
             "require": {
@@ -425,12 +425,12 @@
             "extra": {
                 "virion": {
                     "spec": "3.0",
-                    "namespace-root": "AxolotlBucketLabs\\EcoAPI"
+                    "namespace-root": "AxolotlBucketLabs\\EconomyProviderAPI"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "AxolotlBucketLabs\\EcoAPI\\": "src/AxolotlBucketLabs/EcoAPI/"
+                    "AxolotlBucketLabs\\EconomyProviderAPI\\": "src/AxolotlBucketLabs/EconomyProviderAPI/"
                 }
             },
             "scripts": {
@@ -445,7 +445,7 @@
                 "Apache-2.0"
             ],
             "description": "Simple and unified economy API library for PocketMine-MP plugins",
-            "time": "2026-11-18T01:20:48+00:00"
+            "time": "2026-11-18T02:52:05+00:00"
         },
         {
             "name": "axolotlbucketlabs/simple-sql",
@@ -1375,8 +1375,8 @@
         {
             "package": "axolotlbucketlabs/economy-provider-api",
             "version": "dev-main",
-            "alias": "2.0.0",
-            "alias_normalized": "2.0.0.0"
+            "alias": "3.0.0",
+            "alias_normalized": "3.0.0.0"
         },
         {
             "package": "axolotlbucketlabs/simple-sql",
