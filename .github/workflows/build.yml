@@ -61,8 +61,8 @@ jobs:
       - name: Check out ScoreHud API source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: Ifera/ScoreHud
-          ref: 3f5b13b3daef0de3d2f5f81ad899dbbcc9eaf52f
+          repository: AxolotlBucketLabs/ScoreHud
+          ref: 1af813d52961b41835ed4c7177778d297f566c25 # v8.0.3
           path: .devtools-dependencies/ScoreHud
           persist-credentials: false
 

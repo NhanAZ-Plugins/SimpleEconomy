@@ -89,4 +89,4 @@ Do not implement transfers as two separate balance updates. The `/pay` command s
 
 SimpleEconomy's code is distributed under the [MIT License](LICENSE). Bundled dependencies retain their own licenses.
 
-The project uses [DevTools](https://github.com/AxolotlBucketLabs/DevTools) to build the PHAR, [SimpleSQL](https://github.com/AxolotlBucketLabs/SimpleSQL) and [libasynql](https://github.com/poggit/libasynql) for storage, [EconomyProviderAPI](https://github.com/AxolotlBucketLabs/EconomyProviderAPI) for economy provider integration, and [ScoreHud](https://github.com/Flavionsky/ScoreHud) for scoreboard tags.
+The project uses [DevTools](https://github.com/AxolotlBucketLabs/DevTools) to build the PHAR, [SimpleSQL](https://github.com/AxolotlBucketLabs/SimpleSQL) and [libasynql](https://github.com/poggit/libasynql) for storage, [EconomyProviderAPI](https://github.com/AxolotlBucketLabs/EconomyProviderAPI) for economy provider integration, and [ScoreHud](https://github.com/AxolotlBucketLabs/ScoreHud) for scoreboard tags.
