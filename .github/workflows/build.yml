@@ -36,8 +36,8 @@ jobs:
       - name: Check out SimpleSQL virion source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: NhanAZ-Libraries/SimpleSQL
-          ref: de93de3471ee809e936b3f06cffba239cc0a5c0b # SimpleSQL source with PHP 8.4 virion compatibility
+          repository: AxolotlBucketLabs/SimpleSQL
+          ref: a1763696c974a1fc02632b4804be1e982a6dd982 # SimpleSQL 2.0 namespace and Composer identity
           path: .devtools-dependencies/SimpleSQL
           persist-credentials: false
 

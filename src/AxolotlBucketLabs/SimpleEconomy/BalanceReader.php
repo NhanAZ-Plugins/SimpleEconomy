@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AxolotlBucketLabs\SimpleEconomy;
 
-use NhanAZ\SimpleSQL\Session;
+use AxolotlBucketLabs\SimpleSQL\Session;
 
 final class BalanceReader {
 

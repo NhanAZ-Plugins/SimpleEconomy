@@ -10,7 +10,7 @@ use AxolotlBucketLabs\SimpleEconomy\event\TransactionEvent;
 use AxolotlBucketLabs\SimpleEconomy\event\TransactionSubmitEvent;
 use AxolotlBucketLabs\SimpleEconomy\event\TransactionSuccessEvent;
 use AxolotlBucketLabs\SimpleEconomy\Main;
-use NhanAZ\SimpleSQL\Session;
+use AxolotlBucketLabs\SimpleSQL\Session;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;

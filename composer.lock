@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6d008107c227257dd6720c79a4ee054d",
+    "content-hash": "20151ecfbd611e1948889650b57b7133",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -448,6 +448,53 @@
             "time": "2026-11-18T01:20:48+00:00"
         },
         {
+            "name": "axolotlbucketlabs/simple-sql",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AxolotlBucketLabs/SimpleSQL",
+                "reference": "a1763696c974a1fc02632b4804be1e982a6dd982"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AxolotlBucketLabs/SimpleSQL/zipball/a1763696c974a1fc02632b4804be1e982a6dd982",
+                "reference": "a1763696c974a1fc02632b4804be1e982a6dd982",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1",
+                "pocketmine/pocketmine-mp": "^5.0.0"
+            },
+            "require-dev": {
+                "axolotl-pm/pocketmine-mp": "5.51.1",
+                "phpstan/phpstan": "^2.3"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "virion": {
+                    "spec": "3.0",
+                    "namespace-root": "AxolotlBucketLabs\\SimpleSQL",
+                    "exclude-root-resources": true
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "scripts": {
+                "phpstan": [
+                    "@php vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --no-progress"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Hybrid SQL-YAML data management library for PocketMine-MP. Combines SQL performance with YAML user-friendliness.",
+            "time": "2026-11-18T01:46:57+00:00"
+        },
+        {
             "name": "brick/math",
             "version": "1.0.0",
             "source": {
@@ -559,53 +606,6 @@
                 "source": "https://github.com/cweiske/jsonmapper/tree/v6.0.0"
             },
             "time": "2026-06-29T16:03:16+00:00"
-        },
-        {
-            "name": "nhanaz/simplesql",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/NhanAZ-Libraries/SimpleSQL",
-                "reference": "dc616f820ced270817afe26f3ab3e4a9b385070b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/NhanAZ-Libraries/SimpleSQL/zipball/dc616f820ced270817afe26f3ab3e4a9b385070b",
-                "reference": "dc616f820ced270817afe26f3ab3e4a9b385070b",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.1",
-                "pocketmine/pocketmine-mp": "^5.0.0"
-            },
-            "require-dev": {
-                "axolotl-pm/pocketmine-mp": "5.51.1",
-                "phpstan/phpstan": "^2.3"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "virion": {
-                    "spec": "3.0",
-                    "namespace-root": "NhanAZ\\SimpleSQL",
-                    "exclude-root-resources": true
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src"
-                ]
-            },
-            "scripts": {
-                "phpstan": [
-                    "@php vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --no-progress"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Hybrid SQL-YAML data management library for PocketMine-MP. Combines SQL performance with YAML user-friendliness.",
-            "time": "2026-11-04T04:03:56+00:00"
         },
         {
             "name": "pocketmine/binaryutils",
@@ -1379,6 +1379,12 @@
             "alias_normalized": "2.0.0.0"
         },
         {
+            "package": "axolotlbucketlabs/simple-sql",
+            "version": "dev-main",
+            "alias": "2.0.0",
+            "alias_normalized": "2.0.0.0"
+        },
+        {
             "package": "sof3/await-generator",
             "version": "dev-devtools-shading-compat",
             "alias": "3.6.1",
@@ -1388,7 +1394,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "axolotlbucketlabs/economy-provider-api": 20,
-        "nhanaz/simplesql": 20,
+        "axolotlbucketlabs/simple-sql": 20,
         "sof3/await-generator": 20,
         "sof3/libasynql": 20
     },

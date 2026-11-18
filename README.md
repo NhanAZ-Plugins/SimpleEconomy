@@ -95,4 +95,4 @@ Back up the database, YAML mirror, and configuration before upgrading. A direct 
 
 SimpleEconomy's code is distributed under the [MIT License](LICENSE). Bundled dependencies retain their own licenses.
 
-The project uses [DevTools](https://github.com/AxolotlBucketLabs/DevTools) to build the PHAR, [SimpleSQL](https://github.com/NhanAZ-Libraries/SimpleSQL) and [libasynql](https://github.com/poggit/libasynql) for storage, [EconomyProviderAPI](https://github.com/AxolotlBucketLabs/EconomyProviderAPI) for economy provider integration, and [ScoreHud](https://github.com/Flavionsky/ScoreHud) for scoreboard tags.
+The project uses [DevTools](https://github.com/AxolotlBucketLabs/DevTools) to build the PHAR, [SimpleSQL](https://github.com/AxolotlBucketLabs/SimpleSQL) and [libasynql](https://github.com/poggit/libasynql) for storage, [EconomyProviderAPI](https://github.com/AxolotlBucketLabs/EconomyProviderAPI) for economy provider integration, and [ScoreHud](https://github.com/Flavionsky/ScoreHud) for scoreboard tags.

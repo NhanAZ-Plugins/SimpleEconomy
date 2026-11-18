@@ -57,11 +57,11 @@ try {
             'antigen' => 'AxolotlBucketLabs\\EcoAPI',
             'entryClass' => 'EcoAPI',
         ],
-        'nhanaz/simplesql' => [
-            'name' => 'nhanaz.simplesql',
+        'axolotlbucketlabs/simple-sql' => [
+            'name' => 'axolotlbucketlabs.simple-sql',
             'composerVersion' => 'dev-main',
-            'reference' => 'dc616f820ced270817afe26f3ab3e4a9b385070b',
-            'antigen' => 'NhanAZ\\SimpleSQL',
+            'reference' => 'a1763696c974a1fc02632b4804be1e982a6dd982',
+            'antigen' => 'AxolotlBucketLabs\\SimpleSQL',
             'entryClass' => 'SimpleSQL',
         ],
         'sof3/await-generator' => [
@@ -106,7 +106,7 @@ try {
         }
     }
     foreach (['sqlite.sql', 'mysql.sql'] as $file) {
-        $assertBytes('resources/simplesql/' . $file, $root . '/vendor/nhanaz/simplesql/resources/simplesql/' . $file);
+        $assertBytes('resources/simplesql/' . $file, $root . '/vendor/axolotlbucketlabs/simple-sql/resources/simplesql/' . $file);
     }
     fwrite(STDOUT, "Verified PHAR hash, plugin resources, SQL resources, all four shaded virion APIs and licenses. Runtime SQL remains a separate check.\n");
 } catch (Throwable $error) {

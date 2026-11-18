@@ -6,7 +6,7 @@ namespace AxolotlBucketLabs\SimpleEconomy\command;
 
 use AxolotlBucketLabs\SimpleEconomy\BalanceReader;
 use AxolotlBucketLabs\SimpleEconomy\Main;
-use NhanAZ\SimpleSQL\Session;
+use AxolotlBucketLabs\SimpleSQL\Session;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
