@@ -1,20 +1,7 @@
 <?php
 
 /**
- * ╔══════════════════════════════════════════════════════════════════╗
- * ║                   Event Listener Examples                      ║
- * ║                                                                ║
- * ║  SimpleEconomy fires events when money changes. You can        ║
- * ║  listen to these events to react to transactions.              ║
- * ║                                                                ║
- * ║  There are 2 types of events:                                  ║
- * ║                                                                ║
- * ║  1. TransactionSubmitEvent (BEFORE transaction)                ║
- * ║     → You can CANCEL it to prevent the transaction             ║
- * ║                                                                ║
- * ║  2. TransactionSuccessEvent (AFTER transaction)                ║
- * ║     → Transaction already happened, you can only read data     ║
- * ╚══════════════════════════════════════════════════════════════════╝
+ * Demonstrates listening to transactions and cancelling them before execution.
  */
 
 declare(strict_types=1);
@@ -34,23 +21,8 @@ class EventListener implements Listener {
 		private PluginBase $plugin,
 	) {}
 
-	// ══════════════════════════════════════════════════
-	//  BASIC: Log all transactions
-	// ══════════════════════════════════════════════════
-
 	/**
-	 * ┌─────────────────────────────────────────────────────────┐
-	 * │  Example 1: Listen to TransactionSuccessEvent           │
-	 * │  This fires AFTER a transaction is completed.           │
-	 * └─────────────────────────────────────────────────────────┘
-	 *
-	 * Event properties you can read:
-	 *   $event->playerName  → Name of the player (string)
-	 *   $event->oldBalance  → Balance BEFORE the transaction (int)
-	 *   $event->newBalance  → Balance AFTER the transaction (int)
-	 *   $event->type        → Type: "set", "add", "reduce", or "pay" (string)
-	 *   $event->getAmount() → The difference between old and new balance (int)
-	 *
+	 * Logs completed transactions with the player name, balance changes, type, and amount.
 	 */
 	public function onTransactionSuccess(TransactionSuccessEvent $event): void {
 		// Log every successful transaction to the console
@@ -64,22 +36,8 @@ class EventListener implements Listener {
 		);
 	}
 
-	// ══════════════════════════════════════════════════
-	//  BASIC: Block transactions based on conditions
-	// ══════════════════════════════════════════════════
-
 	/**
-	 * ┌─────────────────────────────────────────────────────────┐
-	 * │  Example 2: Listen to TransactionSubmitEvent            │
-	 * │  This fires BEFORE a transaction is executed.           │
-	 * │  You can call $event->cancel() to block it!            │
-	 * └─────────────────────────────────────────────────────────┘
-	 *
-	 * Same properties as TransactionSuccessEvent, plus:
-	 *   $event->cancel()      → Cancel the transaction (it won't happen)
-	 *   $event->isCancelled() → Check if already cancelled by another plugin
-	 *
-	 * Practical example: Block payments larger than 100,000
+	 * Cancels player payments above 100,000 before they are executed.
 	 */
 	public function onTransactionSubmit(TransactionSubmitEvent $event): void {
 		// Only check "pay" type transactions (player-to-player transfers)

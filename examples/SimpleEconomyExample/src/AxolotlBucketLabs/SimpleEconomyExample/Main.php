@@ -1,19 +1,7 @@
 <?php
 
 /**
- * ╔══════════════════════════════════════════════════════════════════╗
- * ║                   SimpleEconomyExample                         ║
- * ║                                                                ║
- * ║  A demonstration plugin showing how to use the SimpleEconomy   ║
- * ║  API in your own plugins. Each command below is a real-world   ║
- * ║  example you can copy and adapt for your projects.             ║
- * ╚══════════════════════════════════════════════════════════════════╝
- *
- * Available commands:
- *   /wallet              - View your own balance
- *   /reward <player> <$> - Give money to a player (OP only)
- *   /fine <player> <$>   - Take money from a player (OP only)
- *   /richest             - Show top 5 richest players
+ * Demonstrates the SimpleEconomy API through plugin commands.
  */
 
 declare(strict_types=1);
@@ -37,9 +25,6 @@ class Main extends PluginBase {
 	private SimpleEconomy $economy;
 
 	protected function onEnable(): void {
-		// ──────────────────────────────────────────────
-		//  Step 1: Get the SimpleEconomy plugin instance
-		// ──────────────────────────────────────────────
 		$economy = SimpleEconomy::getInstance();
 
 		// Always check if SimpleEconomy is loaded
@@ -51,14 +36,6 @@ class Main extends PluginBase {
 
 		$this->economy = $economy;
 
-		// ──────────────────────────────────────────────
-		//  Step 2: Register commands
-		// ──────────────────────────────────────────────
-		// (We use simple inline commands in onCommand() below)
-
-		// ──────────────────────────────────────────────
-		//  Step 3: Register event listeners
-		// ──────────────────────────────────────────────
 		$this->getServer()->getPluginManager()->registerEvents(
 			new EventListener($this),
 			$this,
@@ -90,20 +67,8 @@ class Main extends PluginBase {
 		}
 	}
 
-	// ══════════════════════════════════════════════════
-	//  BASIC API EXAMPLES
-	//  (Copy these patterns into your own plugins!)
-	// ══════════════════════════════════════════════════
-
 	/**
-	 * ┌─────────────────────────────────────────────┐
-	 * │  Example 1: getMoney() + formatMoney()      │
-	 * │  Get a player's balance and display it.     │
-	 * └─────────────────────────────────────────────┘
-	 *
-	 * API used:
-	 *   $this->economy->getMoney(string $name): ?int
-	 *   $this->economy->formatMoney(int $amount): string
+	 * Displays a player's balance using getMoney() and formatMoney().
 	 */
 	private function handleWallet(CommandSender $sender): bool {
 		// This command can only be used by players (not console)
@@ -129,18 +94,10 @@ class Main extends PluginBase {
 	}
 
 	/**
-	 * ┌─────────────────────────────────────────────┐
-	 * │  Example 2: addMoneyConfirmed()             │
-	 * │  Give money to a player.                    │
-	 * └─────────────────────────────────────────────┘
+	 * Gives money to a player and reports whether the SQL save succeeded.
 	 *
-	 * API used:
-	 *   $this->economy->addMoneyConfirmed(string $name, int $amount, Closure $onComplete): void
-	 *
-	 * The callback receives true after SQL save and readback, or false if:
-	 *   - Player is offline
-	 *   - Another plugin cancelled the transaction (via TransactionSubmitEvent)
-	 *   - The database rejected the save
+	 * The callback receives true after SQL save and readback. It receives false if the player
+	 * is offline, another plugin cancels the transaction, or the database rejects the save.
 	 * @param list<string> $args
 	 */
 	private function handleReward(CommandSender $sender, array $args): bool {
@@ -172,19 +129,11 @@ class Main extends PluginBase {
 	}
 
 	/**
-	 * ┌─────────────────────────────────────────────┐
-	 * │  Example 3: reduceMoneyConfirmed()          │
-	 * │  Take money from a player.                  │
-	 * └─────────────────────────────────────────────┘
+	 * Takes money from a player and reports whether the SQL save succeeded.
 	 *
-	 * API used:
-	 *   $this->economy->reduceMoneyConfirmed(string $name, int $amount, Closure $onComplete): void
-	 *
-	 * The callback receives true after SQL save and readback, or false if:
-	 *   - Player is offline
-	 *   - Player doesn't have enough money
-	 *   - Another plugin cancelled the transaction
-	 *   - The database rejected the save
+	 * The callback receives true after SQL save and readback. It receives false if the player
+	 * is offline, has insufficient funds, another plugin cancels the transaction, or the
+	 * database rejects the save.
 	 * @param list<string> $args
 	 */
 	private function handleFine(CommandSender $sender, array $args): bool {
@@ -215,20 +164,7 @@ class Main extends PluginBase {
 	}
 
 	/**
-	 * ┌─────────────────────────────────────────────┐
-	 * │  Example 4: getTopBalances()                │
-	 * │  Show the richest players.                  │
-	 * └─────────────────────────────────────────────┘
-	 *
-	 * API used:
-	 *   $this->economy->getTopBalances(int $limit, int $offset): array
-	 *
-	 * Returns an array like:
-	 *   [
-	 *     ["name" => "Steve",  "balance" => 50000],
-	 *     ["name" => "Alex",   "balance" => 30000],
-	 *     ...
-	 *   ]
+	 * Displays the five highest balances.
 	 */
 	private function handleRichest(CommandSender $sender): bool {
 		// Get top 5 players (you can change the limit)
